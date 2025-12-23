@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Información - XV Años</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .checklist-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .checklist-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ecf0f1;
+        }
+
+        .checklist-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .checklist-header h2 {
+            margin: 0;
+            color: #2c3e50;
+            flex: 1;
+        }
+
+        .page-link-btn {
+            padding: 8px 15px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .page-link-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .info-category {
+            margin-bottom: 25px;
+        }
+
+        .info-category h3 {
+            color: #34495e;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-category h3 i {
+            color: #3498db;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info-list li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.6;
+        }
+
+        .info-list li i {
+            color: #3498db;
+            margin-top: 3px;
+            min-width: 16px;
+        }
+
+        .info-list li.important {
+            background: #fff3cd;
+            border-left-color: #f39c12;
+        }
+
+        .info-list li.important i {
+            color: #f39c12;
+        }
+
+        .info-list li.optional {
+            opacity: 0.7;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .badge-alta {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge-media {
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge-baja {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 36px;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .quick-tip {
+            background: #e8f4f8;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .quick-tip h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-tip p {
+            margin: 0;
+            color: #546e7a;
+            line-height: 1.6;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .nav-btn.secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-check"></i> Checklist de Información</h1>
+            <p>Guía completa de qué información solicitar para cada sección del evento</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="navegacion.html" class="nav-btn secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Navegación
+            </a>
+            <a href="admin.html" class="nav-btn primary">
+                <i class="fas fa-tachometer-alt"></i> Ir al Panel Admin
+            </a>
+        </div>
+
+        <div class="quick-tip">
+            <h4><i class="fas fa-lightbulb"></i> Consejo</h4>
+            <p>
+                Usa esta guía para solicitar información a los clientes de forma organizada.
+                Cada sección indica qué datos necesitas recopilar y dónde se utilizarán en el sitio web.
+            </p>
+        </div>
+
+        <!-- INFORMACIÓN GENERAL -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-info-circle"></i></div>
+                <h2>Información General del Evento</h2>
+                <a href="index.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-user"></i> Datos de la Quinceañera</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre completo</strong> de la quinceañera <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Edad / Fecha de nacimiento</strong> (opcional para cuenta especial)</li>
+                    <li><i class="fas fa-check"></i> <strong>Fotos para la galería</strong> (sesión fotográfica pre-evento) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Frase o mensaje especial</strong> para la invitación</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-users"></i> Familia</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre de la mamá</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Nombre del papá</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Nombres de padrinos</strong> (si aplica) <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Otros familiares especiales</strong> a mencionar</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-calendar-alt"></i> Fecha y Horarios</h3>
+                <ul class="info-list">
+                    <li class="important"><i class="fas fa-exclamation-triangle"></i> <strong>Fecha exacta del evento</strong> (DD/MM/AAAA) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Hora de la ceremonia religiosa</strong> (si aplica)</li>
+                    <li><i class="fas fa-check"></i> <strong>Hora de la recepción</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Hora estimada de finalización</strong></li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-map-marker-alt"></i> Ubicaciones</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre de la iglesia/templo</strong> (si hay ceremonia religiosa) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Dirección completa de la iglesia</strong></li>
+                    <li><i class="fas fa-check"></i> <strong>Nombre del salón de eventos</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Dirección completa del salón</strong></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Enlaces de Google Maps</strong> (o se pueden generar después)</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-phone"></i> Contacto y Confirmaciones</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Número de WhatsApp</strong> para confirmaciones <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Email de contacto</strong></li>
+                    <li><i class="fas fa-check"></i> <strong>Fecha límite de confirmación</strong> <span class="priority-badge badge-media">MEDIA</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PRESUPUESTO -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-calculator"></i></div>
+                <h2>Presupuesto y Servicios</h2>
+                <a href="presupuesto.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="quick-tip">
+                <h4><i class="fas fa-info-circle"></i> Información Importante</h4>
+                <p>
+                    Por cada servicio contratado (salón, banquete, fotografía, música, decoración),
+                    necesitarás recopilar esta información:
+                </p>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-briefcase"></i> Para Cada Servicio</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre del proveedor/empresa</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Contacto</strong> (teléfono, email, encargado) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Costo total del servicio</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Anticipo pagado</strong> (si aplica) <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Saldo pendiente</strong> <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Fechas de pago</strong> (cuándo se debe liquidar)</li>
+                    <li><i class="fas fa-check"></i> <strong>Servicios incluidos</strong> en el paquete <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Servicios adicionales</strong> (extras contratados)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Notas o condiciones especiales</strong></li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-list"></i> Servicios Típicos a Cotizar</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-building"></i> <strong>Salón de eventos</strong> - Capacidad, renta, servicios incluidos</li>
+                    <li><i class="fas fa-utensils"></i> <strong>Banquete</strong> - Menú, número de invitados, costo por persona</li>
+                    <li><i class="fas fa-camera"></i> <strong>Fotografía y Video</strong> - Paquete, horas de cobertura, entregables</li>
+                    <li><i class="fas fa-music"></i> <strong>Música/DJ</strong> - Equipo, duración, playlist</li>
+                    <li><i class="fas fa-palette"></i> <strong>Decoración</strong> - Centros de mesa, flores, iluminación</li>
+                    <li class="optional"><i class="fas fa-birthday-cake"></i> <strong>Pastel</strong> - Tamaño, sabores, diseño</li>
+                    <li class="optional"><i class="fas fa-tshirt"></i> <strong>Vestuario</strong> - Vestido, peinado, maquillaje</li>
+                    <li class="optional"><i class="fas fa-car"></i> <strong>Transporte</strong> - Auto, limosina (si aplica)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- INVITADOS -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-users"></i></div>
+                <h2>Lista de Invitados</h2>
+                <a href="invitados.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-clipboard-list"></i> Información por Invitado</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre completo</strong> del invitado <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Número de pases</strong> (cuántas personas incluye la invitación) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Categoría</strong> (Familia, Padrinos, Amigos, Conocidos) <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Teléfono de contacto</strong> <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Email</strong> (para enviar invitación digital)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Menú especial</strong> (vegetariano, niños, etc.)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Mesa asignada</strong> (se puede hacer después)</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-calculator"></i> Cálculos Necesarios</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Total de invitados estimados</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Confirmaciones recibidas</strong> (se actualiza conforme confirmen)</li>
+                    <li><i class="fas fa-check"></i> <strong>Capacidad máxima del salón</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ITINERARIO -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-clock"></i></div>
+                <h2>Itinerario del Evento</h2>
+                <a href="itinerario.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-list-ol"></i> Actividades y Horarios</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Hora de inicio de cada actividad</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Orden de eventos</strong> (preparativos, ceremonia, recepción, vals, etc.) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Responsable de cada actividad</strong> (quién coordina qué)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Tiempo estimado</strong> de cada actividad</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Notas especiales</strong> o sorpresas planeadas</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-heart"></i> Momentos Especiales</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> Vals con el padre</li>
+                    <li><i class="fas fa-check"></i> Cambio de zapatillas</li>
+                    <li><i class="fas fa-check"></i> Vals sorpresa</li>
+                    <li><i class="fas fa-check"></i> Baile con chambelanes</li>
+                    <li><i class="fas fa-check"></i> Partida del pastel</li>
+                    <li><i class="fas fa-check"></i> Brindis</li>
+                    <li class="optional"><i class="fas fa-check"></i> Otros momentos especiales planeados</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MESA DE REGALOS -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-gift"></i></div>
+                <h2>Mesa de Regalos</h2>
+                <a href="mesa-regalos.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-store"></i> Tiendas Departamentales</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>¿Tienen mesa de regalos?</strong> (Liverpool, Palacio de Hierro, Amazon, etc.) <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Número de evento</strong> de cada tienda</li>
+                    <li><i class="fas fa-check"></i> <strong>Enlaces directos</strong> a las mesas de regalos</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-money-bill"></i> Regalos en Efectivo</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Nombre del titular</strong> de la cuenta bancaria <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Banco</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Número de cuenta</strong> o <strong>CLABE interbancaria</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Número de tarjeta</strong> (si aplica)</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-list"></i> Sugerencias de Regalos</h3>
+                <ul class="info-list">
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Categorías de interés</strong> (hogar, tecnología, viajes, etc.)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Sugerencias específicas</strong> de regalos</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CÓDIGOS QR -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-qrcode"></i></div>
+                <h2>Invitaciones Digitales / Códigos QR</h2>
+                <a href="codigos-qr.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-link"></i> URL de la Invitación</h3>
+                <ul class="info-list">
+                    <li class="important"><i class="fas fa-exclamation-triangle"></i> <strong>URL pública del sitio</strong> (una vez publicado) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> Los códigos QR se generan automáticamente con el nombre y pases de cada invitado</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FOTOGRAFÍA Y VIDEO -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-camera"></i></div>
+                <h2>Fotografía y Video (Específico)</h2>
+                <a href="servicios/fotografia.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-images"></i> Sesiones Fotográficas</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Fecha de sesión pre-evento</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Locaciones deseadas</strong> para la sesión</li>
+                    <li><i class="fas fa-check"></i> <strong>Estilo fotográfico preferido</strong> (natural, editorial, vintage, etc.)</li>
+                    <li><i class="fas fa-check"></i> <strong>Momentos especiales a capturar</strong> durante el evento</li>
+                </ul>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-video"></i> Video</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>¿Video completo o highlight?</strong> <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>¿Incluye dron?</strong></li>
+                    <li><i class="fas fa-check"></i> <strong>Canción favorita</strong> para el video (si aplica)</li>
+                    <li><i class="fas fa-check"></i> <strong>Tiempo estimado de entrega</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MÚSICA -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-music"></i></div>
+                <h2>Música y Entretenimiento</h2>
+                <a href="servicios/musica.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-list-music"></i> Playlist</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Canción para el vals con el padre</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Canción para el vals sorpresa</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Canción para chambelanes</strong> <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Géneros musicales favoritos</strong> para la fiesta</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Canciones prohibidas</strong> (que NO quieren que suenen)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- DECORACIÓN -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-palette"></i></div>
+                <h2>Decoración y Ambientación</h2>
+                <a href="servicios/decoracion.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-palette"></i> Concepto Decorativo</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Colores principales</strong> del evento <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Tema o concepto</strong> (vintage, princesa, moderno, etc.) <span class="priority-badge badge-alta">ALTA</span></li>
+                    <li><i class="fas fa-check"></i> <strong>Tipo de flores preferidas</strong></li>
+                    <li><i class="fas fa-check"></i> <strong>Centros de mesa</strong> (estilo, altura, materiales)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Iluminación especial</strong> (luces LED, velas, etc.)</li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Elementos decorativos adicionales</strong> (globos, telas, etc.)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CÓDIGO DE VESTIMENTA -->
+        <div class="checklist-section">
+            <div class="checklist-header">
+                <div class="checklist-icon"><i class="fas fa-tshirt"></i></div>
+                <h2>Código de Vestimenta</h2>
+                <a href="index.html" class="page-link-btn" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Ver Página
+                </a>
+            </div>
+
+            <div class="info-category">
+                <h3><i class="fas fa-user-tie"></i> Dress Code</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-check"></i> <strong>Código de vestimenta</strong> (formal, semi-formal, etiqueta rigurosa) <span class="priority-badge badge-media">MEDIA</span></li>
+                    <li class="optional"><i class="fas fa-check"></i> <strong>Colores restringidos</strong> (ej: que no se vista de blanco o del color de la quinceañera)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="margin-top: 50px; text-align: center; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+            <h2 style="margin: 0 0 15px 0;">
+                <i class="fas fa-check-circle"></i> ¡Listo para Empezar!
+            </h2>
+            <p style="margin: 0 0 20px 0; font-size: 16px; opacity: 0.9;">
+                Con esta guía podrás recopilar toda la información necesaria de forma organizada.<br>
+                A medida que obtengas los datos, actualiza las páginas correspondientes.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                <a href="navegacion.html" style="padding: 12px 25px; background: white; color: #667eea; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-map"></i> Ver Todas las Páginas
+                </a>
+                <a href="admin.html" style="padding: 12px 25px; background: rgba(255,255,255,0.2); color: white; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; border: 2px solid white;">
+                    <i class="fas fa-tachometer-alt"></i> Ir al Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
