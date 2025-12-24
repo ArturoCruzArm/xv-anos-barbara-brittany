@@ -13,22 +13,22 @@
     "madrina": null
   },
   "fechas": {
-    "evento": "2025-04",
-    "diaEvento": null,
+    "evento": "2025-04-11",
+    "diaEvento": 11,
     "horaMisa": "16:00",
     "horaRecepcion": null,
     "confirmacionLimite": null
   },
   "ubicaciones": {
     "iglesia": {
-      "nombre": null,
+      "nombre": "Parroquia San Juan Bautista de la Salle",
       "direccion": null,
       "padre": null,
       "telefono": null,
       "costo": null
     },
     "salon": {
-      "nombre": null,
+      "nombre": "La Granja el General",
       "direccion": null,
       "contacto": null,
       "telefono": null,
