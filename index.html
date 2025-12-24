@@ -77,15 +77,15 @@
                     <div class="family-role">Mis Padres</div>
                     <div class="family-names">
                         Patricia<br>
-                        [Nombre del Padre]
+                        <span id="fatherName">[Por confirmar]</span>
                     </div>
                 </div>
                 <div class="family-card">
                     <div class="family-icon"><i class="fas fa-heart"></i></div>
                     <div class="family-role">Mis Padrinos</div>
                     <div class="family-names">
-                        [Nombre del Padrino]<br>
-                        [Nombre de la Madrina]
+                        <span id="padrinoName">[Por confirmar]</span><br>
+                        <span id="madrinaName">[Por confirmar]</span>
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                     <h3 class="event-title">Ceremonia</h3>
                     <div class="event-info">
                         <strong><i class="fas fa-calendar-alt"></i> Fecha</strong>
-                        Sábado, 12 de abril de 2025
+                        <span id="eventDate">Viernes, 11 de abril de 2025</span>
                     </div>
                     <div class="event-info">
                         <strong><i class="fas fa-clock"></i> Hora</strong>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="event-info">
                         <strong><i class="fas fa-map-marker-alt"></i> Lugar</strong>
-                        [Nombre de la Iglesia]<br>
+                        <span id="churchName">Parroquia San Juan Bautista de la Salle</span><br>
                         La Joya, León, Guanajuato
                     </div>
                     <div style="margin-top: 20px;">
@@ -124,7 +124,7 @@
                     <h3 class="event-title">Recepción</h3>
                     <div class="event-info">
                         <strong><i class="fas fa-calendar-alt"></i> Fecha</strong>
-                        Sábado, 12 de abril de 2025
+                        <span id="eventDate">Viernes, 11 de abril de 2025</span>
                     </div>
                     <div class="event-info">
                         <strong><i class="fas fa-clock"></i> Hora</strong>
@@ -132,7 +132,7 @@
                     </div>
                     <div class="event-info">
                         <strong><i class="fas fa-map-marker-alt"></i> Lugar</strong>
-                        [Nombre del Salón]<br>
+                        <span id="salonName">La Granja el General</span><br>
                         La Joya, León, Guanajuato
                     </div>
                     <div style="margin-top: 20px;">
@@ -245,7 +245,7 @@
 
         <!-- Footer -->
         <footer>
-            <p style="font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-sparkles"></i> ¡Nos vemos el 12 de abril! <i class="fas fa-sparkles"></i></p>
+            <p style="font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-sparkles"></i> ¡Nos vemos el <span id="footerDate">11 de abril</span>! <i class="fas fa-sparkles"></i></p>
             <div class="divider" style="margin: 20px auto;"></div>
             <p>Producciones Foro 7</p>
             <p>Fotografía, Video, Dron e Invitaciones Web</p>
@@ -256,6 +256,72 @@
         </footer>
     </div>
 
+    <script src="js/data-loader.js"></script>
+
+    <script>
+        // Load event data on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const eventoData = await dataLoader.loadJSON('data/evento.json');
+                
+                if (eventoData) {
+                    // Update church name
+                    if (eventoData.ubicaciones.iglesia.nombre) {
+                        document.getElementById('churchName').textContent = eventoData.ubicaciones.iglesia.nombre;
+                    }
+                    
+                    // Update salon name
+                    if (eventoData.ubicaciones.salon.nombre) {
+                        document.getElementById('salonName').textContent = eventoData.ubicaciones.salon.nombre;
+                    }
+                    
+                    // Update mother name
+                    if (eventoData.padres.madre) {
+                        document.getElementById('motherName').textContent = eventoData.padres.madre;
+                    }
+                    
+                    // Update father name
+                    if (eventoData.padres.padre) {
+                        document.getElementById('fatherName').textContent = eventoData.padres.padre;
+                    }
+                    
+                    // Update padrinos
+                    if (eventoData.padrinos.padrino) {
+                        document.getElementById('padrinoName').textContent = eventoData.padrinos.padrino;
+                    }
+                    
+                    if (eventoData.padrinos.madrina) {
+                        document.getElementById('madrinaName').textContent = eventoData.padrinos.madrina;
+                    }
+                    
+                    // Update dates
+                    if (eventoData.fechas.evento) {
+                        const fecha = new Date(eventoData.fechas.evento + 'T12:00:00');
+                        const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        const fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
+                        const fechaCapitalizada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+                        
+                        // Update all date displays
+                        const dateElements = document.querySelectorAll('#eventDate');
+                        dateElements.forEach(el => el.textContent = fechaCapitalizada);
+                        
+                        // Update footer date
+                        const dia = fecha.getDate();
+                        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 
+                                      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+                        const mes = meses[fecha.getMonth()];
+                        document.getElementById('footerDate').textContent = dia + ' de ' + mes;
+                    }
+                    
+                    console.log('✓ Datos del evento cargados correctamente');
+                }
+            } catch (error) {
+                console.error('Error cargando datos del evento:', error);
+            }
+        });
+    </script>
+
     <script src="js/main.js"></script>
+
 </body>
 </html>
