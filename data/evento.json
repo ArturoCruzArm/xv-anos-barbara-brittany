@@ -22,14 +22,18 @@
   "ubicaciones": {
     "iglesia": {
       "nombre": "Parroquia San Juan Bautista de la Salle",
-      "direccion": null,
+      "direccion": "Iztaccihuatl 2113, Piletas IV, 37316 León de los Aldama, Gto.",
+      "googleMaps": "https://maps.app.goo.gl/wa8mdZ6A8nBizeau7",
+      "embed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59540.609720807!2d-101.79437275136719!3d21.140929699999987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bc0a32f2c93ff%3A0x9ec0de15c35253ef!2sParroquia%20San%20Juan%20Bautista%20de%20la%20Salle!5e0!3m2!1ses-419!2smx!4v1766694196741!5m2!1ses-419!2smx",
       "padre": null,
       "telefono": null,
       "costo": null
     },
     "salon": {
-      "nombre": "La Granja el General",
-      "direccion": null,
+      "nombre": "Quinta Palomares",
+      "direccion": "San Felipe 122-Km 15.5, 37660 Lagunillas, Gto.",
+      "googleMaps": "https://maps.app.goo.gl/oLTwMMKjWC1UwgNt9",
+      "embed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29760.335293866436!2d-101.79993867874146!3d21.190493950330154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bc7d11d9759b5%3A0x20d1693dd50c3a31!2sQuinta%20Palomares!5e0!3m2!1ses-419!2smx!4v1766694447913!5m2!1ses-419!2smx",
       "contacto": null,
       "telefono": null,
       "capacidad": null,
@@ -39,6 +43,11 @@
       "horarioFin": null,
       "serviciosIncluidos": null,
       "restricciones": null
+    },
+    "casa": {
+      "direccion": "Priv. Cataluña 117, Vista Hermosa, 37330 León de los Aldama, Gto.",
+      "googleMaps": "https://maps.app.goo.gl/pJz1W8qujNWFBeJH7",
+      "embed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.3832303095596!2d-101.71940472390193!3d21.13714188053944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bc098d2362a4b%3A0x3badaacc61937ee5!2sPriv.%20Catalu%C3%B1a%20117%2C%20Vista%20Hermosa%2C%2037330%20Le%C3%B3n%20de%20los%20Aldama%2C%20Gto.!5e0!3m2!1ses-419!2smx!4v1766694995604!5m2!1ses-419!2smx"
     }
   },
   "contacto": {

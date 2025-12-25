@@ -110,10 +110,10 @@
                     <div class="event-info">
                         <strong><i class="fas fa-map-marker-alt"></i> Lugar</strong>
                         <span id="churchName">Parroquia San Juan Bautista de la Salle</span><br>
-                        La Joya, León, Guanajuato
+                        <span id="churchAddress" style="font-size: 0.9rem; color: var(--cream);">Piletas IV, León, Guanajuato</span>
                     </div>
                     <div style="margin-top: 20px;">
-                        <a href="#" target="_blank" class="btn"><i class="fas fa-map-marked-alt"></i> Ver Mapa</a>
+                        <a href="#" id="churchMapLink" target="_blank" class="btn"><i class="fas fa-map-marked-alt"></i> Ver Mapa</a>
                         <button onclick="addToCalendar('ceremony')" class="btn btn-secondary"><i class="fas fa-calendar-plus"></i> Agendar</button>
                     </div>
                 </div>
@@ -132,11 +132,11 @@
                     </div>
                     <div class="event-info">
                         <strong><i class="fas fa-map-marker-alt"></i> Lugar</strong>
-                        <span id="salonName">La Granja el General</span><br>
-                        La Joya, León, Guanajuato
+                        <span id="salonName">Quinta Palomares</span><br>
+                        <span id="salonAddress" style="font-size: 0.9rem; color: var(--cream);">Lagunillas, Guanajuato</span>
                     </div>
                     <div style="margin-top: 20px;">
-                        <a href="#" target="_blank" class="btn"><i class="fas fa-map-marked-alt"></i> Ver Mapa</a>
+                        <a href="#" id="salonMapLink" target="_blank" class="btn"><i class="fas fa-map-marked-alt"></i> Ver Mapa</a>
                         <button onclick="addToCalendar('reception')" class="btn btn-secondary"><i class="fas fa-calendar-plus"></i> Agendar</button>
                     </div>
                 </div>
@@ -274,6 +274,19 @@
                     // Update all elements safely
                     safeUpdate('churchName', eventoData.ubicaciones?.iglesia?.nombre);
                     safeUpdate('salonName', eventoData.ubicaciones?.salon?.nombre);
+                    safeUpdate('churchAddress', eventoData.ubicaciones?.iglesia?.direccion);
+                    safeUpdate('salonAddress', eventoData.ubicaciones?.salon?.direccion);
+                    
+                    // Update map links
+                    const churchMapLink = document.getElementById('churchMapLink');
+                    if (churchMapLink && eventoData.ubicaciones?.iglesia?.googleMaps) {
+                        churchMapLink.href = eventoData.ubicaciones.iglesia.googleMaps;
+                    }
+                    
+                    const salonMapLink = document.getElementById('salonMapLink');
+                    if (salonMapLink && eventoData.ubicaciones?.salon?.googleMaps) {
+                        salonMapLink.href = eventoData.ubicaciones.salon.googleMaps;
+                    }
                     safeUpdate('motherName', eventoData.padres?.madre);
                     safeUpdate('fatherName', eventoData.padres?.padre);
                     safeUpdate('padrinoName', eventoData.padrinos?.padrino);
