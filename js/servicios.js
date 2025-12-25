@@ -6,7 +6,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButtons = document.querySelectorAll('.btn-save');
     saveButtons.forEach(button => {
         button.addEventListener('click', () => {
-            alert('✅ Información guardada correctamente');
+            // Mostrar advertencia sobre localStorage
+            const mensaje = '💾 DATOS GUARDADOS LOCALMENTE
+
+' +
+                          '✅ La información se guardó en tu navegador
+
+' +
+                          '⚠️ IMPORTANTE:
+' +
+                          'Para CONFIRMAR los cambios y que yo los reciba,
+' +
+                          'debes usar el botón:
+' +
+                          '"Enviar información por WhatsApp"
+
+' +
+                          'Los datos guardados aquí solo están en tu dispositivo.';
+            
+            alert(mensaje);
+            
+            // Highlight del botón de WhatsApp por 3 segundos
+            const whatsappBtn = document.querySelector('.btn-whatsapp');
+            if (whatsappBtn) {
+                whatsappBtn.style.animation = 'pulse 1s ease-in-out 3';
+                whatsappBtn.style.boxShadow = '0 0 20px rgba(37, 211, 102, 0.8)';
+                setTimeout(() => {
+                    whatsappBtn.style.animation = '';
+                    whatsappBtn.style.boxShadow = '';
+                }, 3000);
+            }
         });
     });
 
