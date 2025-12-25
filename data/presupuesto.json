@@ -1,7 +1,7 @@
 {
-  "total": null,
+  "total": 150000,
   "gastado": 0,
-  "disponible": null,
+  "disponible": 150000,
   "rubros": [
     {
       "concepto": "Salón de Eventos",

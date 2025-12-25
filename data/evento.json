@@ -47,7 +47,7 @@
     "emailContacto": null
   },
   "invitados": {
-    "numeroEstimado": null,
+    "numeroEstimado": 150,
     "numeroConfirmado": 0
   }
 }
