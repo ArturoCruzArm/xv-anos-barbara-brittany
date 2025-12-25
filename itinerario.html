@@ -24,8 +24,8 @@
             <h2><i class="fas fa-calendar-day"></i> Fecha del Evento</h2>
             <div class="form-card">
                 <div style="text-align: center; padding: 20px;">
-                    <h3 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;">
-                        Sábado, 12 de Abril de 2026
+                    <h3 style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;" id="eventDateHeader">
+                        Sábado, 11 de Abril de 2026
                     </h3>
                     <p style="font-size: 1.2rem; color: #636e72;">
                         <i class="fas fa-clock"></i> De 16:00 a 02:00 hrs
@@ -304,6 +304,33 @@
             </div>
         </section>
     </div>
+
+    
+    <script src="js/data-loader.js"></script>
+    <script>
+        // Cargar fecha del evento desde JSON
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const eventoData = await dataLoader.loadJSON('data/evento.json');
+                
+                if (eventoData?.fechas?.evento) {
+                    const fecha = new Date(eventoData.fechas.evento + 'T12:00:00');
+                    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
+                    const fechaCapitalizada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
+                    
+                    const headerEl = document.getElementById('eventDateHeader');
+                    if (headerEl) {
+                        headerEl.textContent = fechaCapitalizada;
+                    }
+                    
+                    console.log('✓ Fecha cargada desde evento.json:', fechaCapitalizada);
+                }
+            } catch (error) {
+                console.error('Error cargando fecha del evento:', error);
+            }
+        });
+    </script>
 
     <script src="js/servicios.js"></script>
 </body>
