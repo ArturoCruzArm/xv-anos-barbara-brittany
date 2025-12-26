@@ -1,6 +1,7 @@
 // Guest Management System
 let guests = [];
 let editingGuestIndex = null;
+let memberCounter = 0;
 
 // Load guests from localStorage on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -68,9 +69,41 @@ function renderGuestsTable(filteredGuests = null) {
             </button>`;
         }
 
+        // Mostrar miembros si existen
+        let membersInfo = '';
+        if (guest.members && guest.members.length > 0) {
+            const membersList = guest.members.map(m => `${m.nombre} (${m.tipo})`).join(', ');
+            membersInfo = `
+            <tr id="members-${guest.id}" style="display: none; background: #f8f9fa;">
+                <td colspan="9" style="padding: 15px 20px;">
+                    <div style="display: flex; align-items: start; gap: 10px;">
+                        <i class="fas fa-users" style="color: #6c5ce7; margin-top: 3px;"></i>
+                        <div>
+                            <strong style="color: #6c5ce7; display: block; margin-bottom: 5px;">Miembros:</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                ${guest.members.map(m => `
+                                    <span style="background: ${m.tipo === 'adulto' ? '#e3f2fd' : m.tipo === 'niño' ? '#fff3e0' : '#f3e5f5'};
+                                          padding: 5px 12px; border-radius: 15px; font-size: 0.9rem;
+                                          color: ${m.tipo === 'adulto' ? '#1976d2' : m.tipo === 'niño' ? '#f57c00' : '#7b1fa2'};">
+                                        ${m.nombre} <span style="font-size: 0.8rem; opacity: 0.8;">(${m.tipo})</span>
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+        }
+
+        const toggleBtn = guest.members && guest.members.length > 0
+            ? `<button class="btn-icon" onclick="toggleMembers(${guest.id})" title="Ver miembros" style="background: #6c5ce7; color: white; margin-left: 5px;">
+                    <i class="fas fa-users" id="icon-${guest.id}"></i>
+                </button>`
+            : '';
+
         return `
         <tr data-status="${guest.status}" data-category="${guest.category}">
-            <td><strong>${guest.name}</strong></td>
+            <td><strong>${guest.name}</strong> ${toggleBtn}</td>
             <td><span class="badge badge-${getCategoryColor(guest.category)}">${getCategoryLabel(guest.category)}</span></td>
             <td>${guest.pases}</td>
             <td>${guest.menu}</td>
@@ -87,8 +120,23 @@ function renderGuestsTable(filteredGuests = null) {
                 </button>
             </td>
         </tr>
+        ${membersInfo}
         `;
     }).join('');
+}
+
+// Toggle members visibility
+function toggleMembers(guestId) {
+    const membersRow = document.getElementById(`members-${guestId}`);
+    const icon = document.getElementById(`icon-${guestId}`);
+
+    if (membersRow.style.display === 'none') {
+        membersRow.style.display = 'table-row';
+        icon.className = 'fas fa-users-slash';
+    } else {
+        membersRow.style.display = 'none';
+        icon.className = 'fas fa-users';
+    }
 }
 
 // Filter guests
@@ -145,6 +193,8 @@ function openAddGuestModal() {
     editingGuestIndex = null;
     document.getElementById('modalTitle').textContent = 'Agregar Invitado';
     document.getElementById('guestForm').reset();
+    document.getElementById('membersList').innerHTML = '';
+    memberCounter = 0;
     document.getElementById('guestModal').classList.add('active');
 }
 
@@ -173,6 +223,9 @@ function editGuest(guestId) {
     document.getElementById('guestEmail').value = guest.email || '';
     document.getElementById('guestNotes').value = guest.notes || '';
 
+    // Load members
+    loadMembersIntoForm(guest.members || []);
+
     document.getElementById('guestModal').classList.add('active');
 }
 
@@ -181,6 +234,103 @@ function deleteGuest(guestId) {
     if (confirm('¿Estás seguro de eliminar este invitado?')) {
         guests = guests.filter(g => g.id !== guestId);
         saveGuests();
+    }
+}
+
+// Add member field
+function addMemberField() {
+    memberCounter++;
+    const membersList = document.getElementById('membersList');
+    const memberDiv = document.createElement('div');
+    memberDiv.className = 'member-row';
+    memberDiv.id = `member-${memberCounter}`;
+    memberDiv.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+
+    memberDiv.innerHTML = `
+        <input type="text"
+               class="member-name"
+               placeholder="Nombre completo"
+               style="flex: 2; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+        <select class="member-type"
+                style="flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+            <option value="adulto">Adulto</option>
+            <option value="niño">Niño</option>
+            <option value="bebé">Bebé</option>
+        </select>
+        <button type="button"
+                class="btn-icon"
+                onclick="removeMemberField(${memberCounter})"
+                title="Eliminar"
+                style="background: #d63031; color: white;">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+
+    membersList.appendChild(memberDiv);
+}
+
+// Remove member field
+function removeMemberField(id) {
+    const memberDiv = document.getElementById(`member-${id}`);
+    if (memberDiv) {
+        memberDiv.remove();
+    }
+}
+
+// Get members from form
+function getMembersFromForm() {
+    const members = [];
+    const memberRows = document.querySelectorAll('.member-row');
+
+    memberRows.forEach(row => {
+        const name = row.querySelector('.member-name').value.trim();
+        const type = row.querySelector('.member-type').value;
+
+        if (name) {
+            members.push({ nombre: name, tipo: type });
+        }
+    });
+
+    return members;
+}
+
+// Load members into form
+function loadMembersIntoForm(members) {
+    const membersList = document.getElementById('membersList');
+    membersList.innerHTML = '';
+    memberCounter = 0;
+
+    if (members && members.length > 0) {
+        members.forEach(member => {
+            memberCounter++;
+            const memberDiv = document.createElement('div');
+            memberDiv.className = 'member-row';
+            memberDiv.id = `member-${memberCounter}`;
+            memberDiv.style.cssText = 'display: flex; gap: 10px; margin-bottom: 10px; align-items: center;';
+
+            memberDiv.innerHTML = `
+                <input type="text"
+                       class="member-name"
+                       value="${member.nombre}"
+                       placeholder="Nombre completo"
+                       style="flex: 2; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+                <select class="member-type"
+                        style="flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+                    <option value="adulto" ${member.tipo === 'adulto' ? 'selected' : ''}>Adulto</option>
+                    <option value="niño" ${member.tipo === 'niño' ? 'selected' : ''}>Niño</option>
+                    <option value="bebé" ${member.tipo === 'bebé' ? 'selected' : ''}>Bebé</option>
+                </select>
+                <button type="button"
+                        class="btn-icon"
+                        onclick="removeMemberField(${memberCounter})"
+                        title="Eliminar"
+                        style="background: #d63031; color: white;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+
+            membersList.appendChild(memberDiv);
+        });
     }
 }
 
@@ -198,7 +348,8 @@ function handleFormSubmit(e) {
         table: document.getElementById('guestTable').value,
         status: document.getElementById('guestStatus').value,
         email: document.getElementById('guestEmail').value,
-        notes: document.getElementById('guestNotes').value
+        notes: document.getElementById('guestNotes').value,
+        members: getMembersFromForm()
     };
 
     if (editingGuestIndex) {
@@ -268,19 +419,28 @@ function sendInvitation(guestId) {
     const baseURL = 'https://barbara-brittany.invitados.org';
     const qrURL = `${baseURL}?invitado=${encodeURIComponent(guest.name)}&pases=${guest.pases}`;
 
+    // Crear lista de miembros si existe
+    let membersText = '';
+    if (guest.members && guest.members.length > 0) {
+        membersText = '\n\n👥 Invitación para:\n';
+        guest.members.forEach(member => {
+            const emoji = member.tipo === 'adulto' ? '👤' : member.tipo === 'niño' ? '👶' : '🍼';
+            membersText += `${emoji} ${member.nombre}\n`;
+        });
+    }
+
     // Crear mensaje personalizado
     const message = `🎉 ¡Hola ${guest.name}!
 
-Estás cordialmente invitado(a) a celebrar los XV años de Barbara Brittany
-
+Estás cordialmente invitado(a) a celebrar los XV años de Barbara Brittany${membersText}
 📅 Fecha: 11 de abril de 2026
 ⏰ Ceremonia Religiosa: 4:00 PM
 📍 Parroquia San Juan Bautista de la Salle
 
 🎊 Recepción: 6:30 PM
-📍 Quinta Palomares
+📍 Quinta Palomares${guest.table ? `\n\n🪑 Mesa asignada: ${guest.table}` : ''}
 
-👥 Pases asignados: ${guest.pases}
+📊 Total: ${guest.pases} ${guest.pases === 1 ? 'pase' : 'pases'}
 
 👇 Haz clic en el siguiente enlace para ver tu invitación personalizada y confirmar tu asistencia:
 

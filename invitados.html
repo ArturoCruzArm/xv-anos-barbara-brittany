@@ -235,6 +235,23 @@
                         <label>Notas</label>
                         <textarea id="guestNotes" rows="3" placeholder="Alergias, preferencias, información adicional..."></textarea>
                     </div>
+
+                    <!-- Miembros de la Familia -->
+                    <div class="form-group" style="border-top: 2px solid #ecf0f1; padding-top: 20px; margin-top: 20px;">
+                        <label style="display: flex; justify-content: space-between; align-items: center;">
+                            <span><i class="fas fa-users"></i> Miembros de la Familia/Grupo</span>
+                            <button type="button" class="btn-icon" onclick="addMemberField()" title="Agregar miembro" style="background: #00b894; color: white;">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </label>
+                        <small style="color: #636e72; display: block; margin-bottom: 10px;">
+                            Opcional: Agrega los nombres individuales de cada persona
+                        </small>
+                        <div id="membersList">
+                            <!-- Los miembros se agregarán aquí dinámicamente -->
+                        </div>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary" onclick="closeGuestModal()">Cancelar</button>
                         <button type="submit" class="btn-save">
