@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load guests from localStorage
 function loadGuests() {
-    const saved = localStorage.getItem('xv-vanessa-guests');
+    const saved = localStorage.getItem('xv-barbara-brittany-guests');
     if (saved) {
         guests = JSON.parse(saved);
         renderGuestsTable();
@@ -21,7 +21,7 @@ function loadGuests() {
 
 // Save guests to localStorage
 function saveGuests() {
-    localStorage.setItem('xv-vanessa-guests', JSON.stringify(guests));
+    localStorage.setItem('xv-barbara-brittany-guests', JSON.stringify(guests));
     renderGuestsTable();
     updateStatistics();
 }

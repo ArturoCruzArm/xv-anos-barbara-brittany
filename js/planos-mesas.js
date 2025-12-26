@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Cargar invitados desde localStorage
 function loadGuestsFromLocalStorage() {
-    const saved = localStorage.getItem('xv-vanessa-guests');
+    const saved = localStorage.getItem('xv-barbara-brittany-guests');
     if (saved) {
         guests = JSON.parse(saved);
         console.log('Invitados cargados:', guests.length);
@@ -25,7 +25,7 @@ function loadGuestsFromLocalStorage() {
 
 // Cargar mesas desde localStorage
 function loadTablesFromLocalStorage() {
-    const saved = localStorage.getItem('xv-vanessa-tables');
+    const saved = localStorage.getItem('xv-barbara-brittany-tables');
     if (saved) {
         tables = JSON.parse(saved);
         console.log('Mesas cargadas:', tables.length);
@@ -34,7 +34,7 @@ function loadTablesFromLocalStorage() {
 
 // Guardar mesas en localStorage
 function saveTablesToLocalStorage() {
-    localStorage.setItem('xv-vanessa-tables', JSON.stringify(tables));
+    localStorage.setItem('xv-barbara-brittany-tables', JSON.stringify(tables));
 }
 
 // Crear mesas automáticamente desde los invitados

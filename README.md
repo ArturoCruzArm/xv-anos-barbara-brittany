@@ -19,7 +19,7 @@ Este proyecto incluye:
 ## 📁 Estructura del Proyecto
 
 ```
-xv-anos-vanessa/
+xv-anos-barbara-brittany/
 │
 ├── index.html              # Invitación web (PÚBLICA)
 ├── admin.html              # Panel de administración (PRIVADA)
@@ -182,11 +182,11 @@ Cada servicio tiene su propia página con:
 ### Opción 1: GitHub Pages (Gratis)
 
 1. Crea una cuenta en GitHub
-2. Crea un nuevo repositorio llamado `xv-anos-vanessa`
+2. Crea un nuevo repositorio llamado `xv-anos-barbara-brittany`
 3. Sube todos los archivos
 4. Ve a Settings → Pages
 5. Selecciona la rama `main` y guarda
-6. Tu sitio estará en: `https://tu-usuario.github.io/xv-anos-vanessa`
+6. Tu sitio estará en: `https://tu-usuario.github.io/xv-anos-barbara-brittany`
 
 ### Opción 2: Netlify (Gratis)
 

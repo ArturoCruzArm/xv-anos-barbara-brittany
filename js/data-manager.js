@@ -4,13 +4,13 @@
 const DATA_MANAGER = {
     // Claves de localStorage
     KEYS: {
-        GUESTS: 'xv-vanessa-guests',
-        TABLES: 'xv-vanessa-tables',
-        TABLE_ASSIGNMENTS: 'xv-vanessa-table-assignments',
-        BUDGET: 'xv-vanessa-budget',
-        TASKS: 'xv-vanessa-tasks',
-        SUPPLIERS: 'xv-vanessa-suppliers',
-        NOTES: 'xv-vanessa-notes'
+        GUESTS: 'xv-barbara-brittany-guests',
+        TABLES: 'xv-barbara-brittany-tables',
+        TABLE_ASSIGNMENTS: 'xv-barbara-brittany-table-assignments',
+        BUDGET: 'xv-barbara-brittany-budget',
+        TASKS: 'xv-barbara-brittany-tasks',
+        SUPPLIERS: 'xv-barbara-brittany-suppliers',
+        NOTES: 'xv-barbara-brittany-notes'
     },
 
     // Exportar todos los datos a JSON
@@ -104,14 +104,14 @@ const DATA_MANAGER = {
     // Enviar backup por WhatsApp
     sendViaWhatsApp: function(jsonData, fileName = 'backup') {
         const date = new Date().toLocaleDateString('es-MX');
-        const message = `📊 *Backup XV Años Vanessa*\n📅 Fecha: ${date}\n📝 Archivo: ${fileName}.json\n\n⬇️ Copia el siguiente JSON y guárdalo en un archivo seguro:\n\n\`\`\`json\n${jsonData}\n\`\`\``;
+        const message = `📊 *Backup XV Años Barbara Brittany*\n📅 Fecha: ${date}\n📝 Archivo: ${fileName}.json\n\n⬇️ Copia el siguiente JSON y guárdalo en un archivo seguro:\n\n\`\`\`json\n${jsonData}\n\`\`\``;
 
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
     },
 
     // Descargar como archivo
-    downloadJSON: function(jsonData, fileName = 'xv-vanessa-backup') {
+    downloadJSON: function(jsonData, fileName = 'xv-barbara-brittany-backup') {
         const blob = new Blob([jsonData], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -331,12 +331,12 @@ function importData() {
 
 function sendBackupWhatsApp() {
     const data = DATA_MANAGER.exportAll();
-    DATA_MANAGER.sendViaWhatsApp(data, 'xv-vanessa-completo');
+    DATA_MANAGER.sendViaWhatsApp(data, 'xv-barbara-brittany-completo');
 }
 
 function downloadBackup() {
     const data = DATA_MANAGER.exportAll();
-    DATA_MANAGER.downloadJSON(data, 'xv-vanessa-backup');
+    DATA_MANAGER.downloadJSON(data, 'xv-barbara-brittany-backup');
     alert('✅ Archivo descargado. Guárdalo en un lugar seguro!');
 }
 

@@ -36,13 +36,13 @@ function saveTasks() {
     checkboxes.forEach(checkbox => {
         tasks[checkbox.id] = checkbox.checked;
     });
-    localStorage.setItem('xv-vanessa-tasks', JSON.stringify(tasks));
+    localStorage.setItem('xv-barbara-brittany-tasks', JSON.stringify(tasks));
     updateTasksCount();
 }
 
 // Load tasks from localStorage
 function loadTasks() {
-    const savedTasks = localStorage.getItem('xv-vanessa-tasks');
+    const savedTasks = localStorage.getItem('xv-barbara-brittany-tasks');
     if (savedTasks) {
         const tasks = JSON.parse(savedTasks);
         Object.keys(tasks).forEach(taskId => {
