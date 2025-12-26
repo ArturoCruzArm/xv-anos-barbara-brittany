@@ -72,10 +72,70 @@ function updateTasksCount() {
     }
 }
 
+// Load service contacts from JSON
+async function loadServiceContacts() {
+    try {
+        // Cargar datos del evento
+        const eventoResponse = await fetch('data/evento.json');
+        const eventoData = await eventoResponse.json();
+
+        // Cargar datos de servicios
+        const serviciosResponse = await fetch('data/servicios.json');
+        const serviciosData = await serviciosResponse.json();
+
+        // Actualizar Salón
+        if (eventoData.ubicaciones?.salon) {
+            const salon = eventoData.ubicaciones.salon;
+            document.getElementById('salonInfo').textContent = salon.nombre || 'Pendiente de contratar';
+            document.getElementById('salonTel').textContent = salon.telefono || '---';
+        }
+
+        // Actualizar Banquete
+        if (serviciosData.foro7?.servicios?.banquete) {
+            const banquete = serviciosData.foro7.servicios.banquete;
+            if (banquete.activo && banquete.contacto) {
+                document.getElementById('banqueteInfo').textContent = 'Foro 7 / Producciones LUZEL';
+                document.getElementById('banqueteTel').textContent = serviciosData.foro7.telefono || '477-920-3776';
+            } else {
+                document.getElementById('banqueteInfo').textContent = 'Pendiente de contratar';
+                document.getElementById('banqueteTel').textContent = '---';
+            }
+        }
+
+        // Actualizar Fotografía
+        if (serviciosData.foro7?.servicios?.fotografia) {
+            const fotografia = serviciosData.foro7.servicios.fotografia;
+            if (fotografia.activo) {
+                document.getElementById('fotografiaInfo').textContent = serviciosData.foro7.nombre || 'Producciones Foro 7';
+                document.getElementById('fotografiaTel').textContent = serviciosData.foro7.telefono || '477-920-3776';
+            } else {
+                document.getElementById('fotografiaInfo').textContent = 'Pendiente de contratar';
+                document.getElementById('fotografiaTel').textContent = '---';
+            }
+        }
+
+        // Actualizar Música
+        if (serviciosData.foro7?.servicios?.musica) {
+            const musica = serviciosData.foro7.servicios.musica;
+            if (musica.activo && musica.costo) {
+                document.getElementById('musicaInfo').textContent = 'Foro 7';
+                document.getElementById('musicaTel').textContent = serviciosData.foro7.telefono || '477-920-3776';
+            } else {
+                document.getElementById('musicaInfo').textContent = 'Pendiente de contratar';
+                document.getElementById('musicaTel').textContent = '---';
+            }
+        }
+
+    } catch (error) {
+        console.error('Error cargando contactos de servicios:', error);
+    }
+}
+
 // Handle checkbox changes
 document.addEventListener('DOMContentLoaded', () => {
     updateDaysRemaining();
     loadTasks();
+    loadServiceContacts();
 
     const checkboxes = document.querySelectorAll('.task-item input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
