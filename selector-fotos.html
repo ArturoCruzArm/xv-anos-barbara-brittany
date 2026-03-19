@@ -18,7 +18,8 @@
             --text: #eee;
             --muted: #888;
 
-            --color-impresion: #3b82f6;
+            --color-impresion:  #3b82f6;
+            --color-ampliacion: #8b4789;
             --color-invitacion: #e91e63;
             --color-descartada: #ef4444;
         }
@@ -112,6 +113,7 @@
         .stat-count { font-size: 1.1rem; font-weight: 700; }
 
         .stat-card.impresion  .stat-count { color: var(--color-impresion); }
+        .stat-card.ampliacion .stat-count { color: var(--color-ampliacion); }
         .stat-card.invitacion .stat-count { color: var(--color-invitacion); }
         .stat-card.descartada .stat-count { color: var(--color-descartada); }
         .stat-card.sin-clasificar .stat-count { color: var(--muted); }
@@ -142,7 +144,8 @@
 
         .btn-filter { background: #2a2a2a; color: #ccc; }
         .btn-filter.active { background: var(--gold); color: #111; }
-        .btn-filter.filter-impresion.active  { background: var(--color-impresion); color: #fff; }
+        .btn-filter.filter-impresion.active  { background: var(--color-impresion);  color: #fff; }
+        .btn-filter.filter-ampliacion.active { background: var(--color-ampliacion); color: #fff; }
         .btn-filter.filter-invitacion.active { background: var(--color-invitacion); color: #fff; }
         .btn-filter.filter-descartada.active { background: var(--color-descartada); color: #fff; }
         .btn-filter.filter-sin-clasificar.active { background: #555; color: #fff; }
@@ -184,6 +187,7 @@
 
         /* Bordes por categoría */
         .photo-card.has-impresion  { border-color: var(--color-impresion); }
+        .photo-card.has-ampliacion { border-color: var(--color-ampliacion); }
         .photo-card.has-invitacion { border-color: var(--color-invitacion); }
         .photo-card.has-descartada { border-color: var(--color-descartada); opacity: 0.55; }
         .photo-card.has-multiple   { border-color: var(--gold); }
@@ -217,7 +221,8 @@
             border-radius: 10px;
             white-space: nowrap;
         }
-        .badge-impresion  { background: var(--color-impresion); color: #fff; }
+        .badge-impresion  { background: var(--color-impresion);  color: #fff; }
+        .badge-ampliacion { background: var(--color-ampliacion); color: #fff; }
         .badge-invitacion { background: var(--color-invitacion); color: #fff; }
         .badge-descartada { background: var(--color-descartada); color: #fff; }
 
@@ -336,7 +341,8 @@
         }
         .option-btn:hover { border-color: #555; background: #2d2d2d; }
 
-        .option-btn.impresion.selected  { border-color: var(--color-impresion); background: rgba(59,130,246,0.15); }
+        .option-btn.impresion.selected  { border-color: var(--color-impresion);  background: rgba(59,130,246,0.15); }
+        .option-btn.ampliacion.selected { border-color: var(--color-ampliacion); background: rgba(139,71,137,0.15); }
         .option-btn.invitacion.selected { border-color: var(--color-invitacion); background: rgba(233,30,99,0.15); }
         .option-btn.descartada.selected { border-color: var(--color-descartada); background: rgba(239,68,68,0.12); }
 
@@ -423,6 +429,13 @@
                 <span class="stat-count" id="countImpresion">0/100</span>
             </div>
         </div>
+        <div class="stat-card ampliacion">
+            <span class="stat-icon">🖼️</span>
+            <div class="stat-info">
+                <h3>Ampliación</h3>
+                <span class="stat-count" id="countAmpliacion">0</span>
+            </div>
+        </div>
         <div class="stat-card invitacion">
             <span class="stat-icon">💌</span>
             <div class="stat-info">
@@ -453,6 +466,7 @@
     <div class="action-buttons">
         <button class="btn btn-filter active" id="btnFilterAll"            data-filter="all">Todas</button>
         <button class="btn btn-filter filter-impresion"  id="btnFilterImpresion"  data-filter="impresion">Impresión</button>
+        <button class="btn btn-filter filter-ampliacion" id="btnFilterAmpliacion" data-filter="ampliacion">Ampliación</button>
         <button class="btn btn-filter filter-invitacion" id="btnFilterInvitacion" data-filter="invitacion">Invitación</button>
         <button class="btn btn-filter filter-descartada" id="btnFilterDescartada" data-filter="descartada">Descartadas</button>
         <button class="btn btn-filter filter-sin-clasificar" id="btnFilterSinClasificar" data-filter="sin-clasificar">Sin Clasificar</button>
@@ -491,6 +505,11 @@
                     <button class="option-btn impresion" data-category="impresion">
                         <span class="option-icon">📸</span>
                         <span class="option-text">Impresión (5×7)</span>
+                        <span class="option-check">✓</span>
+                    </button>
+                    <button class="option-btn ampliacion" data-category="ampliacion">
+                        <span class="option-icon">🖼️</span>
+                        <span class="option-text">Ampliación</span>
                         <span class="option-check">✓</span>
                     </button>
                     <button class="option-btn invitacion" data-category="invitacion">
@@ -594,9 +613,10 @@ function clearAllSelections() {
 
 // ── Stats ──
 function getStats() {
-    const stats = { impresion: 0, invitacion: 0, descartada: 0, sinClasificar: photos.length };
+    const stats = { impresion: 0, ampliacion: 0, invitacion: 0, descartada: 0, sinClasificar: photos.length };
     Object.values(photoSelections).forEach(s => {
         if (s.impresion)  stats.impresion++;
+        if (s.ampliacion) stats.ampliacion++;
         if (s.invitacion) stats.invitacion++;
         if (s.descartada) stats.descartada++;
     });
@@ -606,9 +626,10 @@ function getStats() {
 
 function updateStats() {
     const stats = getStats();
-    document.getElementById('countImpresion').textContent   = `${stats.impresion}/${LIMITE_IMPRESION}`;
-    document.getElementById('countInvitacion').textContent  = stats.invitacion;
-    document.getElementById('countDescartada').textContent  = stats.descartada;
+    document.getElementById('countImpresion').textContent    = `${stats.impresion}/${LIMITE_IMPRESION}`;
+    document.getElementById('countAmpliacion').textContent   = stats.ampliacion;
+    document.getElementById('countInvitacion').textContent   = stats.invitacion;
+    document.getElementById('countDescartada').textContent   = stats.descartada;
     document.getElementById('countSinClasificar').textContent = stats.sinClasificar;
 
     const extra = Math.max(0, stats.impresion - LIMITE_IMPRESION);
@@ -652,6 +673,7 @@ function renderGallery() {
         } else {
             const cats = [];
             if (sel.impresion)  cats.push('impresion');
+            if (sel.ampliacion) cats.push('ampliacion');
             if (sel.invitacion) cats.push('invitacion');
             if (cats.length > 1)    card.classList.add('has-multiple');
             else if (cats.length === 1) card.classList.add(`has-${cats[0]}`);
@@ -661,6 +683,7 @@ function renderGallery() {
         if (hasAny) {
             badges = '<div class="photo-badges">';
             if (sel.impresion)  badges += '<span class="badge badge-impresion">📸 Impresión</span>';
+            if (sel.ampliacion) badges += '<span class="badge badge-ampliacion">🖼️ Ampliación</span>';
             if (sel.invitacion) badges += '<span class="badge badge-invitacion">💌 Invitación</span>';
             if (sel.descartada) badges += '<span class="badge badge-descartada">❌ Descartada</span>';
             badges += '</div>';
@@ -688,9 +711,10 @@ function applyFilter() {
         switch (currentFilter) {
             case 'all':            show = true; break;
             case 'impresion':      show = !!sel.impresion; break;
+            case 'ampliacion':     show = !!sel.ampliacion; break;
             case 'invitacion':     show = !!sel.invitacion; break;
             case 'descartada':     show = !!sel.descartada; break;
-            case 'sin-clasificar': show = !sel.impresion && !sel.invitacion && !sel.descartada; break;
+            case 'sin-clasificar': show = !sel.impresion && !sel.ampliacion && !sel.invitacion && !sel.descartada; break;
         }
         card.classList.toggle('hidden', !show);
     });
@@ -707,6 +731,7 @@ function updateFilterButtons() {
     const stats = getStats();
     document.getElementById('btnFilterAll').textContent           = `Todas (${photos.length})`;
     document.getElementById('btnFilterImpresion').textContent     = `Impresión (${stats.impresion})`;
+    document.getElementById('btnFilterAmpliacion').textContent    = `Ampliación (${stats.ampliacion})`;
     document.getElementById('btnFilterInvitacion').textContent    = `Invitación (${stats.invitacion})`;
     document.getElementById('btnFilterDescartada').textContent    = `Descartadas (${stats.descartada})`;
     document.getElementById('btnFilterSinClasificar').textContent = `Sin Clasificar (${stats.sinClasificar})`;
@@ -782,11 +807,12 @@ function exportToJSON() {
     };
     photos.forEach((photo, i) => {
         const sel = photoSelections[i];
-        if (sel && (sel.impresion || sel.invitacion || sel.descartada)) {
+        if (sel && (sel.impresion || sel.ampliacion || sel.invitacion || sel.descartada)) {
             data.selecciones.push({
                 numero_foto: i + 1,
                 archivo: photo,
-                impresion: !!sel.impresion,
+                impresion:  !!sel.impresion,
+                ampliacion: !!sel.ampliacion,
                 invitacion: !!sel.invitacion,
                 descartada: !!sel.descartada
             });
@@ -810,6 +836,7 @@ function copiarResumen() {
     txt += `📊 RESUMEN:\n`;
     txt += `   📸 Para impresión: ${stats.impresion}/${LIMITE_IMPRESION}`;
     txt += stats.impresion === LIMITE_IMPRESION ? ' ✓ Completo\n' : stats.impresion > LIMITE_IMPRESION ? ' ⚠️ Con fotos adicionales\n' : ' (faltan ' + (LIMITE_IMPRESION - stats.impresion) + ')\n';
+    txt += `   🖼️ Para ampliación: ${stats.ampliacion}\n`;
     txt += `   💌 Para invitación: ${stats.invitacion}\n`;
     txt += `   ❌ Descartadas: ${stats.descartada}\n`;
     txt += `   ⭕ Sin clasificar: ${stats.sinClasificar}\n`;
@@ -852,6 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filtros
     document.getElementById('btnFilterAll').addEventListener('click',           () => setFilter('all'));
     document.getElementById('btnFilterImpresion').addEventListener('click',     () => setFilter('impresion'));
+    document.getElementById('btnFilterAmpliacion').addEventListener('click',    () => setFilter('ampliacion'));
     document.getElementById('btnFilterInvitacion').addEventListener('click',    () => setFilter('invitacion'));
     document.getElementById('btnFilterDescartada').addEventListener('click',    () => setFilter('descartada'));
     document.getElementById('btnFilterSinClasificar').addEventListener('click', () => setFilter('sin-clasificar'));
