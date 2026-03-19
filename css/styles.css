@@ -5,14 +5,15 @@
 }
 
 :root {
-    --primary: #c41e3a;
-    --primary-light: #e94560;
-    --primary-dark: #8b1429;
+    --primary: #d4af37;
+    --primary-light: #f4d03f;
+    --primary-dark: #b8941f;
     --gold: #d4af37;
     --gold-light: #f4d03f;
     --gold-dark: #b8941f;
     --cream: #faf8f3;
     --white: #ffffff;
+    --accent: #8B6914;
 }
 
 body {

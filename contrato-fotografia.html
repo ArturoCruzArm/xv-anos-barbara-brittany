@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato Fotografía & Video — Foro 7 Producciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #c8a951;
+            --dark: #1c1c1c;
+            --gray: #555;
+            --light: #f5f5f5;
+            --border: #ccc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #e8e8e8;
+            color: var(--dark);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        /* ── Barra de acciones (no se imprime) ── */
+        #acciones {
+            background: #2c3e50;
+            color: #fff;
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        #acciones h2 { font-size: 1rem; flex: 1; }
+        .btn-acc {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-imprimir { background: var(--gold); color: #fff; }
+        .btn-pdf      { background: #e74c3c; color: #fff; }
+        .btn-volver   { background: #555; color: #fff; text-decoration: none; }
+
+        /* ── Hoja A4 ── */
+        .hoja {
+            background: #fff;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            padding: 18mm 20mm;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+        }
+
+        /* ── Encabezado ── */
+        .header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--dark);
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+            gap: 20px;
+        }
+
+        .logo-area h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            color: var(--dark);
+            letter-spacing: 1px;
+        }
+        .logo-area .sub {
+            font-size: 0.78rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+        .logo-area .contacto {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 6px;
+            line-height: 1.6;
+        }
+
+        .contrato-id {
+            text-align: right;
+            font-size: 0.78rem;
+            color: var(--gray);
+        }
+        .contrato-id .folio {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-top: 4px;
+        }
+
+        /* ── Título ── */
+        .titulo-contrato {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 16px 0 14px;
+            padding: 10px;
+            background: var(--dark);
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        /* ── Secciones ── */
+        .seccion {
+            margin-bottom: 16px;
+        }
+
+        .seccion-titulo {
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--dark);
+            border-bottom: 1.5px solid var(--dark);
+            padding-bottom: 3px;
+            margin-bottom: 10px;
+        }
+
+        /* ── Grid de datos ── */
+        .datos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 20px;
+        }
+        .dato {
+            display: flex;
+            flex-direction: column;
+        }
+        .dato label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray);
+        }
+        .dato .valor {
+            border-bottom: 1px solid var(--border);
+            padding: 3px 0 2px;
+            font-size: 0.87rem;
+            min-height: 22px;
+        }
+        .dato.full { grid-column: 1 / -1; }
+
+        /* ── Paquetes ── */
+        .paquetes-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .paquetes-tabla th {
+            background: var(--dark);
+            color: #fff;
+            padding: 6px 10px;
+            text-align: left;
+            font-weight: 700;
+        }
+        .paquetes-tabla td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        .paquetes-tabla tr:nth-child(even) td { background: #fafafa; }
+        .paquetes-tabla .sel-col {
+            width: 24px;
+            text-align: center;
+        }
+        .check-box {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid var(--dark);
+            border-radius: 2px;
+        }
+
+        /* ── Incluye ── */
+        .incluye-list {
+            list-style: none;
+            font-size: 0.82rem;
+        }
+        .incluye-list li {
+            padding: 3px 0;
+            border-bottom: 1px dotted #ddd;
+            display: flex;
+            gap: 8px;
+        }
+        .incluye-list li::before {
+            content: '✓';
+            color: #2ecc71;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        /* ── Pagos ── */
+        .pagos-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .pagos-tabla th {
+            background: #f0f0f0;
+            padding: 6px 10px;
+            text-align: left;
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+        .pagos-tabla td {
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            vertical-align: top;
+        }
+        .pagos-tabla .monto {
+            font-weight: 700;
+            text-align: right;
+        }
+        .pagos-tabla .linea {
+            border-bottom: 1px solid var(--border);
+            min-height: 18px;
+        }
+
+        /* ── Términos ── */
+        .terminos {
+            font-size: 0.76rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        .terminos ol { padding-left: 16px; }
+        .terminos li { margin-bottom: 4px; }
+
+        /* ── Firmas ── */
+        .firmas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 10px;
+        }
+        .firma-bloque {
+            text-align: center;
+        }
+        .firma-linea {
+            border-top: 1.5px solid var(--dark);
+            margin-top: 44px;
+            padding-top: 6px;
+            font-size: 0.78rem;
+        }
+        .firma-nombre {
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+        .firma-cargo {
+            font-size: 0.72rem;
+            color: var(--gray);
+        }
+
+        /* ── Footer hoja ── */
+        .pie-hoja {
+            text-align: center;
+            font-size: 0.68rem;
+            color: #aaa;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+            margin-top: 20px;
+        }
+
+        /* ── Nota amarilla (no se imprime en PDF real, pero ayuda en pantalla) ── */
+        .nota-editable {
+            background: #fffde7;
+            border: 1px dashed #f39c12;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            color: #b7770d;
+            margin-bottom: 10px;
+        }
+
+        /* ── Selector de paquete (pantalla) ── */
+        #selector-paquete {
+            margin-bottom: 12px;
+        }
+        #selector-paquete label {
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-right: 8px;
+        }
+        #selector-paquete select {
+            font-size: 0.85rem;
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        /* ── Campos editables en pantalla ── */
+        [contenteditable="true"] {
+            outline: none;
+            border-bottom: 1px dashed #f39c12 !important;
+            background: #fffde7;
+            cursor: text;
+        }
+
+        /* ══════ IMPRESIÓN ══════ */
+        @media print {
+            body { background: #fff; font-size: 11px; }
+            #acciones, #selector-paquete, .nota-editable { display: none !important; }
+            .hoja {
+                margin: 0;
+                padding: 12mm 14mm;
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+            }
+            [contenteditable="true"] {
+                background: transparent !important;
+                border-bottom-color: var(--border) !important;
+                cursor: default;
+            }
+            @page { margin: 0; size: A4; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Barra de acciones -->
+<div id="acciones">
+    <h2>📄 Contrato de Fotografía y Video — Foro 7 Producciones</h2>
+    <a href="servicios/fotografia.html" class="btn-acc btn-volver">← Volver</a>
+    <button class="btn-acc btn-imprimir" onclick="window.print()">🖨 Imprimir</button>
+</div>
+
+<!-- Selector de paquete (solo pantalla) -->
+<div style="width:210mm;margin:10px auto 0;padding:0 20mm;">
+    <div id="selector-paquete" class="nota-editable" style="background:#e8f4fd;border-color:#3498db;color:#1a5276;">
+        <strong>Paquete contratado:</strong>
+        <select id="sel-paquete" onchange="cambiarPaquete(this.value)" style="margin-left:8px;">
+            <option value="7000">Paquete Especial — $7,000</option>
+            <option value="5000">Paquete Básico — $5,000</option>
+            <option value="6500">Paquete Medio — $6,500</option>
+            <option value="8500">Super Paquete — $8,500</option>
+        </select>
+        &nbsp;&nbsp;<small style="color:#777">Los campos con borde amarillo son editables directamente en pantalla antes de imprimir.</small>
+    </div>
+</div>
+
+<!-- ══ HOJA A4 ══ -->
+<div class="hoja">
+
+    <!-- Encabezado -->
+    <div class="header">
+        <div class="logo-area">
+            <h1>FORO 7</h1>
+            <div class="sub">Producciones · Fotografía · Video · Dron · Invitaciones Web</div>
+            <div class="contacto">
+                📍 Padilla 112, Cumbres de Arbide, León, Gto.<br>
+                📞 477-920-3776 &nbsp;|&nbsp; ✉ foro7.arturocruz@gmail.com
+            </div>
+        </div>
+        <div class="contrato-id">
+            <div>CONTRATO No.</div>
+            <div class="folio" contenteditable="true">F7-2026-001</div>
+            <div style="margin-top:6px;">Fecha:</div>
+            <div contenteditable="true" style="border-bottom:1px solid var(--border);min-width:110px;padding:2px 0;">León, Gto. &nbsp; ___ / ___ / 2026</div>
+        </div>
+    </div>
+
+    <!-- Título -->
+    <div class="titulo-contrato">Contrato de Prestación de Servicios<br>
+        <span style="font-size:0.85rem;letter-spacing:1px;">Fotografía &amp; Video</span>
+    </div>
+
+    <!-- I. Partes -->
+    <div class="seccion">
+        <div class="seccion-titulo">I. Partes del Contrato</div>
+        <div class="datos-grid">
+            <div class="dato">
+                <label>Prestador del servicio</label>
+                <div class="valor">Producciones Foro 7 / Juan Arturo Cruz Armenta</div>
+            </div>
+            <div class="dato">
+                <label>RFC / Teléfono</label>
+                <div class="valor">477-920-3776</div>
+            </div>
+            <div class="dato">
+                <label>Contratante (cliente)</label>
+                <div class="valor" contenteditable="true">Patricia Cruz &nbsp;</div>
+            </div>
+            <div class="dato">
+                <label>Teléfono del cliente</label>
+                <div class="valor" contenteditable="true">&nbsp;</div>
+            </div>
+            <div class="dato full">
+                <label>Dirección del cliente</label>
+                <div class="valor" contenteditable="true">Priv. Cataluña 117, Vista Hermosa, 37330 León de los Aldama, Gto.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- II. Evento -->
+    <div class="seccion">
+        <div class="seccion-titulo">II. Datos del Evento</div>
+        <div class="datos-grid">
+            <div class="dato">
+                <label>Tipo de evento</label>
+                <div class="valor">XV Años</div>
+            </div>
+            <div class="dato">
+                <label>Festejada</label>
+                <div class="valor">Barbara Brittany</div>
+            </div>
+            <div class="dato">
+                <label>Fecha del evento</label>
+                <div class="valor">Sábado, 11 de abril de 2026</div>
+            </div>
+            <div class="dato">
+                <label>Hora de inicio</label>
+                <div class="valor">16:00 hrs (ceremonia) · 18:30 hrs (recepción)</div>
+            </div>
+            <div class="dato full">
+                <label>Lugar de la ceremonia</label>
+                <div class="valor">Parroquia San Juan Bautista de la Salle — Iztaccihuatl 2113, Piletas IV, León, Gto.</div>
+            </div>
+            <div class="dato full">
+                <label>Lugar de la recepción</label>
+                <div class="valor">Granja El General — León de los Aldama, Gto.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- III. Paquete -->
+    <div class="seccion">
+        <div class="seccion-titulo">III. Paquete y Servicios Contratados</div>
+
+        <table class="paquetes-tabla">
+            <thead>
+                <tr>
+                    <th class="sel-col"></th>
+                    <th>Paquete</th>
+                    <th style="width:80px;text-align:right;">Precio</th>
+                    <th style="width:120px;">Cobertura</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="row-5000">
+                    <td class="sel-col"><div class="check-box" id="chk-5000"></div></td>
+                    <td><strong>Paquete Básico</strong></td>
+                    <td style="text-align:right;font-weight:700;">$5,000</td>
+                    <td style="font-size:0.75rem;">1 hr misa · 4 hrs recepción</td>
+                </tr>
+                <tr id="row-6500">
+                    <td class="sel-col"><div class="check-box" id="chk-6500"></div></td>
+                    <td><strong>Paquete Medio</strong></td>
+                    <td style="text-align:right;font-weight:700;">$6,500</td>
+                    <td style="font-size:0.75rem;">Sesión, misa · 6 hrs recepción</td>
+                </tr>
+                <tr id="row-7000">
+                    <td class="sel-col"><div class="check-box" id="chk-7000"></div></td>
+                    <td><strong>Paquete Especial</strong></td>
+                    <td style="text-align:right;font-weight:700;">$7,000</td>
+                    <td style="font-size:0.75rem;">Sesión, misa · recepción</td>
+                </tr>
+                <tr id="row-8500">
+                    <td class="sel-col"><div class="check-box" id="chk-8500"></div></td>
+                    <td><strong>Super Paquete</strong></td>
+                    <td style="text-align:right;font-weight:700;">$8,500</td>
+                    <td style="font-size:0.75rem;">Sesión, misa · 8 hrs recepción</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top:12px;">
+            <div class="seccion-titulo" style="margin-bottom:6px;">El paquete seleccionado incluye:</div>
+            <ul class="incluye-list" id="lista-incluye"></ul>
+        </div>
+
+        <!-- Adicionales -->
+        <div style="margin-top:12px;">
+            <div class="seccion-titulo" style="margin-bottom:6px;">Servicios adicionales contratados</div>
+            <table class="pagos-tabla" style="font-size:0.8rem;">
+                <thead>
+                    <tr>
+                        <th>Adicional</th>
+                        <th style="width:70px;">Sel.</th>
+                        <th style="width:90px;text-align:right;">Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tomas con Dron</td>
+                        <td><div class="check-box"></div></td>
+                        <td style="text-align:right;">$1,200</td>
+                    </tr>
+                    <tr>
+                        <td>Invitación Web (página digital para invitados)</td>
+                        <td><div class="check-box"></div></td>
+                        <td style="text-align:right;">Incluida</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" style="color:#aaa;">Otro: &nbsp;</td>
+                        <td><div class="check-box"></div></td>
+                        <td contenteditable="true" style="text-align:right;color:#aaa;">$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
+        <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:30px;font-size:0.9rem;">
+            <div>
+                <span style="color:var(--gray);">Paquete: </span>
+                <strong id="txt-precio-paq">$7,000</strong>
+            </div>
+            <div>
+                <span style="color:var(--gray);">Adicionales: </span>
+                <strong contenteditable="true" id="txt-adicionales">$0</strong>
+            </div>
+            <div style="font-size:1rem;">
+                <span style="color:var(--gray);">TOTAL: </span>
+                <strong id="txt-total" style="font-size:1.15rem;">$7,000</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- IV. Forma de Pago -->
+    <div class="seccion">
+        <div class="seccion-titulo">IV. Forma de Pago</div>
+        <table class="pagos-tabla">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Concepto</th>
+                    <th>Fecha límite</th>
+                    <th>Monto</th>
+                    <th>Recibido / Firma</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Anticipo (aparta fecha)</td>
+                    <td contenteditable="true">Al firmar contrato</td>
+                    <td class="monto" contenteditable="true">$</td>
+                    <td><div class="linea"></div></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Segundo pago</td>
+                    <td contenteditable="true">Antes del evento</td>
+                    <td class="monto" contenteditable="true">$</td>
+                    <td><div class="linea"></div></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Liquidación total</td>
+                    <td contenteditable="true">El día del evento</td>
+                    <td class="monto" contenteditable="true">$</td>
+                    <td><div class="linea"></div></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="margin-top:8px;font-size:0.78rem;color:var(--gray);">
+            Depósito / Transferencia: <strong>BBVA — Cuenta: </strong>
+            <span contenteditable="true">_________________________</span> &nbsp;
+            CLABE: <span contenteditable="true">_________________________</span>
+        </div>
+    </div>
+
+    <!-- V. Términos -->
+    <div class="seccion">
+        <div class="seccion-titulo">V. Términos y Condiciones</div>
+        <div class="terminos">
+            <ol>
+                <li>El <strong>anticipo no es reembolsable</strong>. En caso de cancelación por parte del contratante, el anticipo queda a favor de Producciones Foro 7.</li>
+                <li>En caso de que Producciones Foro 7 cancele el servicio por causa de fuerza mayor, se reembolsará el 100% de los pagos realizados.</li>
+                <li>El contratante autoriza a Producciones Foro 7 a utilizar las fotografías y videos del evento con fines de portafolio y promoción, a menos que se indique lo contrario por escrito.</li>
+                <li>La entrega del material (fotos digitales + video editado) se realizará en un plazo máximo de <strong>30 días naturales</strong> posteriores al evento, salvo acuerdo distinto.</li>
+                <li>Las fotografías impresas y la USB se entregarán en un plazo de <strong>45 días naturales</strong> posteriores al evento.</li>
+                <li>El fotógrafo/videógrafo tiene libertad creativa y artística. El contratante puede expresar preferencias de estilo antes del evento, pero no durante la cobertura.</li>
+                <li>Producciones Foro 7 no se hace responsable por condiciones climáticas adversas, fallos de energía eléctrica en el lugar, ni restricciones impuestas por terceros (iglesia, salón) que limiten el trabajo fotográfico.</li>
+                <li>El material original (RAW/archivos sin editar) no se entrega; el contratante recibirá únicamente el material editado y seleccionado.</li>
+                <li>Cualquier modificación al presente contrato deberá realizarse por escrito y con firma de ambas partes.</li>
+                <li>Para cualquier controversia derivada del presente contrato, las partes se someten a la jurisdicción de los tribunales competentes de la ciudad de León, Guanajuato.</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- VI. Firmas -->
+    <div class="seccion">
+        <div class="seccion-titulo">VI. Firmas de Conformidad</div>
+        <p style="font-size:0.82rem;margin-bottom:16px;color:var(--gray);">
+            Las partes declaran haber leído íntegramente el presente contrato y estar de acuerdo con todas sus cláusulas, firmando en señal de conformidad en la ciudad de León, Guanajuato.
+        </p>
+        <div class="firmas">
+            <div class="firma-bloque">
+                <div class="firma-linea">
+                    <div class="firma-nombre">Juan Arturo Cruz Armenta</div>
+                    <div class="firma-cargo">Producciones Foro 7<br>Prestador del Servicio</div>
+                </div>
+            </div>
+            <div class="firma-bloque">
+                <div class="firma-linea">
+                    <div class="firma-nombre" contenteditable="true">Patricia Cruz</div>
+                    <div class="firma-cargo">Contratante<br>Madre de Barbara Brittany</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie de hoja -->
+    <div class="pie-hoja">
+        Producciones Foro 7 · Padilla 112, Cumbres de Arbide, León, Gto. · Tel. 477-920-3776 · foro7.arturocruz@gmail.com
+        <br>Fotografía · Video · Dron · Invitaciones Web
+    </div>
+
+</div><!-- /hoja -->
+
+<script>
+const PAQUETES = {
+    '5000': {
+        nombre: 'Paquete Básico',
+        precio: '$5,000',
+        incluye: [
+            '50 Fotografías del evento impresas en tamaño 5×7 pulgadas',
+            '1 Película USB en 4K con duración de 2 hrs (original + copia)',
+            '1 Caja impresa para la USB',
+            '1 Fotografía ampliada a tamaño 11×14 pulgadas',
+            '1 Caja impresa para las fotografías',
+            '1 Sesión fotográfica antes del evento o el día del evento'
+        ]
+    },
+    '6500': {
+        nombre: 'Paquete Medio',
+        precio: '$6,500',
+        incluye: [
+            '100 Fotografías del evento impresas en tamaño 5×7 pulgadas',
+            '1 Película USB editada, musicalizada y titulada',
+            '1 Videoclip para proyectar en el salón (sesión previa y fotos recuerdo)',
+            '1 Caja impresa para la USB',
+            '1 Fotografía ampliada a tamaño 50×60 cm con marco',
+            '1 Caja impresa para las fotografías',
+            '1 Sesión fotográfica antes del evento o el día del evento'
+        ]
+    },
+    '7000': {
+        nombre: 'Paquete Especial',
+        precio: '$7,000',
+        incluye: [
+            '100 Fotografías del evento impresas en tamaño 5×7 pulgadas',
+            '1 Película USB en 4K con duración de 3 hrs (original + copia)',
+            '1 Caja impresa para la USB',
+            '1 Fotografía ampliada a tamaño 16×20 pulgadas',
+            '1 Caja impresa para las fotografías',
+            '1 Sesión fotográfica antes del evento o el día del evento'
+        ]
+    },
+    '8500': {
+        nombre: 'Super Paquete',
+        precio: '$8,500',
+        incluye: [
+            '200 Fotografías del evento impresas en tamaño 5×7 pulgadas  —O bien—  1 Fotolibro 30×60 cm de lujo (100 fotos)',
+            '1 Película USB editada, musicalizada y titulada',
+            '1 Videoclip para proyectar en el salón (sesión previa y fotos recuerdo)',
+            '1 Caja impresa para la USB',
+            '1 Fotografía ampliada a tamaño 60×80 cm',
+            '1 Caja de madera para las fotografías',
+            '1 Sesión fotográfica antes y el día del evento'
+        ]
+    }
+};
+
+function cambiarPaquete(val) {
+    const p = PAQUETES[val];
+    if (!p) return;
+
+    // Marcar check
+    ['5000','6500','7000','8500'].forEach(k => {
+        const chk = document.getElementById('chk-' + k);
+        const row = document.getElementById('row-' + k);
+        if (k === val) {
+            chk.textContent = '✓';
+            chk.style.background = '#1c1c1c';
+            chk.style.color = '#fff';
+            chk.style.display = 'flex';
+            chk.style.alignItems = 'center';
+            chk.style.justifyContent = 'center';
+            chk.style.fontWeight = '900';
+            row.style.background = '#fef9e7';
+        } else {
+            chk.textContent = '';
+            chk.style.background = '';
+            chk.style.color = '';
+            row.style.background = '';
+        }
+    });
+
+    // Lista incluye
+    const lista = document.getElementById('lista-incluye');
+    lista.innerHTML = p.incluye.map(i => `<li>${i}</li>`).join('');
+
+    // Precio
+    document.getElementById('txt-precio-paq').textContent = p.precio;
+    document.getElementById('txt-total').textContent = p.precio;
+}
+
+// Init con paquete $7,000
+cambiarPaquete('7000');
+</script>
+</body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selector de Fotos — Barbara Brittany XV Años</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f4d03f;
+            --gold-dark: #b8941f;
+            --burgundy: #c41e3a;
+            --dark: #1a1a2e;
+            --cream: #faf8f3;
+            --selected-color: #d4af37;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: #111;
+            color: #eee;
+            padding-top: 70px;
+        }
+
+        /* ── Barra superior ── */
+        #topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(20, 15, 10, 0.95);
+            border-bottom: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            flex-wrap: wrap;
+        }
+
+        #topbar h1 {
+            font-size: 1rem;
+            color: var(--gold);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #contador {
+            background: var(--gold);
+            color: #111;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 4px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        #topbar .spacer { flex: 1; }
+
+        .btn-bar {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .btn-bar:hover { opacity: 0.85; }
+
+        .btn-limpiar  { background: #555; color: #fff; }
+        .btn-ver      { background: var(--burgundy); color: #fff; }
+        .btn-copiar   { background: var(--gold-dark); color: #fff; }
+        .btn-todos    { background: #2ecc71; color: #fff; }
+
+        /* ── Barra de búsqueda / filtro ── */
+        #filterbar {
+            background: #1a1a1a;
+            border-bottom: 1px solid #333;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+
+        #filterbar label { font-size: 0.85rem; color: #aaa; }
+
+        #filtroInput {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 5px 10px;
+            color: #eee;
+            font-size: 0.85rem;
+            width: 160px;
+        }
+
+        #tamañoRange { width: 100px; accent-color: var(--gold); }
+
+        #filtroSolo {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 5px 10px;
+            color: #eee;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        /* ── Grid ── */
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--thumb, 160px), 1fr));
+            gap: 4px;
+            padding: 8px;
+        }
+
+        .foto-item {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 4px;
+            background: #222;
+            aspect-ratio: 3/2;
+        }
+
+        .foto-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.15s;
+        }
+
+        .foto-item:hover img { transform: scale(1.04); }
+
+        /* Estado seleccionado */
+        .foto-item.sel {
+            outline: 3px solid var(--gold);
+            outline-offset: -3px;
+        }
+
+        .foto-item.sel::after {
+            content: attr(data-orden);
+            position: absolute;
+            top: 6px; right: 6px;
+            background: var(--gold);
+            color: #111;
+            font-weight: 900;
+            font-size: 0.75rem;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        /* Nombre del archivo */
+        .foto-nombre {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.65);
+            color: #ccc;
+            font-size: 0.65rem;
+            padding: 2px 5px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .foto-item:hover .foto-nombre { opacity: 1; }
+
+        /* ── Lightbox ── */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.93);
+            justify-content: center;
+            align-items: center;
+        }
+        #lightbox.open { display: flex; }
+
+        #lb-img {
+            max-width: 92vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 0 40px rgba(212,175,55,0.3);
+        }
+
+        #lb-close {
+            position: fixed;
+            top: 16px; right: 20px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 210;
+        }
+
+        #lb-nav-prev, #lb-nav-next {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            padding: 16px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            z-index: 210;
+        }
+        #lb-nav-prev { left: 10px; }
+        #lb-nav-next { right: 10px; }
+
+        #lb-info {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #eee;
+            font-size: 0.85rem;
+            padding: 6px 18px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        #lb-sel-btn {
+            background: var(--gold);
+            color: #111;
+            border: none;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        #lb-sel-btn.active { background: var(--burgundy); color: #fff; }
+
+        /* ── Modal de selección ── */
+        #modal-sel {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 300;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px 10px;
+            overflow-y: auto;
+        }
+        #modal-sel.open { display: flex; }
+
+        #modal-contenido {
+            background: #1a1a1a;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 24px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        #modal-contenido h2 {
+            color: var(--gold);
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        #modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .modal-thumb {
+            position: relative;
+            aspect-ratio: 3/2;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .modal-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-thumb .orden {
+            position: absolute;
+            top: 4px; right: 4px;
+            background: var(--gold);
+            color: #111;
+            font-weight: 900;
+            font-size: 0.7rem;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-thumb .nombre {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.7);
+            color: #ccc;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            text-align: center;
+        }
+
+        #modal-lista-texto {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.8rem;
+            color: #aaa;
+            max-height: 120px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin-bottom: 16px;
+            font-family: monospace;
+        }
+
+        .modal-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        #btn-modal-cerrar {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        #btn-modal-copiar {
+            background: var(--gold-dark);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        #btn-modal-whatsapp {
+            background: #25d366;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--gold);
+            color: #111;
+            font-weight: 700;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 400;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Vacío */
+        #empty-msg {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #555;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Barra superior ── -->
+<div id="topbar">
+    <h1><i class="fas fa-camera" style="color:var(--gold)"></i> Selector de Fotos</h1>
+    <span id="contador">0 seleccionadas</span>
+    <div class="spacer"></div>
+    <button class="btn-bar btn-todos"   onclick="seleccionarTodas()"><i class="fas fa-check-double"></i> Todas</button>
+    <button class="btn-bar btn-limpiar" onclick="limpiarSeleccion()"><i class="fas fa-times"></i> Limpiar</button>
+    <button class="btn-bar btn-ver"     onclick="abrirModalSel()"><i class="fas fa-images"></i> Ver selección</button>
+    <button class="btn-bar btn-copiar"  onclick="copiarLista()"><i class="fas fa-copy"></i> Copiar lista</button>
+</div>
+
+<!-- ── Filtros ── -->
+<div id="filterbar">
+    <label>Buscar:</label>
+    <input id="filtroInput" type="text" placeholder="DSC_27..." oninput="filtrar()">
+
+    <label>Mostrar:</label>
+    <select id="filtroSolo" onchange="filtrar()">
+        <option value="todas">Todas</option>
+        <option value="seleccionadas">Solo seleccionadas</option>
+        <option value="noseleccionadas">No seleccionadas</option>
+    </select>
+
+    <label>Tamaño:</label>
+    <input id="tamañoRange" type="range" min="100" max="320" value="160"
+           oninput="cambiarTamaño(this.value)">
+    <span id="tamañoLabel" style="font-size:0.8rem;color:#aaa">160px</span>
+
+    <span style="margin-left:auto;font-size:0.8rem;color:#555" id="totalVisible"></span>
+</div>
+
+<!-- ── Grid de fotos ── -->
+<div id="grid"></div>
+<div id="empty-msg"><i class="fas fa-image" style="font-size:2rem;margin-bottom:12px;display:block"></i>Ninguna foto coincide con el filtro.</div>
+
+<!-- ── Lightbox ── -->
+<div id="lightbox">
+    <span id="lb-close" onclick="cerrarLightbox()">&#10005;</span>
+    <button id="lb-nav-prev" onclick="lbNav(-1)"><i class="fas fa-chevron-left"></i></button>
+    <img id="lb-img" src="" alt="">
+    <button id="lb-nav-next" onclick="lbNav(1)"><i class="fas fa-chevron-right"></i></button>
+    <div id="lb-info">
+        <span id="lb-nombre"></span>
+        <button id="lb-sel-btn" onclick="toggleDesde_lb()">Seleccionar</button>
+    </div>
+</div>
+
+<!-- ── Modal selección ── -->
+<div id="modal-sel">
+    <div id="modal-contenido">
+        <h2><i class="fas fa-star"></i> Fotos Seleccionadas (<span id="modal-count">0</span>)</h2>
+        <div id="modal-grid"></div>
+        <div id="modal-lista-texto"></div>
+        <div class="modal-btns">
+            <button id="btn-modal-cerrar"   onclick="cerrarModalSel()">Cerrar</button>
+            <button id="btn-modal-copiar"   onclick="copiarLista()"><i class="fas fa-copy"></i> Copiar nombres</button>
+            <button id="btn-modal-whatsapp" onclick="enviarWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── Lista completa de fotos ──
+const FOTOS = [
+  "DSC_2586.webp","DSC_2587.webp","DSC_2588.webp","DSC_2589.webp","DSC_2590.webp",
+  "DSC_2591.webp","DSC_2592.webp","DSC_2593.webp","DSC_2594.webp","DSC_2595.webp",
+  "DSC_2596.webp","DSC_2597.webp","DSC_2598.webp","DSC_2599.webp","DSC_2600.webp",
+  "DSC_2601.webp","DSC_2602.webp","DSC_2603.webp","DSC_2604.webp","DSC_2605.webp",
+  "DSC_2606.webp","DSC_2607.webp","DSC_2608.webp","DSC_2609.webp","DSC_2610.webp",
+  "DSC_2611.webp","DSC_2612.webp","DSC_2613.webp","DSC_2614.webp","DSC_2615.webp",
+  "DSC_2616.webp","DSC_2617.webp","DSC_2618.webp","DSC_2619.webp","DSC_2620.webp",
+  "DSC_2621.webp","DSC_2622.webp","DSC_2623.webp","DSC_2624.webp","DSC_2625.webp",
+  "DSC_2626.webp","DSC_2627.webp","DSC_2628.webp","DSC_2629.webp","DSC_2630.webp",
+  "DSC_2631.webp","DSC_2632.webp","DSC_2633.webp","DSC_2634.webp","DSC_2635.webp",
+  "DSC_2636.webp","DSC_2637.webp","DSC_2638.webp","DSC_2639.webp","DSC_2640.webp",
+  "DSC_2641.webp","DSC_2642.webp","DSC_2643.webp","DSC_2644.webp","DSC_2645.webp",
+  "DSC_2646.webp","DSC_2647.webp","DSC_2648.webp","DSC_2649.webp","DSC_2650.webp",
+  "DSC_2651.webp","DSC_2652.webp","DSC_2653.webp","DSC_2654.webp","DSC_2655.webp",
+  "DSC_2656.webp","DSC_2657.webp","DSC_2658.webp","DSC_2659.webp","DSC_2660.webp",
+  "DSC_2661.webp","DSC_2662.webp","DSC_2663.webp","DSC_2664.webp","DSC_2665.webp",
+  "DSC_2666.webp","DSC_2667.webp","DSC_2668.webp","DSC_2669.webp","DSC_2670.webp",
+  "DSC_2671.webp","DSC_2672.webp","DSC_2673.webp","DSC_2674.webp","DSC_2675.webp",
+  "DSC_2676.webp","DSC_2677.webp","DSC_2678.webp","DSC_2679.webp","DSC_2680.webp",
+  "DSC_2681.webp","DSC_2682.webp","DSC_2683.webp","DSC_2684.webp","DSC_2685.webp",
+  "DSC_2686.webp","DSC_2687.webp","DSC_2688.webp","DSC_2689.webp","DSC_2690.webp",
+  "DSC_2691.webp","DSC_2692.webp","DSC_2693.webp","DSC_2694.webp","DSC_2695.webp",
+  "DSC_2696.webp","DSC_2697.webp","DSC_2698.webp","DSC_2699.webp","DSC_2700.webp",
+  "DSC_2701.webp","DSC_2702.webp","DSC_2703.webp","DSC_2704.webp","DSC_2705.webp",
+  "DSC_2706.webp","DSC_2707.webp","DSC_2708.webp","DSC_2709.webp","DSC_2710.webp",
+  "DSC_2711.webp","DSC_2712.webp","DSC_2713.webp","DSC_2714.webp","DSC_2715.webp",
+  "DSC_2716.webp","DSC_2717.webp","DSC_2718.webp","DSC_2719.webp","DSC_2720.webp",
+  "DSC_2721.webp","DSC_2722.webp","DSC_2723.webp","DSC_2724.webp","DSC_2725.webp",
+  "DSC_2726.webp","DSC_2727.webp","DSC_2728.webp","DSC_2729.webp","DSC_2730.webp",
+  "DSC_2741.webp","DSC_2742.webp","DSC_2743.webp","DSC_2744.webp","DSC_2745.webp",
+  "DSC_2746.webp","DSC_2747.webp","DSC_2748.webp","DSC_2749.webp","DSC_2750.webp",
+  "DSC_2751.webp","DSC_2752.webp","DSC_2753.webp","DSC_2754.webp","DSC_2755.webp",
+  "DSC_2756.webp","DSC_2757.webp","DSC_2758.webp","DSC_2759.webp","DSC_2760.webp",
+  "DSC_2761.webp","DSC_2762.webp","DSC_2763.webp","DSC_2764.webp","DSC_2765.webp",
+  "DSC_2766.webp","DSC_2767.webp","DSC_2768.webp","DSC_2769.webp","DSC_2770.webp",
+  "DSC_2771.webp"
+];
+
+// Estado
+let seleccion = new Map(); // filename → orden
+let ordenCounter = 0;
+
+// ── Construir grid ──
+const grid = document.getElementById('grid');
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            const img = e.target.querySelector('img');
+            if (img && img.dataset.src) {
+                img.src = img.dataset.src;
+                delete img.dataset.src;
+            }
+            observer.unobserve(e.target);
+        }
+    });
+}, { rootMargin: '200px' });
+
+FOTOS.forEach((nombre, idx) => {
+    const item = document.createElement('div');
+    item.className = 'foto-item';
+    item.dataset.nombre = nombre;
+    item.dataset.idx = idx;
+
+    const img = document.createElement('img');
+    img.dataset.src = 'images/' + nombre;
+    img.alt = nombre;
+    img.loading = 'lazy';
+
+    const label = document.createElement('div');
+    label.className = 'foto-nombre';
+    label.textContent = nombre.replace('.webp','');
+
+    item.appendChild(img);
+    item.appendChild(label);
+    grid.appendChild(item);
+
+    // Click: seleccionar / deseleccionar
+    item.addEventListener('click', (e) => {
+        if (e.detail === 2) { abrirLightbox(idx); return; } // doble click → lightbox
+        toggleSeleccion(nombre, item);
+    });
+
+    // Click largo → lightbox
+    let longPress;
+    item.addEventListener('pointerdown', () => {
+        longPress = setTimeout(() => abrirLightbox(idx), 500);
+    });
+    item.addEventListener('pointerup', () => clearTimeout(longPress));
+    item.addEventListener('pointerleave', () => clearTimeout(longPress));
+
+    observer.observe(item);
+});
+
+actualizarContador();
+
+// ── Selección ──
+function toggleSeleccion(nombre, item) {
+    if (seleccion.has(nombre)) {
+        seleccion.delete(nombre);
+        item.classList.remove('sel');
+        item.removeAttribute('data-orden');
+        reordenar();
+    } else {
+        ordenCounter++;
+        seleccion.set(nombre, ordenCounter);
+        item.classList.add('sel');
+        item.dataset.orden = ordenCounter;
+    }
+    actualizarContador();
+    guardar();
+}
+
+function reordenar() {
+    let n = 0;
+    seleccion = new Map([...seleccion.entries()].map(([k]) => [k, ++n]));
+    ordenCounter = n;
+    document.querySelectorAll('.foto-item.sel').forEach(el => {
+        const orden = seleccion.get(el.dataset.nombre);
+        el.dataset.orden = orden ?? '';
+    });
+}
+
+function actualizarContador() {
+    const n = seleccion.size;
+    document.getElementById('contador').textContent = n + (n === 1 ? ' seleccionada' : ' seleccionadas');
+}
+
+function limpiarSeleccion() {
+    seleccion.clear();
+    ordenCounter = 0;
+    document.querySelectorAll('.foto-item.sel').forEach(el => {
+        el.classList.remove('sel');
+        el.removeAttribute('data-orden');
+    });
+    actualizarContador();
+    guardar();
+}
+
+function seleccionarTodas() {
+    limpiarSeleccion();
+    document.querySelectorAll('.foto-item:not([style*="display:none"]):not([style*="display: none"])').forEach(el => {
+        const nombre = el.dataset.nombre;
+        if (nombre && !seleccion.has(nombre)) {
+            ordenCounter++;
+            seleccion.set(nombre, ordenCounter);
+            el.classList.add('sel');
+            el.dataset.orden = ordenCounter;
+        }
+    });
+    actualizarContador();
+    guardar();
+    toast('Todas las fotos visibles seleccionadas');
+}
+
+// ── Persistencia en localStorage ──
+function guardar() {
+    try {
+        localStorage.setItem('fotosel_bb', JSON.stringify([...seleccion.entries()]));
+    } catch(e) {}
+}
+
+function cargar() {
+    try {
+        const data = localStorage.getItem('fotosel_bb');
+        if (!data) return;
+        const entries = JSON.parse(data);
+        entries.forEach(([nombre, orden]) => {
+            seleccion.set(nombre, orden);
+            if (orden > ordenCounter) ordenCounter = orden;
+        });
+        document.querySelectorAll('.foto-item').forEach(el => {
+            const orden = seleccion.get(el.dataset.nombre);
+            if (orden !== undefined) {
+                el.classList.add('sel');
+                el.dataset.orden = orden;
+            }
+        });
+        actualizarContador();
+    } catch(e) {}
+}
+
+// ── Filtro ──
+function filtrar() {
+    const texto = document.getElementById('filtroInput').value.toLowerCase();
+    const modo  = document.getElementById('filtroSolo').value;
+    let visible = 0;
+    document.querySelectorAll('.foto-item').forEach(el => {
+        const nombre = el.dataset.nombre.toLowerCase();
+        const coincide = nombre.includes(texto);
+        const esSel = el.classList.contains('sel');
+        const mostrar = coincide &&
+            (modo === 'todas' ||
+             (modo === 'seleccionadas'   &&  esSel) ||
+             (modo === 'noseleccionadas' && !esSel));
+        el.style.display = mostrar ? '' : 'none';
+        if (mostrar) { visible++; observer.observe(el); }
+    });
+    document.getElementById('totalVisible').textContent = visible + ' fotos';
+    document.getElementById('empty-msg').style.display = visible === 0 ? 'block' : 'none';
+}
+
+function cambiarTamaño(v) {
+    document.getElementById('grid').style.setProperty('--thumb', v + 'px');
+    document.getElementById('tamañoLabel').textContent = v + 'px';
+}
+
+// ── Copiar lista ──
+function copiarLista() {
+    if (seleccion.size === 0) { toast('No hay fotos seleccionadas'); return; }
+    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]).map(([n]) => n.replace('.webp',''));
+    navigator.clipboard.writeText(ordered.join('\n'))
+        .then(() => toast('Lista copiada al portapapeles (' + ordered.length + ' fotos)'))
+        .catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = ordered.join('\n');
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            toast('Lista copiada (' + ordered.length + ' fotos)');
+        });
+}
+
+// ── Modal de selección ──
+function abrirModalSel() {
+    if (seleccion.size === 0) { toast('No hay fotos seleccionadas'); return; }
+
+    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]);
+    document.getElementById('modal-count').textContent = ordered.length;
+
+    const mgrid = document.getElementById('modal-grid');
+    mgrid.innerHTML = '';
+    ordered.forEach(([nombre, orden]) => {
+        const div = document.createElement('div');
+        div.className = 'modal-thumb';
+        div.innerHTML = `
+            <img src="images/${nombre}" alt="${nombre}" loading="lazy">
+            <div class="orden">${orden}</div>
+            <div class="nombre">${nombre.replace('.webp','')}</div>`;
+        mgrid.appendChild(div);
+    });
+
+    document.getElementById('modal-lista-texto').textContent =
+        ordered.map(([n,o]) => o + '. ' + n.replace('.webp','')).join('\n');
+
+    document.getElementById('modal-sel').classList.add('open');
+}
+
+function cerrarModalSel() {
+    document.getElementById('modal-sel').classList.remove('open');
+}
+
+function enviarWhatsApp() {
+    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]).map(([n,o]) => o + '. ' + n.replace('.webp',''));
+    const msg = 'Fotos seleccionadas para XV años Barbara Brittany:\n' + ordered.join('\n');
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ── Lightbox ──
+let lbFotos = []; // fotos visibles actuales
+let lbIdx = 0;
+
+function abrirLightbox(idx) {
+    // Construir lista de visibles
+    lbFotos = [];
+    document.querySelectorAll('.foto-item:not([style*="display:none"]):not([style*="display: none"])').forEach(el => {
+        lbFotos.push(el.dataset.nombre);
+    });
+    lbIdx = lbFotos.indexOf(FOTOS[idx]);
+    if (lbIdx < 0) lbIdx = 0;
+    mostrarLb();
+    document.getElementById('lightbox').classList.add('open');
+}
+
+function mostrarLb() {
+    const nombre = lbFotos[lbIdx];
+    document.getElementById('lb-img').src = 'images/' + nombre;
+    document.getElementById('lb-nombre').textContent = nombre.replace('.webp','') + '  (' + (lbIdx+1) + '/' + lbFotos.length + ')';
+    const btn = document.getElementById('lb-sel-btn');
+    if (seleccion.has(nombre)) {
+        btn.textContent = '✓ Seleccionada (' + seleccion.get(nombre) + ')';
+        btn.classList.add('active');
+    } else {
+        btn.textContent = 'Seleccionar';
+        btn.classList.remove('active');
+    }
+}
+
+function cerrarLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+}
+
+function lbNav(dir) {
+    lbIdx = (lbIdx + dir + lbFotos.length) % lbFotos.length;
+    mostrarLb();
+}
+
+function toggleDesde_lb() {
+    const nombre = lbFotos[lbIdx];
+    const item = document.querySelector(`.foto-item[data-nombre="${nombre}"]`);
+    if (item) toggleSeleccion(nombre, item);
+    mostrarLb();
+}
+
+// Teclado lightbox
+document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'ArrowRight') lbNav(1);
+    if (e.key === 'ArrowLeft')  lbNav(-1);
+    if (e.key === 'Escape')     cerrarLightbox();
+    if (e.key === ' ') { e.preventDefault(); toggleDesde_lb(); }
+});
+
+// ── Toast ──
+function toast(msg, ms = 2500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), ms);
+}
+
+// ── Init ──
+document.getElementById('totalVisible').textContent = FOTOS.length + ' fotos';
+cargar();
+filtrar();
+</script>
+</body>
+</html>
