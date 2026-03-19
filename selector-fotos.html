@@ -3,376 +3,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selector de Fotos — Barbara Brittany XV Años</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Selector de Fotos — XV Años Barbara Brittany</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --gold: #d4af37;
-            --gold-light: #f4d03f;
             --gold-dark: #b8941f;
             --burgundy: #c41e3a;
-            --dark: #1a1a2e;
-            --cream: #faf8f3;
-            --selected-color: #d4af37;
+            --dark: #111;
+            --panel: #1a1a1a;
+            --card-bg: #1e1e1e;
+            --border: #333;
+            --text: #eee;
+            --muted: #888;
+
+            --color-impresion: #3b82f6;
+            --color-invitacion: #e91e63;
+            --color-descartada: #ef4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Lato', sans-serif;
-            background: #111;
-            color: #eee;
-            padding-top: 70px;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
         }
 
-        /* ── Barra superior ── */
-        #topbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            background: rgba(20, 15, 10, 0.95);
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, #1a0a00, #2d1500);
             border-bottom: 2px solid var(--gold);
+            padding: 28px 20px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+        .header p { color: #ccc; font-size: 0.9rem; margin-top: 4px; }
+        .header .instruccion {
+            margin-top: 8px;
+            font-size: 0.82rem;
+            color: #aaa;
+        }
+
+        /* ── Nav links ── */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 14px 20px;
+            background: #161616;
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            background: #2a2a2a;
+            color: #ccc;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { background: var(--gold-dark); color: #fff; }
+        .nav-links a.active { background: var(--gold); color: #111; }
+
+        /* ── Panel de control ── */
+        .control-panel {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 20px;
+            gap: 10px;
+            background: #252525;
+            border: 1.5px solid #333;
+            border-radius: 10px;
+            padding: 10px 16px;
+            flex: 1;
+            min-width: 130px;
+            transition: border-color 0.3s;
+        }
+        .stat-icon { font-size: 1.4rem; }
+        .stat-info h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+        .stat-count { font-size: 1.1rem; font-weight: 700; }
+
+        .stat-card.impresion  .stat-count { color: var(--color-impresion); }
+        .stat-card.invitacion .stat-count { color: var(--color-invitacion); }
+        .stat-card.descartada .stat-count { color: var(--color-descartada); }
+        .stat-card.sin-clasificar .stat-count { color: var(--muted); }
+
+        /* ── Botones ── */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
             flex-wrap: wrap;
+            margin-bottom: 8px;
         }
+        .action-buttons.secondary { margin-bottom: 0; }
 
-        #topbar h1 {
-            font-size: 1rem;
-            color: var(--gold);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        #contador {
-            background: var(--gold);
-            color: #111;
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 4px 14px;
-            border-radius: 20px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        #topbar .spacer { flex: 1; }
-
-        .btn-bar {
-            padding: 6px 14px;
+        .btn {
+            padding: 7px 14px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: opacity 0.2s;
-            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.1s;
         }
-        .btn-bar:hover { opacity: 0.85; }
+        .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
 
-        .btn-limpiar  { background: #555; color: #fff; }
-        .btn-ver      { background: var(--burgundy); color: #fff; }
-        .btn-copiar   { background: var(--gold-dark); color: #fff; }
-        .btn-todos    { background: #2ecc71; color: #fff; }
+        .btn-filter { background: #2a2a2a; color: #ccc; }
+        .btn-filter.active { background: var(--gold); color: #111; }
+        .btn-filter.filter-impresion.active  { background: var(--color-impresion); color: #fff; }
+        .btn-filter.filter-invitacion.active { background: var(--color-invitacion); color: #fff; }
+        .btn-filter.filter-descartada.active { background: var(--color-descartada); color: #fff; }
+        .btn-filter.filter-sin-clasificar.active { background: #555; color: #fff; }
 
-        /* ── Barra de búsqueda / filtro ── */
-        #filterbar {
-            background: #1a1a1a;
-            border-bottom: 1px solid #333;
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            position: sticky;
-            top: 70px;
-            z-index: 90;
-        }
-
-        #filterbar label { font-size: 0.85rem; color: #aaa; }
-
-        #filtroInput {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 6px;
-            padding: 5px 10px;
-            color: #eee;
-            font-size: 0.85rem;
-            width: 160px;
-        }
-
-        #tamañoRange { width: 100px; accent-color: var(--gold); }
-
-        #filtroSolo {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 6px;
-            padding: 5px 10px;
-            color: #eee;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
+        .btn-export  { background: var(--gold-dark); color: #fff; }
+        .btn-share   { background: #25d366; color: #fff; }
+        .btn-clear   { background: #3a1a1a; color: #ef4444; border: 1px solid #ef4444; }
 
         /* ── Grid ── */
-        #grid {
+        .container { max-width: 1600px; margin: 0 auto; padding: 12px; }
+
+        .photos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(var(--thumb, 160px), 1fr));
-            gap: 4px;
-            padding: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 6px;
         }
 
-        .foto-item {
+        /* ── Tarjeta de foto ── */
+        .photo-card {
             position: relative;
-            cursor: pointer;
+            border-radius: 6px;
             overflow: hidden;
-            border-radius: 4px;
+            cursor: pointer;
             background: #222;
+            border: 2px solid transparent;
             aspect-ratio: 3/2;
+            transition: transform 0.15s, border-color 0.2s;
         }
+        .photo-card:hover { transform: scale(1.02); }
 
-        .foto-item img {
+        .photo-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform 0.15s;
         }
 
-        .foto-item:hover img { transform: scale(1.04); }
+        .photo-card.hidden { display: none; }
 
-        /* Estado seleccionado */
-        .foto-item.sel {
-            outline: 3px solid var(--gold);
-            outline-offset: -3px;
-        }
+        /* Bordes por categoría */
+        .photo-card.has-impresion  { border-color: var(--color-impresion); }
+        .photo-card.has-invitacion { border-color: var(--color-invitacion); }
+        .photo-card.has-descartada { border-color: var(--color-descartada); opacity: 0.55; }
+        .photo-card.has-multiple   { border-color: var(--gold); }
 
-        .foto-item.sel::after {
-            content: attr(data-orden);
-            position: absolute;
-            top: 6px; right: 6px;
-            background: var(--gold);
-            color: #111;
-            font-weight: 900;
-            font-size: 0.75rem;
-            min-width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-        }
-
-        /* Nombre del archivo */
-        .foto-nombre {
+        /* Número */
+        .photo-number {
             position: absolute;
             bottom: 0; left: 0; right: 0;
             background: rgba(0,0,0,0.65);
-            color: #ccc;
-            font-size: 0.65rem;
+            color: #bbb;
+            font-size: 0.62rem;
             padding: 2px 5px;
             text-align: center;
             opacity: 0;
             transition: opacity 0.2s;
         }
-        .foto-item:hover .foto-nombre { opacity: 1; }
+        .photo-card:hover .photo-number { opacity: 1; }
 
-        /* ── Lightbox ── */
-        #lightbox {
+        /* Badges */
+        .photo-badges {
+            position: absolute;
+            top: 5px; left: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .badge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .badge-impresion  { background: var(--color-impresion); color: #fff; }
+        .badge-invitacion { background: var(--color-invitacion); color: #fff; }
+        .badge-descartada { background: var(--color-descartada); color: #fff; }
+
+        /* ── Modal ── */
+        .modal {
             display: none;
             position: fixed;
             inset: 0;
             z-index: 200;
-            background: rgba(0,0,0,0.93);
+            background: rgba(0,0,0,0.92);
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        #lightbox.open { display: flex; }
+        .modal.active { display: flex; }
 
-        #lb-img {
-            max-width: 92vw;
-            max-height: 88vh;
-            object-fit: contain;
-            border-radius: 4px;
-            box-shadow: 0 0 40px rgba(212,175,55,0.3);
+        .modal-content {
+            background: var(--card-bg);
+            border: 1.5px solid var(--gold);
+            border-radius: 14px;
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        #lb-close {
-            position: fixed;
-            top: 16px; right: 20px;
-            font-size: 2rem;
-            color: #fff;
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 14px;
+            font-size: 1.5rem;
+            color: #aaa;
             cursor: pointer;
-            z-index: 210;
+            z-index: 10;
+            line-height: 1;
         }
+        .modal-close:hover { color: #fff; }
 
-        #lb-nav-prev, #lb-nav-next {
-            position: fixed;
+        .modal-nav-btn {
+            position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             border: none;
             color: #fff;
-            font-size: 2rem;
-            padding: 16px 12px;
+            font-size: 1.6rem;
+            padding: 14px 10px;
             cursor: pointer;
             border-radius: 4px;
-            z-index: 210;
+            z-index: 10;
         }
-        #lb-nav-prev { left: 10px; }
-        #lb-nav-next { right: 10px; }
+        .modal-prev { left: 8px; }
+        .modal-next { right: 8px; }
 
-        #lb-info {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: #eee;
-            font-size: 0.85rem;
-            padding: 6px 18px;
-            border-radius: 20px;
+        .modal-body {
             display: flex;
-            align-items: center;
-            gap: 14px;
+            flex-direction: row;
         }
 
-        #lb-sel-btn {
-            background: var(--gold);
-            color: #111;
-            border: none;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        #lb-sel-btn.active { background: var(--burgundy); color: #fff; }
-
-        /* ── Modal de selección ── */
-        #modal-sel {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 300;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: flex-start;
-            padding: 30px 10px;
-            overflow-y: auto;
-        }
-        #modal-sel.open { display: flex; }
-
-        #modal-contenido {
-            background: #1a1a1a;
-            border: 2px solid var(--gold);
-            border-radius: 12px;
-            padding: 24px;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        #modal-contenido h2 {
-            color: var(--gold);
-            margin-bottom: 16px;
-            font-size: 1.2rem;
-        }
-
-        #modal-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 6px;
-            margin-bottom: 20px;
-        }
-
-        .modal-thumb {
+        .modal-image-container {
+            flex: 1;
+            min-height: 300px;
+            background: #000;
             position: relative;
-            aspect-ratio: 3/2;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .modal-thumb img { width: 100%; height: 100%; object-fit: cover; }
-        .modal-thumb .orden {
-            position: absolute;
-            top: 4px; right: 4px;
-            background: var(--gold);
-            color: #111;
-            font-weight: 900;
-            font-size: 0.7rem;
-            min-width: 20px;
-            height: 20px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .modal-thumb .nombre {
+        .modal-image-container img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+        .modal-photo-number {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.7);
-            color: #ccc;
-            font-size: 0.6rem;
-            padding: 2px 4px;
+            bottom: 8px; left: 0; right: 0;
             text-align: center;
-        }
-
-        #modal-lista-texto {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #aaa;
-            max-height: 120px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-            margin-bottom: 16px;
-            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 3px;
         }
 
-        .modal-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+        .modal-options {
+            width: 240px;
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .modal-options h3 {
+            color: var(--gold);
+            font-size: 1rem;
+        }
+        .modal-subtitle {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
 
-        #btn-modal-cerrar {
-            background: #444;
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
+        .option-buttons { display: flex; flex-direction: column; gap: 10px; }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1.5px solid #333;
+            background: #252525;
+            color: var(--text);
             cursor: pointer;
-            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
+        .option-btn:hover { border-color: #555; background: #2d2d2d; }
 
-        #btn-modal-copiar {
-            background: var(--gold-dark);
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
+        .option-btn.impresion.selected  { border-color: var(--color-impresion); background: rgba(59,130,246,0.15); }
+        .option-btn.invitacion.selected { border-color: var(--color-invitacion); background: rgba(233,30,99,0.15); }
+        .option-btn.descartada.selected { border-color: var(--color-descartada); background: rgba(239,68,68,0.12); }
+
+        .option-icon { font-size: 1.1rem; flex-shrink: 0; }
+        .option-text { flex: 1; font-weight: 600; }
+        .option-check {
+            color: #444;
+            font-weight: 900;
+            font-size: 0.9rem;
         }
+        .option-btn.selected .option-check { color: #fff; }
 
-        #btn-modal-whatsapp {
-            background: #25d366;
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
         }
+        .btn-cancel { background: #2a2a2a; color: #aaa; flex: 1; justify-content: center; }
+        .btn-save   { background: var(--gold); color: #111; flex: 1; justify-content: center; }
 
-        /* Toast */
-        #toast {
+        /* ── Toast ── */
+        .toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
             background: var(--gold);
@@ -380,418 +368,526 @@
             font-weight: 700;
             padding: 10px 24px;
             border-radius: 30px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s, transform 0.3s;
-            z-index: 400;
+            z-index: 500;
+            white-space: nowrap;
         }
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.error { background: var(--color-descartada); color: #fff; }
 
-        /* Vacío */
-        #empty-msg {
+        /* ── Costo extra ── */
+        #extraCostDisplay {
             display: none;
-            text-align: center;
-            padding: 60px 20px;
-            color: #555;
-            font-size: 1rem;
+            background: rgba(255,152,0,0.12);
+            border: 1px solid #f39c12;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.8rem;
+            color: #f39c12;
+            margin-top: 8px;
+        }
+        #extraCostDisplay.visible { display: flex; gap: 10px; align-items: center; }
+
+        /* ── Responsive modal ── */
+        @media (max-width: 650px) {
+            .modal-body { flex-direction: column; }
+            .modal-options { width: 100%; padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ── Barra superior ── -->
-<div id="topbar">
-    <h1><i class="fas fa-camera" style="color:var(--gold)"></i> Selector de Fotos</h1>
-    <span id="contador">0 seleccionadas</span>
-    <div class="spacer"></div>
-    <button class="btn-bar btn-todos"   onclick="seleccionarTodas()"><i class="fas fa-check-double"></i> Todas</button>
-    <button class="btn-bar btn-limpiar" onclick="limpiarSeleccion()"><i class="fas fa-times"></i> Limpiar</button>
-    <button class="btn-bar btn-ver"     onclick="abrirModalSel()"><i class="fas fa-images"></i> Ver selección</button>
-    <button class="btn-bar btn-copiar"  onclick="copiarLista()"><i class="fas fa-copy"></i> Copiar lista</button>
+<div class="header">
+    <h1><i class="fas fa-camera" style="color:var(--gold)"></i> Barbara Brittany — XV Años</h1>
+    <p>Selector de Fotos de Sesión</p>
+    <p class="instruccion">Haz clic en cada foto para clasificarla: impresión, invitación o descartar</p>
 </div>
 
-<!-- ── Filtros ── -->
-<div id="filterbar">
-    <label>Buscar:</label>
-    <input id="filtroInput" type="text" placeholder="DSC_27..." oninput="filtrar()">
-
-    <label>Mostrar:</label>
-    <select id="filtroSolo" onchange="filtrar()">
-        <option value="todas">Todas</option>
-        <option value="seleccionadas">Solo seleccionadas</option>
-        <option value="noseleccionadas">No seleccionadas</option>
-    </select>
-
-    <label>Tamaño:</label>
-    <input id="tamañoRange" type="range" min="100" max="320" value="160"
-           oninput="cambiarTamaño(this.value)">
-    <span id="tamañoLabel" style="font-size:0.8rem;color:#aaa">160px</span>
-
-    <span style="margin-left:auto;font-size:0.8rem;color:#555" id="totalVisible"></span>
+<div class="nav-links">
+    <a href="index.html"><i class="fas fa-envelope"></i> Invitación</a>
+    <a href="contrato-fotografia.html"><i class="fas fa-file-contract"></i> Contrato</a>
+    <a href="selector-fotos.html" class="active"><i class="fas fa-images"></i> Fotos</a>
+    <a href="navegacion.html"><i class="fas fa-map"></i> Navegación</a>
 </div>
 
-<!-- ── Grid de fotos ── -->
-<div id="grid"></div>
-<div id="empty-msg"><i class="fas fa-image" style="font-size:2rem;margin-bottom:12px;display:block"></i>Ninguna foto coincide con el filtro.</div>
+<!-- Panel de control (sticky) -->
+<div class="control-panel">
+    <div class="stats-row">
+        <div class="stat-card impresion">
+            <span class="stat-icon">📸</span>
+            <div class="stat-info">
+                <h3>Impresión</h3>
+                <span class="stat-count" id="countImpresion">0/100</span>
+            </div>
+        </div>
+        <div class="stat-card invitacion">
+            <span class="stat-icon">💌</span>
+            <div class="stat-info">
+                <h3>Invitación</h3>
+                <span class="stat-count" id="countInvitacion">0</span>
+            </div>
+        </div>
+        <div class="stat-card descartada">
+            <span class="stat-icon">❌</span>
+            <div class="stat-info">
+                <h3>Descartadas</h3>
+                <span class="stat-count" id="countDescartada">0</span>
+            </div>
+        </div>
+        <div class="stat-card sin-clasificar">
+            <span class="stat-icon">⭕</span>
+            <div class="stat-info">
+                <h3>Sin Clasificar</h3>
+                <span class="stat-count" id="countSinClasificar">0</span>
+            </div>
+        </div>
+    </div>
 
-<!-- ── Lightbox ── -->
-<div id="lightbox">
-    <span id="lb-close" onclick="cerrarLightbox()">&#10005;</span>
-    <button id="lb-nav-prev" onclick="lbNav(-1)"><i class="fas fa-chevron-left"></i></button>
-    <img id="lb-img" src="" alt="">
-    <button id="lb-nav-next" onclick="lbNav(1)"><i class="fas fa-chevron-right"></i></button>
-    <div id="lb-info">
-        <span id="lb-nombre"></span>
-        <button id="lb-sel-btn" onclick="toggleDesde_lb()">Seleccionar</button>
+    <div id="extraCostDisplay">
+        <span>⚠️ Fotos adicionales: <strong id="extraCostDetail"></strong> = <strong id="extraCostAmount"></strong> extra</span>
+    </div>
+
+    <div class="action-buttons">
+        <button class="btn btn-filter active" id="btnFilterAll"            data-filter="all">Todas</button>
+        <button class="btn btn-filter filter-impresion"  id="btnFilterImpresion"  data-filter="impresion">Impresión</button>
+        <button class="btn btn-filter filter-invitacion" id="btnFilterInvitacion" data-filter="invitacion">Invitación</button>
+        <button class="btn btn-filter filter-descartada" id="btnFilterDescartada" data-filter="descartada">Descartadas</button>
+        <button class="btn btn-filter filter-sin-clasificar" id="btnFilterSinClasificar" data-filter="sin-clasificar">Sin Clasificar</button>
+    </div>
+
+    <div class="action-buttons secondary">
+        <button class="btn btn-export" id="btnExport"><i class="fas fa-download"></i> Descargar Reporte</button>
+        <button class="btn btn-share"  id="btnShare"><i class="fab fa-whatsapp"></i> Copiar Resumen</button>
+        <button class="btn btn-clear"  id="btnClear"><i class="fas fa-trash"></i> Limpiar Todo</button>
     </div>
 </div>
 
-<!-- ── Modal selección ── -->
-<div id="modal-sel">
-    <div id="modal-contenido">
-        <h2><i class="fas fa-star"></i> Fotos Seleccionadas (<span id="modal-count">0</span>)</h2>
-        <div id="modal-grid"></div>
-        <div id="modal-lista-texto"></div>
-        <div class="modal-btns">
-            <button id="btn-modal-cerrar"   onclick="cerrarModalSel()">Cerrar</button>
-            <button id="btn-modal-copiar"   onclick="copiarLista()"><i class="fas fa-copy"></i> Copiar nombres</button>
-            <button id="btn-modal-whatsapp" onclick="enviarWhatsApp()"><i class="fab fa-whatsapp"></i> Enviar por WhatsApp</button>
+<!-- Grid de fotos -->
+<div class="container">
+    <div class="photos-grid" id="photosGrid"></div>
+</div>
+
+<!-- Modal de clasificación -->
+<div class="modal" id="photoModal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <button class="modal-nav-btn modal-prev" id="btnPrevPhoto">&#10094;</button>
+        <button class="modal-nav-btn modal-next" id="btnNextPhoto">&#10095;</button>
+
+        <div class="modal-body">
+            <div class="modal-image-container">
+                <img id="modalImage" src="" alt="">
+                <div class="modal-photo-number" id="modalPhotoNumber"></div>
+            </div>
+
+            <div class="modal-options">
+                <h3>Clasificar foto</h3>
+                <p class="modal-subtitle">Selecciona una o más categorías</p>
+
+                <div class="option-buttons">
+                    <button class="option-btn impresion" data-category="impresion">
+                        <span class="option-icon">📸</span>
+                        <span class="option-text">Impresión (5×7)</span>
+                        <span class="option-check">✓</span>
+                    </button>
+                    <button class="option-btn invitacion" data-category="invitacion">
+                        <span class="option-icon">💌</span>
+                        <span class="option-text">Para Invitación</span>
+                        <span class="option-check">✓</span>
+                    </button>
+                    <button class="option-btn descartada" data-category="descartada">
+                        <span class="option-icon">❌</span>
+                        <span class="option-text">Descartar</span>
+                        <span class="option-check">✓</span>
+                    </button>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-cancel" id="btnCancelSelection">Cancelar</button>
+                    <button class="btn btn-save"   id="btnSaveSelection">Guardar</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Toast -->
-<div id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Lista completa de fotos ──
-const FOTOS = [
-  "DSC_2586.webp","DSC_2587.webp","DSC_2588.webp","DSC_2589.webp","DSC_2590.webp",
-  "DSC_2591.webp","DSC_2592.webp","DSC_2593.webp","DSC_2594.webp","DSC_2595.webp",
-  "DSC_2596.webp","DSC_2597.webp","DSC_2598.webp","DSC_2599.webp","DSC_2600.webp",
-  "DSC_2601.webp","DSC_2602.webp","DSC_2603.webp","DSC_2604.webp","DSC_2605.webp",
-  "DSC_2606.webp","DSC_2607.webp","DSC_2608.webp","DSC_2609.webp","DSC_2610.webp",
-  "DSC_2611.webp","DSC_2612.webp","DSC_2613.webp","DSC_2614.webp","DSC_2615.webp",
-  "DSC_2616.webp","DSC_2617.webp","DSC_2618.webp","DSC_2619.webp","DSC_2620.webp",
-  "DSC_2621.webp","DSC_2622.webp","DSC_2623.webp","DSC_2624.webp","DSC_2625.webp",
-  "DSC_2626.webp","DSC_2627.webp","DSC_2628.webp","DSC_2629.webp","DSC_2630.webp",
-  "DSC_2631.webp","DSC_2632.webp","DSC_2633.webp","DSC_2634.webp","DSC_2635.webp",
-  "DSC_2636.webp","DSC_2637.webp","DSC_2638.webp","DSC_2639.webp","DSC_2640.webp",
-  "DSC_2641.webp","DSC_2642.webp","DSC_2643.webp","DSC_2644.webp","DSC_2645.webp",
-  "DSC_2646.webp","DSC_2647.webp","DSC_2648.webp","DSC_2649.webp","DSC_2650.webp",
-  "DSC_2651.webp","DSC_2652.webp","DSC_2653.webp","DSC_2654.webp","DSC_2655.webp",
-  "DSC_2656.webp","DSC_2657.webp","DSC_2658.webp","DSC_2659.webp","DSC_2660.webp",
-  "DSC_2661.webp","DSC_2662.webp","DSC_2663.webp","DSC_2664.webp","DSC_2665.webp",
-  "DSC_2666.webp","DSC_2667.webp","DSC_2668.webp","DSC_2669.webp","DSC_2670.webp",
-  "DSC_2671.webp","DSC_2672.webp","DSC_2673.webp","DSC_2674.webp","DSC_2675.webp",
-  "DSC_2676.webp","DSC_2677.webp","DSC_2678.webp","DSC_2679.webp","DSC_2680.webp",
-  "DSC_2681.webp","DSC_2682.webp","DSC_2683.webp","DSC_2684.webp","DSC_2685.webp",
-  "DSC_2686.webp","DSC_2687.webp","DSC_2688.webp","DSC_2689.webp","DSC_2690.webp",
-  "DSC_2691.webp","DSC_2692.webp","DSC_2693.webp","DSC_2694.webp","DSC_2695.webp",
-  "DSC_2696.webp","DSC_2697.webp","DSC_2698.webp","DSC_2699.webp","DSC_2700.webp",
-  "DSC_2701.webp","DSC_2702.webp","DSC_2703.webp","DSC_2704.webp","DSC_2705.webp",
-  "DSC_2706.webp","DSC_2707.webp","DSC_2708.webp","DSC_2709.webp","DSC_2710.webp",
-  "DSC_2711.webp","DSC_2712.webp","DSC_2713.webp","DSC_2714.webp","DSC_2715.webp",
-  "DSC_2716.webp","DSC_2717.webp","DSC_2718.webp","DSC_2719.webp","DSC_2720.webp",
-  "DSC_2721.webp","DSC_2722.webp","DSC_2723.webp","DSC_2724.webp","DSC_2725.webp",
-  "DSC_2726.webp","DSC_2727.webp","DSC_2728.webp","DSC_2729.webp","DSC_2730.webp",
-  "DSC_2741.webp","DSC_2742.webp","DSC_2743.webp","DSC_2744.webp","DSC_2745.webp",
-  "DSC_2746.webp","DSC_2747.webp","DSC_2748.webp","DSC_2749.webp","DSC_2750.webp",
-  "DSC_2751.webp","DSC_2752.webp","DSC_2753.webp","DSC_2754.webp","DSC_2755.webp",
-  "DSC_2756.webp","DSC_2757.webp","DSC_2758.webp","DSC_2759.webp","DSC_2760.webp",
-  "DSC_2761.webp","DSC_2762.webp","DSC_2763.webp","DSC_2764.webp","DSC_2765.webp",
-  "DSC_2766.webp","DSC_2767.webp","DSC_2768.webp","DSC_2769.webp","DSC_2770.webp",
-  "DSC_2771.webp"
+// ── Configuración ──
+const STORAGE_KEY = 'xv_anos_barbara_brittany_photo_selections';
+const LIMITE_IMPRESION = 100;   // fotos incluidas en el paquete
+const COSTO_FOTO_ADICIONAL = 15; // $ MXN por foto extra
+
+const photos = [
+    "images/DSC_2586.webp","images/DSC_2587.webp","images/DSC_2588.webp","images/DSC_2589.webp","images/DSC_2590.webp",
+    "images/DSC_2591.webp","images/DSC_2592.webp","images/DSC_2593.webp","images/DSC_2594.webp","images/DSC_2595.webp",
+    "images/DSC_2596.webp","images/DSC_2597.webp","images/DSC_2598.webp","images/DSC_2599.webp","images/DSC_2600.webp",
+    "images/DSC_2601.webp","images/DSC_2602.webp","images/DSC_2603.webp","images/DSC_2604.webp","images/DSC_2605.webp",
+    "images/DSC_2606.webp","images/DSC_2607.webp","images/DSC_2608.webp","images/DSC_2609.webp","images/DSC_2610.webp",
+    "images/DSC_2611.webp","images/DSC_2612.webp","images/DSC_2613.webp","images/DSC_2614.webp","images/DSC_2615.webp",
+    "images/DSC_2616.webp","images/DSC_2617.webp","images/DSC_2618.webp","images/DSC_2619.webp","images/DSC_2620.webp",
+    "images/DSC_2621.webp","images/DSC_2622.webp","images/DSC_2623.webp","images/DSC_2624.webp","images/DSC_2625.webp",
+    "images/DSC_2626.webp","images/DSC_2627.webp","images/DSC_2628.webp","images/DSC_2629.webp","images/DSC_2630.webp",
+    "images/DSC_2631.webp","images/DSC_2632.webp","images/DSC_2633.webp","images/DSC_2634.webp","images/DSC_2635.webp",
+    "images/DSC_2636.webp","images/DSC_2637.webp","images/DSC_2638.webp","images/DSC_2639.webp","images/DSC_2640.webp",
+    "images/DSC_2641.webp","images/DSC_2642.webp","images/DSC_2643.webp","images/DSC_2644.webp","images/DSC_2645.webp",
+    "images/DSC_2646.webp","images/DSC_2647.webp","images/DSC_2648.webp","images/DSC_2649.webp","images/DSC_2650.webp",
+    "images/DSC_2651.webp","images/DSC_2652.webp","images/DSC_2653.webp","images/DSC_2654.webp","images/DSC_2655.webp",
+    "images/DSC_2656.webp","images/DSC_2657.webp","images/DSC_2658.webp","images/DSC_2659.webp","images/DSC_2660.webp",
+    "images/DSC_2661.webp","images/DSC_2662.webp","images/DSC_2663.webp","images/DSC_2664.webp","images/DSC_2665.webp",
+    "images/DSC_2666.webp","images/DSC_2667.webp","images/DSC_2668.webp","images/DSC_2669.webp","images/DSC_2670.webp",
+    "images/DSC_2671.webp","images/DSC_2672.webp","images/DSC_2673.webp","images/DSC_2674.webp","images/DSC_2675.webp",
+    "images/DSC_2676.webp","images/DSC_2677.webp","images/DSC_2678.webp","images/DSC_2679.webp","images/DSC_2680.webp",
+    "images/DSC_2681.webp","images/DSC_2682.webp","images/DSC_2683.webp","images/DSC_2684.webp","images/DSC_2685.webp",
+    "images/DSC_2686.webp","images/DSC_2687.webp","images/DSC_2688.webp","images/DSC_2689.webp","images/DSC_2690.webp",
+    "images/DSC_2691.webp","images/DSC_2692.webp","images/DSC_2693.webp","images/DSC_2694.webp","images/DSC_2695.webp",
+    "images/DSC_2696.webp","images/DSC_2697.webp","images/DSC_2698.webp","images/DSC_2699.webp","images/DSC_2700.webp",
+    "images/DSC_2701.webp","images/DSC_2702.webp","images/DSC_2703.webp","images/DSC_2704.webp","images/DSC_2705.webp",
+    "images/DSC_2706.webp","images/DSC_2707.webp","images/DSC_2708.webp","images/DSC_2709.webp","images/DSC_2710.webp",
+    "images/DSC_2711.webp","images/DSC_2712.webp","images/DSC_2713.webp","images/DSC_2714.webp","images/DSC_2715.webp",
+    "images/DSC_2716.webp","images/DSC_2717.webp","images/DSC_2718.webp","images/DSC_2719.webp","images/DSC_2720.webp",
+    "images/DSC_2721.webp","images/DSC_2722.webp","images/DSC_2723.webp","images/DSC_2724.webp","images/DSC_2725.webp",
+    "images/DSC_2726.webp","images/DSC_2727.webp","images/DSC_2728.webp","images/DSC_2729.webp","images/DSC_2730.webp",
+    "images/DSC_2741.webp","images/DSC_2742.webp","images/DSC_2743.webp","images/DSC_2744.webp","images/DSC_2745.webp",
+    "images/DSC_2746.webp","images/DSC_2747.webp","images/DSC_2748.webp","images/DSC_2749.webp","images/DSC_2750.webp",
+    "images/DSC_2751.webp","images/DSC_2752.webp","images/DSC_2753.webp","images/DSC_2754.webp","images/DSC_2755.webp",
+    "images/DSC_2756.webp","images/DSC_2757.webp","images/DSC_2758.webp","images/DSC_2759.webp","images/DSC_2760.webp",
+    "images/DSC_2761.webp","images/DSC_2762.webp","images/DSC_2763.webp","images/DSC_2764.webp","images/DSC_2765.webp",
+    "images/DSC_2766.webp","images/DSC_2767.webp","images/DSC_2768.webp","images/DSC_2769.webp","images/DSC_2770.webp",
+    "images/DSC_2771.webp"
 ];
 
-// Estado
-let seleccion = new Map(); // filename → orden
-let ordenCounter = 0;
+// ── Estado ──
+let photoSelections = {};
+let currentPhotoIndex = null;
+let currentFilter = 'all';
 
-// ── Construir grid ──
-const grid = document.getElementById('grid');
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            const img = e.target.querySelector('img');
-            if (img && img.dataset.src) {
-                img.src = img.dataset.src;
-                delete img.dataset.src;
-            }
-            observer.unobserve(e.target);
-        }
-    });
-}, { rootMargin: '200px' });
-
-FOTOS.forEach((nombre, idx) => {
-    const item = document.createElement('div');
-    item.className = 'foto-item';
-    item.dataset.nombre = nombre;
-    item.dataset.idx = idx;
-
-    const img = document.createElement('img');
-    img.dataset.src = 'images/' + nombre;
-    img.alt = nombre;
-    img.loading = 'lazy';
-
-    const label = document.createElement('div');
-    label.className = 'foto-nombre';
-    label.textContent = nombre.replace('.webp','');
-
-    item.appendChild(img);
-    item.appendChild(label);
-    grid.appendChild(item);
-
-    // Click: seleccionar / deseleccionar
-    item.addEventListener('click', (e) => {
-        if (e.detail === 2) { abrirLightbox(idx); return; } // doble click → lightbox
-        toggleSeleccion(nombre, item);
-    });
-
-    // Click largo → lightbox
-    let longPress;
-    item.addEventListener('pointerdown', () => {
-        longPress = setTimeout(() => abrirLightbox(idx), 500);
-    });
-    item.addEventListener('pointerup', () => clearTimeout(longPress));
-    item.addEventListener('pointerleave', () => clearTimeout(longPress));
-
-    observer.observe(item);
-});
-
-actualizarContador();
-
-// ── Selección ──
-function toggleSeleccion(nombre, item) {
-    if (seleccion.has(nombre)) {
-        seleccion.delete(nombre);
-        item.classList.remove('sel');
-        item.removeAttribute('data-orden');
-        reordenar();
-    } else {
-        ordenCounter++;
-        seleccion.set(nombre, ordenCounter);
-        item.classList.add('sel');
-        item.dataset.orden = ordenCounter;
-    }
-    actualizarContador();
-    guardar();
-}
-
-function reordenar() {
-    let n = 0;
-    seleccion = new Map([...seleccion.entries()].map(([k]) => [k, ++n]));
-    ordenCounter = n;
-    document.querySelectorAll('.foto-item.sel').forEach(el => {
-        const orden = seleccion.get(el.dataset.nombre);
-        el.dataset.orden = orden ?? '';
-    });
-}
-
-function actualizarContador() {
-    const n = seleccion.size;
-    document.getElementById('contador').textContent = n + (n === 1 ? ' seleccionada' : ' seleccionadas');
-}
-
-function limpiarSeleccion() {
-    seleccion.clear();
-    ordenCounter = 0;
-    document.querySelectorAll('.foto-item.sel').forEach(el => {
-        el.classList.remove('sel');
-        el.removeAttribute('data-orden');
-    });
-    actualizarContador();
-    guardar();
-}
-
-function seleccionarTodas() {
-    limpiarSeleccion();
-    document.querySelectorAll('.foto-item:not([style*="display:none"]):not([style*="display: none"])').forEach(el => {
-        const nombre = el.dataset.nombre;
-        if (nombre && !seleccion.has(nombre)) {
-            ordenCounter++;
-            seleccion.set(nombre, ordenCounter);
-            el.classList.add('sel');
-            el.dataset.orden = ordenCounter;
-        }
-    });
-    actualizarContador();
-    guardar();
-    toast('Todas las fotos visibles seleccionadas');
-}
-
-// ── Persistencia en localStorage ──
-function guardar() {
+// ── LocalStorage ──
+function loadSelections() {
     try {
-        localStorage.setItem('fotosel_bb', JSON.stringify([...seleccion.entries()]));
-    } catch(e) {}
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) photoSelections = JSON.parse(saved);
+    } catch(e) { photoSelections = {}; }
 }
 
-function cargar() {
+function saveSelections() {
     try {
-        const data = localStorage.getItem('fotosel_bb');
-        if (!data) return;
-        const entries = JSON.parse(data);
-        entries.forEach(([nombre, orden]) => {
-            seleccion.set(nombre, orden);
-            if (orden > ordenCounter) ordenCounter = orden;
-        });
-        document.querySelectorAll('.foto-item').forEach(el => {
-            const orden = seleccion.get(el.dataset.nombre);
-            if (orden !== undefined) {
-                el.classList.add('sel');
-                el.dataset.orden = orden;
-            }
-        });
-        actualizarContador();
-    } catch(e) {}
-}
-
-// ── Filtro ──
-function filtrar() {
-    const texto = document.getElementById('filtroInput').value.toLowerCase();
-    const modo  = document.getElementById('filtroSolo').value;
-    let visible = 0;
-    document.querySelectorAll('.foto-item').forEach(el => {
-        const nombre = el.dataset.nombre.toLowerCase();
-        const coincide = nombre.includes(texto);
-        const esSel = el.classList.contains('sel');
-        const mostrar = coincide &&
-            (modo === 'todas' ||
-             (modo === 'seleccionadas'   &&  esSel) ||
-             (modo === 'noseleccionadas' && !esSel));
-        el.style.display = mostrar ? '' : 'none';
-        if (mostrar) { visible++; observer.observe(el); }
-    });
-    document.getElementById('totalVisible').textContent = visible + ' fotos';
-    document.getElementById('empty-msg').style.display = visible === 0 ? 'block' : 'none';
-}
-
-function cambiarTamaño(v) {
-    document.getElementById('grid').style.setProperty('--thumb', v + 'px');
-    document.getElementById('tamañoLabel').textContent = v + 'px';
-}
-
-// ── Copiar lista ──
-function copiarLista() {
-    if (seleccion.size === 0) { toast('No hay fotos seleccionadas'); return; }
-    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]).map(([n]) => n.replace('.webp',''));
-    navigator.clipboard.writeText(ordered.join('\n'))
-        .then(() => toast('Lista copiada al portapapeles (' + ordered.length + ' fotos)'))
-        .catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = ordered.join('\n');
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            toast('Lista copiada (' + ordered.length + ' fotos)');
-        });
-}
-
-// ── Modal de selección ──
-function abrirModalSel() {
-    if (seleccion.size === 0) { toast('No hay fotos seleccionadas'); return; }
-
-    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]);
-    document.getElementById('modal-count').textContent = ordered.length;
-
-    const mgrid = document.getElementById('modal-grid');
-    mgrid.innerHTML = '';
-    ordered.forEach(([nombre, orden]) => {
-        const div = document.createElement('div');
-        div.className = 'modal-thumb';
-        div.innerHTML = `
-            <img src="images/${nombre}" alt="${nombre}" loading="lazy">
-            <div class="orden">${orden}</div>
-            <div class="nombre">${nombre.replace('.webp','')}</div>`;
-        mgrid.appendChild(div);
-    });
-
-    document.getElementById('modal-lista-texto').textContent =
-        ordered.map(([n,o]) => o + '. ' + n.replace('.webp','')).join('\n');
-
-    document.getElementById('modal-sel').classList.add('open');
-}
-
-function cerrarModalSel() {
-    document.getElementById('modal-sel').classList.remove('open');
-}
-
-function enviarWhatsApp() {
-    const ordered = [...seleccion.entries()].sort((a,b) => a[1]-b[1]).map(([n,o]) => o + '. ' + n.replace('.webp',''));
-    const msg = 'Fotos seleccionadas para XV años Barbara Brittany:\n' + ordered.join('\n');
-    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-}
-
-// ── Lightbox ──
-let lbFotos = []; // fotos visibles actuales
-let lbIdx = 0;
-
-function abrirLightbox(idx) {
-    // Construir lista de visibles
-    lbFotos = [];
-    document.querySelectorAll('.foto-item:not([style*="display:none"]):not([style*="display: none"])').forEach(el => {
-        lbFotos.push(el.dataset.nombre);
-    });
-    lbIdx = lbFotos.indexOf(FOTOS[idx]);
-    if (lbIdx < 0) lbIdx = 0;
-    mostrarLb();
-    document.getElementById('lightbox').classList.add('open');
-}
-
-function mostrarLb() {
-    const nombre = lbFotos[lbIdx];
-    document.getElementById('lb-img').src = 'images/' + nombre;
-    document.getElementById('lb-nombre').textContent = nombre.replace('.webp','') + '  (' + (lbIdx+1) + '/' + lbFotos.length + ')';
-    const btn = document.getElementById('lb-sel-btn');
-    if (seleccion.has(nombre)) {
-        btn.textContent = '✓ Seleccionada (' + seleccion.get(nombre) + ')';
-        btn.classList.add('active');
-    } else {
-        btn.textContent = 'Seleccionar';
-        btn.classList.remove('active');
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(photoSelections));
+    } catch(e) {
+        showToast('Error al guardar. Espacio insuficiente.', 'error');
     }
 }
 
-function cerrarLightbox() {
-    document.getElementById('lightbox').classList.remove('open');
+function clearAllSelections() {
+    if (!confirm('¿Borrar TODAS las selecciones? Esta acción no se puede deshacer.')) return;
+    photoSelections = {};
+    saveSelections();
+    renderGallery();
+    updateStats();
+    updateFilterButtons();
+    showToast('Selecciones eliminadas');
 }
 
-function lbNav(dir) {
-    lbIdx = (lbIdx + dir + lbFotos.length) % lbFotos.length;
-    mostrarLb();
+// ── Stats ──
+function getStats() {
+    const stats = { impresion: 0, invitacion: 0, descartada: 0, sinClasificar: photos.length };
+    Object.values(photoSelections).forEach(s => {
+        if (s.impresion)  stats.impresion++;
+        if (s.invitacion) stats.invitacion++;
+        if (s.descartada) stats.descartada++;
+    });
+    stats.sinClasificar = photos.length - Object.keys(photoSelections).length;
+    return stats;
 }
 
-function toggleDesde_lb() {
-    const nombre = lbFotos[lbIdx];
-    const item = document.querySelector(`.foto-item[data-nombre="${nombre}"]`);
-    if (item) toggleSeleccion(nombre, item);
-    mostrarLb();
+function updateStats() {
+    const stats = getStats();
+    document.getElementById('countImpresion').textContent   = `${stats.impresion}/${LIMITE_IMPRESION}`;
+    document.getElementById('countInvitacion').textContent  = stats.invitacion;
+    document.getElementById('countDescartada').textContent  = stats.descartada;
+    document.getElementById('countSinClasificar').textContent = stats.sinClasificar;
+
+    const extra = Math.max(0, stats.impresion - LIMITE_IMPRESION);
+    const costo = extra * COSTO_FOTO_ADICIONAL;
+    const display = document.getElementById('extraCostDisplay');
+    if (extra > 0) {
+        display.classList.add('visible');
+        document.getElementById('extraCostDetail').textContent = `${extra} foto${extra > 1 ? 's' : ''} × $${COSTO_FOTO_ADICIONAL}`;
+        document.getElementById('extraCostAmount').textContent  = `$${costo} MXN`;
+    } else {
+        display.classList.remove('visible');
+    }
+
+    const card = document.querySelector('.stat-card.impresion');
+    if (card) {
+        if (stats.impresion > LIMITE_IMPRESION) {
+            card.style.borderColor = '#f39c12';
+        } else if (stats.impresion === LIMITE_IMPRESION) {
+            card.style.borderColor = '#2ecc71';
+        } else {
+            card.style.borderColor = '';
+        }
+    }
 }
 
-// Teclado lightbox
-document.addEventListener('keydown', (e) => {
-    if (!document.getElementById('lightbox').classList.contains('open')) return;
-    if (e.key === 'ArrowRight') lbNav(1);
-    if (e.key === 'ArrowLeft')  lbNav(-1);
-    if (e.key === 'Escape')     cerrarLightbox();
-    if (e.key === ' ') { e.preventDefault(); toggleDesde_lb(); }
-});
+// ── Galería ──
+function renderGallery() {
+    const grid = document.getElementById('photosGrid');
+    grid.innerHTML = '';
+
+    photos.forEach((photo, index) => {
+        const sel = photoSelections[index] || {};
+        const hasAny = sel.impresion || sel.invitacion || sel.descartada;
+
+        const card = document.createElement('div');
+        card.className = 'photo-card';
+        card.dataset.index = index;
+
+        if (sel.descartada) {
+            card.classList.add('has-descartada');
+        } else {
+            const cats = [];
+            if (sel.impresion)  cats.push('impresion');
+            if (sel.invitacion) cats.push('invitacion');
+            if (cats.length > 1)    card.classList.add('has-multiple');
+            else if (cats.length === 1) card.classList.add(`has-${cats[0]}`);
+        }
+
+        let badges = '';
+        if (hasAny) {
+            badges = '<div class="photo-badges">';
+            if (sel.impresion)  badges += '<span class="badge badge-impresion">📸 Impresión</span>';
+            if (sel.invitacion) badges += '<span class="badge badge-invitacion">💌 Invitación</span>';
+            if (sel.descartada) badges += '<span class="badge badge-descartada">❌ Descartada</span>';
+            badges += '</div>';
+        }
+
+        card.innerHTML = `
+            <img src="${photo}" alt="Foto ${index + 1}" loading="lazy">
+            <div class="photo-number">Foto ${index + 1} · ${photo.split('/')[1].replace('.webp','')}</div>
+            ${badges}
+        `;
+
+        card.addEventListener('click', () => openModal(index));
+        grid.appendChild(card);
+    });
+
+    applyFilter();
+}
+
+// ── Filtros ──
+function applyFilter() {
+    document.querySelectorAll('.photo-card').forEach(card => {
+        const idx = parseInt(card.dataset.index);
+        const sel = photoSelections[idx] || {};
+        let show = false;
+        switch (currentFilter) {
+            case 'all':            show = true; break;
+            case 'impresion':      show = !!sel.impresion; break;
+            case 'invitacion':     show = !!sel.invitacion; break;
+            case 'descartada':     show = !!sel.descartada; break;
+            case 'sin-clasificar': show = !sel.impresion && !sel.invitacion && !sel.descartada; break;
+        }
+        card.classList.toggle('hidden', !show);
+    });
+}
+
+function setFilter(filter) {
+    currentFilter = filter;
+    applyFilter();
+    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+    document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+}
+
+function updateFilterButtons() {
+    const stats = getStats();
+    document.getElementById('btnFilterAll').textContent           = `Todas (${photos.length})`;
+    document.getElementById('btnFilterImpresion').textContent     = `Impresión (${stats.impresion})`;
+    document.getElementById('btnFilterInvitacion').textContent    = `Invitación (${stats.invitacion})`;
+    document.getElementById('btnFilterDescartada').textContent    = `Descartadas (${stats.descartada})`;
+    document.getElementById('btnFilterSinClasificar').textContent = `Sin Clasificar (${stats.sinClasificar})`;
+}
+
+// ── Modal ──
+function openModal(index) {
+    currentPhotoIndex = index;
+    const photo = photos[index];
+    document.getElementById('modalImage').src = photo;
+    document.getElementById('modalPhotoNumber').textContent =
+        `Foto ${index + 1} de ${photos.length} · ${photo.split('/')[1].replace('.webp','')}`;
+
+    const sel = photoSelections[index] || {};
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.classList.toggle('selected', !!sel[btn.dataset.category]);
+    });
+
+    document.getElementById('photoModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('photoModal').classList.remove('active');
+    document.body.style.overflow = '';
+    currentPhotoIndex = null;
+}
+
+function saveCurrentSelections() {
+    if (currentPhotoIndex === null) return;
+    const selected = {};
+    let any = false;
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        const cat = btn.dataset.category;
+        const on  = btn.classList.contains('selected');
+        selected[cat] = on;
+        if (on) any = true;
+    });
+    if (any) photoSelections[currentPhotoIndex] = selected;
+    else delete photoSelections[currentPhotoIndex];
+    saveSelections();
+    updateStats();
+    updateFilterButtons();
+}
+
+function saveModalSelection() {
+    saveCurrentSelections();
+    renderGallery();
+    closeModal();
+    showToast('Selección guardada');
+}
+
+function navigatePhoto(dir) {
+    if (currentPhotoIndex === null) return;
+    saveCurrentSelections();
+    const newIdx = (currentPhotoIndex + dir + photos.length) % photos.length;
+    openModal(newIdx);
+}
+
+// ── Exportar ──
+function exportToJSON() {
+    const stats = getStats();
+    const extra = Math.max(0, stats.impresion - LIMITE_IMPRESION);
+    const data = {
+        evento: 'XV Años — Barbara Brittany',
+        fecha_exportacion: new Date().toISOString(),
+        total_fotos: photos.length,
+        estadisticas: stats,
+        fotos_incluidas_paquete: LIMITE_IMPRESION,
+        fotos_adicionales: extra,
+        costo_adicional: extra * COSTO_FOTO_ADICIONAL,
+        selecciones: []
+    };
+    photos.forEach((photo, i) => {
+        const sel = photoSelections[i];
+        if (sel && (sel.impresion || sel.invitacion || sel.descartada)) {
+            data.selecciones.push({
+                numero_foto: i + 1,
+                archivo: photo,
+                impresion: !!sel.impresion,
+                invitacion: !!sel.invitacion,
+                descartada: !!sel.descartada
+            });
+        }
+    });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `seleccion-barbara-brittany-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    showToast('Reporte descargado');
+}
+
+function copiarResumen() {
+    const stats = getStats();
+    const extra = Math.max(0, stats.impresion - LIMITE_IMPRESION);
+    const costo = extra * COSTO_FOTO_ADICIONAL;
+    let txt = '🎀 SELECCIÓN DE FOTOS — XV AÑOS BARBARA BRITTANY\n';
+    txt += '══════════════════════════════════════════════\n\n';
+    txt += `📋 PAQUETE: ${LIMITE_IMPRESION} fotos de impresión incluidas\n\n`;
+    txt += `📊 RESUMEN:\n`;
+    txt += `   📸 Para impresión: ${stats.impresion}/${LIMITE_IMPRESION}`;
+    txt += stats.impresion === LIMITE_IMPRESION ? ' ✓ Completo\n' : stats.impresion > LIMITE_IMPRESION ? ' ⚠️ Con fotos adicionales\n' : ' (faltan ' + (LIMITE_IMPRESION - stats.impresion) + ')\n';
+    txt += `   💌 Para invitación: ${stats.invitacion}\n`;
+    txt += `   ❌ Descartadas: ${stats.descartada}\n`;
+    txt += `   ⭕ Sin clasificar: ${stats.sinClasificar}\n`;
+    if (extra > 0) {
+        txt += `\n💰 COSTO ADICIONAL:\n`;
+        txt += `   ${extra} foto${extra>1?'s':''} × $${COSTO_FOTO_ADICIONAL} = $${costo} MXN\n`;
+    }
+    txt += `\n📅 ${new Date().toLocaleString('es-MX')}\n`;
+
+    navigator.clipboard.writeText(txt).then(() => {
+        showToast('Resumen copiado al portapapeles');
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = txt;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        showToast('Resumen copiado');
+    });
+}
 
 // ── Toast ──
-function toast(msg, ms = 2500) {
+function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), ms);
+    t.className = `toast ${type}`;
+    setTimeout(() => t.classList.add('show'), 50);
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 // ── Init ──
-document.getElementById('totalVisible').textContent = FOTOS.length + ' fotos';
-cargar();
-filtrar();
+document.addEventListener('DOMContentLoaded', () => {
+    loadSelections();
+    renderGallery();
+    updateStats();
+    updateFilterButtons();
+
+    // Filtros
+    document.getElementById('btnFilterAll').addEventListener('click',           () => setFilter('all'));
+    document.getElementById('btnFilterImpresion').addEventListener('click',     () => setFilter('impresion'));
+    document.getElementById('btnFilterInvitacion').addEventListener('click',    () => setFilter('invitacion'));
+    document.getElementById('btnFilterDescartada').addEventListener('click',    () => setFilter('descartada'));
+    document.getElementById('btnFilterSinClasificar').addEventListener('click', () => setFilter('sin-clasificar'));
+
+    // Acciones
+    document.getElementById('btnExport').addEventListener('click', exportToJSON);
+    document.getElementById('btnShare').addEventListener('click',  copiarResumen);
+    document.getElementById('btnClear').addEventListener('click',  clearAllSelections);
+
+    // Modal
+    document.querySelector('.modal-close').addEventListener('click', closeModal);
+    document.getElementById('btnCancelSelection').addEventListener('click', closeModal);
+    document.getElementById('btnSaveSelection').addEventListener('click',   saveModalSelection);
+    document.getElementById('btnPrevPhoto').addEventListener('click', () => navigatePhoto(-1));
+    document.getElementById('btnNextPhoto').addEventListener('click', () => navigatePhoto(1));
+
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => btn.classList.toggle('selected'));
+    });
+
+    document.getElementById('photoModal').addEventListener('click', e => {
+        if (e.target.id === 'photoModal') closeModal();
+    });
+
+    // Teclado
+    document.addEventListener('keydown', e => {
+        if (!document.getElementById('photoModal').classList.contains('active')) return;
+        if (e.key === 'Escape')      closeModal();
+        if (e.key === 'Enter')       saveModalSelection();
+        if (e.key === 'ArrowLeft')   navigatePhoto(-1);
+        if (e.key === 'ArrowRight')  navigatePhoto(1);
+    });
+});
+
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveSelections(); });
+window.addEventListener('beforeunload', () => saveSelections());
 </script>
 </body>
 </html>
