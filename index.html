@@ -14,6 +14,30 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
+    <!-- ══════════════════════════════════════════
+         SOBRE DE INVITACIÓN — pantalla de entrada
+         ══════════════════════════════════════════ -->
+    <div id="invitationOverlay" onclick="abrirInvitacion()">
+        <div class="sobre-wrap">
+            <div class="sobre" id="sobre">
+                <!-- Tapa del sobre (flap) -->
+                <div class="sobre-flap"></div>
+                <!-- Cuerpo / contenido -->
+                <div class="sobre-cuerpo">
+                    <i class="fas fa-crown sobre-crown"></i>
+                    <h2 class="sobre-name">Barbara Brittany</h2>
+                    <p class="sobre-event">XV Años &middot; 11 de Abril 2026</p>
+                </div>
+                <!-- Triángulos decorativos laterales -->
+                <div class="sobre-tri-izq"></div>
+                <div class="sobre-tri-der"></div>
+                <div class="sobre-tri-bot"></div>
+            </div>
+            <p class="sobre-hint">❀ Toca para abrir tu invitación ❀</p>
+        </div>
+    </div>
+
     <!-- Decoraciones Flotantes -->
     <div class="floating-flower" style="left: 10%; animation-delay: 0s;">❀</div>
     <div class="floating-flower" style="left: 30%; animation-delay: 3s;">✿</div>
@@ -22,71 +46,74 @@
     <div class="floating-flower" style="left: 90%; animation-delay: 12s;">✿</div>
 
     <div class="container">
-        <!-- Header -->
+
+        <!-- 1. PORTADA / ENCABEZADO -->
         <header>
             <div class="crown"><i class="fas fa-crown"></i></div>
             <h1 class="main-title">MIS XV AÑOS</h1>
             <h2 class="quinceañera-name">Barbara Brittany</h2>
             <div class="divider"></div>
+
+            <!-- Bienvenida Personalizada (Solo visible con parámetros QR) -->
+            <section id="personalizedWelcome" style="display: none; background: linear-gradient(135deg, rgba(196, 30, 58, 0.9), rgba(139, 0, 0, 0.9)); padding: 30px; border-radius: 20px; text-align: center; margin: 20px auto; border: 3px solid var(--gold); box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);">
+                <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
+                <h2 style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 15px;">
+                    ¡Bienvenido(a)!
+                </h2>
+                <p id="guestWelcomeText" style="color: var(--cream); font-size: 1.3rem; line-height: 1.6; margin-bottom: 10px;"></p>
+                <p id="guestPassesText" style="color: var(--gold); font-size: 1.1rem; font-weight: bold; margin-top: 10px;"></p>
+                <div style="margin-top: 20px;">
+                    <a href="#rsvp" style="display: inline-block; background: var(--gold); color: var(--burgundy); padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
+                        <i class="fas fa-check-circle"></i> Confirmar Asistencia
+                    </a>
+                </div>
+            </section>
+
+            <!-- Quote -->
+            <div class="quote">
+                "Hoy comienza un nuevo capítulo lleno de sueños, ilusiones y magia. <br>
+                Gracias por acompañarme en este día tan especial."
+            </div>
+
+            <!-- Foto Principal -->
+            <div class="photo-full">
+                <img src="fotos/0597d3cb-fe64-4234-bc7f-75f658b53164.png" alt="Barbara Brittany XV Años">
+            </div>
+
+            <!-- Countdown -->
+            <div style="margin-top: 40px;">
+                <h2 class="section-title" style="color: var(--gold);"><i class="fas fa-clock"></i> Cuenta Regresiva</h2>
+                <div class="countdown" id="countdown">
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="days">00</span>
+                        <span class="countdown-label">Días</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="hours">00</span>
+                        <span class="countdown-label">Horas</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="minutes">00</span>
+                        <span class="countdown-label">Minutos</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="seconds">00</span>
+                        <span class="countdown-label">Segundos</span>
+                    </div>
+                </div>
+            </div>
         </header>
 
-        <!-- Bienvenida Personalizada (Solo visible con parámetros QR) -->
-        <section id="personalizedWelcome" style="display: none; background: linear-gradient(135deg, rgba(196, 30, 58, 0.9), rgba(139, 0, 0, 0.9)); padding: 30px; border-radius: 20px; text-align: center; margin: 20px auto; border: 3px solid var(--gold); box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);">
-            <div style="font-size: 3rem; margin-bottom: 15px;">🎉</div>
-            <h2 style="color: var(--gold); font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 15px;">
-                ¡Bienvenido(a)!
-            </h2>
-            <p id="guestWelcomeText" style="color: var(--cream); font-size: 1.3rem; line-height: 1.6; margin-bottom: 10px;"></p>
-            <p id="guestPassesText" style="color: var(--gold); font-size: 1.1rem; font-weight: bold; margin-top: 10px;"></p>
-            <div style="margin-top: 20px;">
-                <a href="#rsvp" style="display: inline-block; background: var(--gold); color: var(--burgundy); padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
-                    <i class="fas fa-check-circle"></i> Confirmar Asistencia
-                </a>
-            </div>
-        </section>
-
-        <!-- Quote -->
-        <div class="quote">
-            "Hoy comienza un nuevo capítulo lleno de sueños, ilusiones y magia. <br>
-            Gracias por acompañarme en este día tan especial."
-        </div>
-
-        <!-- Foto Principal (placeholder - agregar después) -->
-        <section style="padding: 0; background: transparent; border: none; box-shadow: none;">
-            <div style="max-width: 900px; margin: 0 auto; position: relative; border-radius: 20px; overflow: hidden; border: 4px solid var(--gold); box-shadow: 0 12px 50px rgba(212, 175, 55, 0.4);">
-                <div style="background: rgba(255,255,255,0.1); padding: 100px 20px; text-align: center; color: var(--gold);">
-                    <i class="fas fa-image" style="font-size: 4rem;"></i>
-                    <p style="margin-top: 20px;">Foto Principal - Próximamente</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Countdown -->
+        <!-- 2. QUIÉN -->
         <section>
-            <h2 class="section-title"><i class="fas fa-clock"></i> Cuenta Regresiva</h2>
-            <div class="countdown" id="countdown">
-                <div class="countdown-item">
-                    <span class="countdown-value" id="days">00</span>
-                    <span class="countdown-label">Días</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="hours">00</span>
-                    <span class="countdown-label">Horas</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="minutes">00</span>
-                    <span class="countdown-label">Minutos</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="seconds">00</span>
-                    <span class="countdown-label">Segundos</span>
-                </div>
+            <h2 class="section-title"><i class="fas fa-users"></i> ¿Quién celebra?</h2>
+            <!-- Retrato -->
+            <div class="photo-full" style="margin-bottom: 0;">
+                <img src="fotos/ce6a5aac-d85e-4e3e-a55a-f93f1b4d7c88.png" alt="Barbara Brittany">
             </div>
-        </section>
-
-        <!-- Family -->
-        <section>
-            <h2 class="section-title"><i class="fas fa-users"></i> Mi Familia</h2>
+            <div style="text-align: center; padding: 20px 0;">
+                <span style="font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 6vw, 3.5rem); color: var(--gold-light); font-weight: 700;">Barbara Brittany</span>
+            </div>
             <div class="family-section">
                 <div class="family-card">
                     <div class="family-icon"><i class="fas fa-home"></i></div>
@@ -107,9 +134,9 @@
             </div>
         </section>
 
-        <!-- Event Details -->
+        <!-- 3. CUÁNDO -->
         <section>
-            <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Detalles del Evento</h2>
+            <h2 class="section-title"><i class="fas fa-calendar-alt"></i> ¿Cuándo?</h2>
             <div class="event-details">
                 <!-- Ceremony -->
                 <div class="event-card">
@@ -159,9 +186,63 @@
             </div>
         </section>
 
-        <!-- Dress Code -->
+        <!-- 4. DÓNDE -->
         <section>
-            <h2 class="section-title"><i class="fas fa-tshirt"></i> Código de Vestimenta</h2>
+            <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> ¿Dónde?</h2>
+            <div class="maps-grid">
+                <!-- Iglesia -->
+                <div class="map-card">
+                    <h3 class="map-card-title"><i class="fas fa-church"></i> Iglesia</h3>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59540.609720807!2d-101.79437275136719!3d21.140929699999987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bc0a32f2c93ff%3A0x9ec0de15c35253ef!2sParroquia%20San%20Juan%20Bautista%20de%20la%20Salle!5e0!3m2!1ses-419!2smx!4v1766694196741!5m2!1ses-419!2smx"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Mapa Parroquia San Juan Bautista de la Salle">
+                    </iframe>
+                    <div class="map-card-footer">
+                        <a href="https://maps.app.goo.gl/wa8mdZ6A8nBizeau7" target="_blank" class="btn">
+                            <i class="fas fa-directions"></i> Cómo llegar
+                        </a>
+                    </div>
+                </div>
+                <!-- Recepción -->
+                <div class="map-card">
+                    <h3 class="map-card-title"><i class="fas fa-glass-cheers"></i> Recepción</h3>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3129.2536123570635!2d-101.74045214431202!3d21.139235309125603!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x842bc1d47aac804d%3A0x2f7998641e787960!2sGranja%20El%20general!5e0!3m2!1ses-419!2smx!4v1769115524664!5m2!1ses-419!2smx"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Mapa Granja El General">
+                    </iframe>
+                    <div class="map-card-footer">
+                        <a href="https://maps.app.goo.gl/HEQCgsLrzkjW2JYm8" target="_blank" class="btn">
+                            <i class="fas fa-directions"></i> Cómo llegar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. POR QUÉ -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-heart"></i> ¿Por qué celebramos?</h2>
+            <p class="porque-text">
+                Porque cada etapa de la vida merece celebrarse, y mis XV años son el inicio de un nuevo capítulo lleno de sueños y esperanza. Hoy quiero compartir este momento tan especial rodeada de las personas que más quiero.
+            </p>
+            <div class="photo-full">
+                <img src="fotos/ea73f326-d0f9-45ed-ac4b-a3c1fcf6106a.png" alt="Barbara Brittany - Templo Expiatorio">
+            </div>
+        </section>
+
+        <!-- 6. PARA QUÉ -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-star"></i> ¿Para qué te invitamos?</h2>
+            <p class="paraque-intro">
+                Para compartir juntos este día tan especial, lleno de música, tradición y alegría.
+            </p>
+            <!-- Dress Code -->
             <div class="dress-code">
                 <div class="dress-code-icons"><i class="fas fa-user-tie"></i> <i class="fas fa-female"></i></div>
                 <p class="dress-code-text">FORMAL / ELEGANTE</p>
@@ -169,23 +250,15 @@
                     Te pedimos asistir con vestimenta formal para hacer de esta noche una ocasión aún más especial
                 </p>
             </div>
-        </section>
-
-        <!-- Mesa de Regalos -->
-        <section>
-            <h2 class="section-title"><i class="fas fa-gift"></i> Mesa de Regalos</h2>
-            <div style="text-align: center; padding: 30px;">
-                <p style="font-size: 1.2rem; color: var(--cream); margin-bottom: 30px;">
-                    Tu presencia es nuestro mejor regalo, pero si deseas obsequiarnos algo,
-                    <br>hemos preparado algunas sugerencias
-                </p>
+            <!-- Mesa de Regalos -->
+            <div style="text-align: center; margin-top: 30px;">
                 <a href="mesa-regalos.html" class="btn" style="font-size: 1.1rem;">
                     <i class="fas fa-gift"></i> Ver Mesa de Regalos
                 </a>
             </div>
         </section>
 
-        <!-- RSVP -->
+        <!-- 7. CONFIRMACIÓN -->
         <section id="rsvp">
             <h2 class="section-title"><i class="fas fa-envelope"></i> Confirma tu Asistencia</h2>
             <p style="text-align: center; margin-bottom: 30px; color: var(--cream);">
@@ -234,24 +307,42 @@
             </div>
         </section>
 
-        <!-- Photo Gallery -->
+        <!-- 8. GALERÍA -->
         <section>
             <h2 class="section-title"><i class="fas fa-camera"></i> Galería de Fotos</h2>
-            <p style="text-align: center; margin-bottom: 30px; color: var(--cream);">
-                Próximamente se agregarán las fotos de la sesión
-            </p>
-            <div class="gallery-preview" id="galleryPreview">
-                <!-- Preview photos will be loaded here -->
-            </div>
         </section>
+        <!-- Carrusel full-width fuera del container -->
+    </div><!-- cierra .container temporalmente -->
 
-        <!-- Social Share -->
+    <div class="gallery-carousel" id="galeria">
+        <div class="gallery-slide active">
+            <img src="fotos/c59e5fc6-eaed-4930-92bf-bf01dbb0d80d.png" alt="Barbara Brittany">
+        </div>
+        <div class="gallery-slide">
+            <img src="fotos/b6db4c38-1ff6-43de-9d0c-a8171a8149fa.png" alt="Barbara Brittany">
+        </div>
+        <div class="gallery-slide">
+            <img src="fotos/c5802e7e-5e02-4df6-a626-59664badde91.png" alt="Barbara Brittany">
+        </div>
+        <button class="carousel-nav carousel-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-nav carousel-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots">
+            <span class="carousel-dot active" onclick="showSlide(0)"></span>
+            <span class="carousel-dot" onclick="showSlide(1)"></span>
+            <span class="carousel-dot" onclick="showSlide(2)"></span>
+        </div>
+    </div>
+
+    <div class="container"><!-- reabre .container -->
+
+        <!-- 9. COMPARTIR -->
         <section class="social-share">
             <h2 class="section-title"><i class="fas fa-share-alt"></i> Comparte</h2>
             <p style="margin-bottom: 20px; color: var(--cream);">
                 Ayúdame a compartir esta invitación con tus amigos y familiares
             </p>
             <div class="social-icons">
+                <a href="#" onclick="shareInstagram()" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="#" onclick="shareWhatsApp()" class="social-icon" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                 <a href="#" onclick="shareFacebook()" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
                 <a href="#" onclick="shareTwitter()" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
@@ -259,7 +350,7 @@
             </div>
         </section>
 
-        <!-- Footer -->
+        <!-- 10. PIE DE PÁGINA -->
         <footer>
             <p style="font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-sparkles"></i> ¡Nos vemos el <span id="footerDate">11 de abril</span>! <i class="fas fa-sparkles"></i></p>
             <div class="divider" style="margin: 20px auto;"></div>
@@ -270,17 +361,32 @@
                 © 2026 - Barbara Brittany XV Años
             </p>
         </footer>
+
     </div>
+
+    <!-- Audio oculto controlado por botón flotante -->
+    <audio id="bgMusic" loop>
+        <source src="audio/Mis quince en flor (1).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Botón flotante de música -->
+    <button class="music-btn-float" id="musicBtn" onclick="toggleMusic()" title="♪ Reproducir canción">
+        <i class="fas fa-play" id="musicIcon"></i>
+    </button>
+    <div class="music-btn-tooltip" id="musicTooltip">♪ Reproducir canción</div>
 
     <script src="data/data.js"></script>
     <script src="js/data-loader.js"></script>
 
     <script>
+        // Bloquear scroll mientras el sobre está visible
+        document.body.style.overflow = 'hidden';
+
         // Load event data on page load
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const eventoData = await dataLoader.loadJSON('data/data.json');
-                
+
                 if (eventoData) {
                     // Safe update function
                     const safeUpdate = (id, value) => {
@@ -293,13 +399,13 @@
                     safeUpdate('salonName', eventoData.ubicaciones?.salon?.nombre);
                     safeUpdate('churchAddress', eventoData.ubicaciones?.iglesia?.direccion);
                     safeUpdate('salonAddress', eventoData.ubicaciones?.salon?.direccion);
-                    
+
                     // Update map links
                     const churchMapLink = document.getElementById('churchMapLink');
                     if (churchMapLink && eventoData.ubicaciones?.iglesia?.googleMaps) {
                         churchMapLink.href = eventoData.ubicaciones.iglesia.googleMaps;
                     }
-                    
+
                     const salonMapLink = document.getElementById('salonMapLink');
                     if (salonMapLink && eventoData.ubicaciones?.salon?.googleMaps) {
                         salonMapLink.href = eventoData.ubicaciones.salon.googleMaps;
@@ -329,7 +435,7 @@
                             footerEl.textContent = fecha.getDate() + ' de ' + meses[fecha.getMonth()];
                         }
                     }
-                    
+
 
                     // Update confirmation deadline
                     if (eventoData.fechas?.confirmacionLimite) {
@@ -345,6 +451,81 @@
                 console.error('Error cargando datos del evento:', error);
             }
         });
+
+        function shareInstagram() {
+            copyLink();
+            alert('Enlace copiado. Pégalo en tu historia de Instagram 📸');
+        }
+
+        // Carrusel galería
+        let currentSlide = 0;
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.gallery-slide');
+            const dots   = document.querySelectorAll('.carousel-dot');
+            currentSlide = (n + slides.length) % slides.length;
+            slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+            dots.forEach((d, i)   => d.classList.toggle('active', i === currentSlide));
+        }
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+        setInterval(() => nextSlide(), 5000);
+
+        // Swipe táctil
+        (function() {
+            const el = document.querySelector('.gallery-carousel');
+            if (!el) return;
+            let x0 = null;
+            el.addEventListener('touchstart', e => x0 = e.touches[0].clientX);
+            el.addEventListener('touchend', e => {
+                if (x0 === null) return;
+                const dx = e.changedTouches[0].clientX - x0;
+                if (Math.abs(dx) > 40) dx < 0 ? nextSlide() : prevSlide();
+                x0 = null;
+            });
+        })();
+
+        function abrirInvitacion() {
+            const overlay = document.getElementById('invitationOverlay');
+            const sobre   = document.getElementById('sobre');
+            overlay.onclick = null; // evitar doble click
+
+            // 1. Abrir la tapa del sobre
+            sobre.classList.add('abierto');
+
+            // 2. Iniciar música
+            const audio = document.getElementById('bgMusic');
+            if (audio) {
+                audio.play().catch(() => {});
+                const btn  = document.getElementById('musicBtn');
+                const icon = document.getElementById('musicIcon');
+                if (icon) icon.className = 'fas fa-pause';
+                if (btn)  btn.classList.add('playing');
+            }
+
+            // 3. Desaparecer overlay tras la animación
+            setTimeout(() => {
+                overlay.classList.add('fade-out');
+                document.body.style.overflow = '';
+            }, 900);
+            setTimeout(() => { overlay.style.display = 'none'; }, 1800);
+        }
+
+        function toggleMusic() {
+            const audio = document.getElementById('bgMusic');
+            const btn   = document.getElementById('musicBtn');
+            const icon  = document.getElementById('musicIcon');
+            if (audio.paused) {
+                audio.play();
+                icon.className = 'fas fa-pause';
+                btn.classList.add('playing');
+                btn.title = '♪ Pausar canción';
+            } else {
+                audio.pause();
+                icon.className = 'fas fa-play';
+                btn.classList.remove('playing');
+                btn.title = '♪ Continuar canción';
+            }
+        }
     </script>
 
     <script src="js/main.js"></script>
