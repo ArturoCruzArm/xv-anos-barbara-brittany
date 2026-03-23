@@ -488,28 +488,165 @@ footer p {
     display: none;
 }
 
-/* Responsive */
+/* ═══════════════════════════════════════════════
+   RESPONSIVIDAD — base global
+   ═══════════════════════════════════════════════ */
+img { max-width: 100%; }
+button, a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+* { word-break: break-word; }
+
+/* ── Tablet (≤ 1024px) ──────────────────────── */
+@media (max-width: 1024px) {
+    .event-details  { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .maps-grid      { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .map-card iframe { height: 230px; }
+    .family-section { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+}
+
+/* ── Móvil (≤ 768px) ────────────────────────── */
 @media (max-width: 768px) {
-    .countdown {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .container  { padding: 0 15px; }
+    header      { padding: 40px 15px 30px; }
+    .crown      { font-size: 3rem; }
+    .main-title { letter-spacing: 4px; margin: 15px 0; }
+    .quinceañera-name { margin: 20px 0; }
+    .quote      { padding: 20px 15px; margin: 25px 0; }
 
-    .event-details {
-        grid-template-columns: 1fr;
-    }
+    section     { padding: 28px 18px; border-radius: 14px; margin: 20px 0; }
+    .section-title { margin-bottom: 22px; }
 
-    .family-section {
-        grid-template-columns: 1fr;
-    }
+    .countdown      { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .countdown-item { padding: 18px 10px; }
 
-    section {
-        padding: 30px 20px;
-    }
+    .event-details  { grid-template-columns: 1fr; }
+    .family-section { grid-template-columns: 1fr; }
+    .maps-grid      { grid-template-columns: 1fr; }
 
-    .btn {
-        padding: 12px 30px;
-        font-size: 0.9rem;
-    }
+    .event-info   { font-size: 1rem; }
+    .event-title  { font-size: 1.6rem; }
+    .event-icon   { font-size: 2.8rem; }
+    .family-role  { font-size: 1.3rem; }
+    .family-names { font-size: 1rem; }
+    .family-icon  { font-size: 2.5rem; }
+
+    .btn          { padding: 12px 28px; font-size: 0.9rem; margin: 7px 5px; }
+    .social-icons { gap: 14px; flex-wrap: wrap; }
+    .social-icon  { width: 52px; height: 52px; font-size: 1.5rem; }
+
+    .dress-code       { padding: 28px 18px; }
+    .dress-code-icons { font-size: 3rem; }
+
+    .map-card iframe { height: 220px; }
+    .carousel-nav    { width: 40px; height: 40px; font-size: 1rem; }
+    .carousel-prev   { left: 10px; }
+    .carousel-next   { right: 10px; }
+
+    .music-btn-float   { width: 54px; height: 54px; font-size: 1.3rem; bottom: 20px; right: 18px; }
+    .music-btn-tooltip { right: 18px; bottom: 84px; }
+
+    footer { padding: 30px 15px; margin-top: 40px; }
+
+    /* Sobre */
+    .sobre       { width: 270px; height: 190px; }
+    .sobre-flap  { border-left-width: 135px; border-right-width: 135px; border-top-width: 110px; }
+    .sobre-tri-izq { border-bottom-width: 95px;  border-right-width: 135px; }
+    .sobre-tri-der { border-bottom-width: 95px;  border-left-width: 135px; }
+    .sobre-tri-bot { border-left-width: 135px; border-right-width: 135px; border-bottom-width: 95px; }
+    .sobre-hint  { font-size: 1.1rem; margin-top: 25px; }
+    .sobre-name  { font-size: 1.3rem; }
+}
+
+/* ── Teléfono pequeño (≤ 480px) ─────────────── */
+@media (max-width: 480px) {
+    .container  { padding: 0 12px; }
+    header      { padding: 30px 12px 25px; }
+    .crown      { font-size: 2.5rem; }
+    .main-title { letter-spacing: 2px; }
+    .quote      { padding: 15px 12px; font-size: 1.1rem; }
+
+    section     { padding: 22px 14px; border-radius: 12px; margin: 15px 0; }
+    .section-title { font-size: clamp(1.4rem, 5vw, 1.9rem); margin-bottom: 18px; }
+
+    .countdown      { gap: 8px; }
+    .countdown-item { padding: 14px 8px; border-radius: 10px; }
+    .countdown-label { font-size: 0.72rem; letter-spacing: 0; }
+
+    .btn { padding: 11px 18px; font-size: 0.82rem; margin: 5px 3px; letter-spacing: 0.3px; }
+    /* Botones en tarjetas de evento: bloque */
+    .event-card .btn { display: block; margin: 8px auto; max-width: 230px; }
+
+    .social-icons { gap: 10px; }
+    .social-icon  { width: 46px; height: 46px; font-size: 1.3rem; }
+
+    .dress-code        { padding: 20px 12px; }
+    .dress-code-icons  { font-size: 2.5rem; margin: 12px 0; }
+    .dress-code-text   { font-size: 1.1rem; }
+
+    .family-card  { padding: 20px 15px; }
+    .family-role  { font-size: 1.2rem; }
+    .event-card   { padding: 20px 15px; }
+    .event-icon   { font-size: 2.5rem; }
+    .event-title  { font-size: 1.4rem; }
+
+    .map-card iframe { height: 200px; }
+
+    .music-btn-float   { width: 48px; height: 48px; font-size: 1.1rem; bottom: 15px; right: 14px; }
+    .music-btn-tooltip { display: none; }
+
+    footer p { font-size: 0.88rem; margin: 7px 0; }
+
+    .porque-text  { padding: 10px 5px; }
+    .paraque-intro { font-size: 1rem; }
+
+    /* Sobre */
+    .sobre       { width: 240px; height: 168px; }
+    .sobre-flap  { border-left-width: 120px; border-right-width: 120px; border-top-width: 97px; }
+    .sobre-tri-izq { border-bottom-width: 84px; border-right-width: 120px; }
+    .sobre-tri-der { border-bottom-width: 84px; border-left-width: 120px; }
+    .sobre-tri-bot { border-left-width: 120px; border-right-width: 120px; border-bottom-width: 84px; }
+    .sobre-crown  { font-size: 2.1rem; }
+    .sobre-name   { font-size: 1.1rem; }
+    .sobre-event  { font-size: 0.78rem; }
+    .sobre-hint   { font-size: 1rem; margin-top: 20px; }
+
+    .carousel-nav { width: 36px; height: 36px; font-size: 0.85rem; }
+    .carousel-prev { left: 8px; }
+    .carousel-next { right: 8px; }
+    .carousel-dot  { width: 9px; height: 9px; }
+}
+
+/* ── Teléfono muy pequeño (≤ 360px) ─────────── */
+@media (max-width: 360px) {
+    .container  { padding: 0 10px; }
+    .main-title { letter-spacing: 1px; }
+    .social-icon { width: 42px; height: 42px; font-size: 1.2rem; }
+    .btn        { padding: 10px 14px; font-size: 0.78rem; }
+
+    .sobre       { width: 220px; height: 154px; }
+    .sobre-flap  { border-left-width: 110px; border-right-width: 110px; border-top-width: 89px; }
+    .sobre-tri-izq { border-bottom-width: 77px; border-right-width: 110px; }
+    .sobre-tri-der { border-bottom-width: 77px; border-left-width: 110px; }
+    .sobre-tri-bot { border-left-width: 110px; border-right-width: 110px; border-bottom-width: 77px; }
+    .sobre-name  { font-size: 0.95rem; }
+    .sobre-crown { font-size: 1.8rem; }
+
+    .carousel-nav { width: 32px; height: 32px; font-size: 0.78rem; }
+    .music-btn-float { width: 44px; height: 44px; font-size: 1rem; }
+}
+
+/* ── Landscape en móvil ──────────────────────── */
+@media (max-width: 768px) and (orientation: landscape) {
+    header        { padding: 20px 15px; }
+    .crown        { font-size: 2rem; }
+    .quinceañera-name { margin: 10px 0; }
+    .countdown    { max-width: 100%; }
+    section       { padding: 20px 15px; margin: 12px 0; }
+
+    .sobre        { width: 240px; height: 168px; }
+    .sobre-flap   { border-left-width: 120px; border-right-width: 120px; border-top-width: 97px; }
+    .sobre-tri-izq { border-bottom-width: 84px; border-right-width: 120px; }
+    .sobre-tri-der { border-bottom-width: 84px; border-left-width: 120px; }
+    .sobre-tri-bot { border-left-width: 120px; border-right-width: 120px; border-bottom-width: 84px; }
 }
 
 /* Audio Player */
@@ -609,6 +746,10 @@ footer p {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
     transition: opacity 0.9s ease;
     overflow: hidden;
 }

@@ -11,14 +11,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
 </head>
 <body>
 
     <!-- ══════════════════════════════════════════
          SOBRE DE INVITACIÓN — pantalla de entrada
          ══════════════════════════════════════════ -->
-    <div id="invitationOverlay" onclick="abrirInvitacion()">
+    <div id="invitationOverlay">
         <div class="sobre-wrap">
             <div class="sobre" id="sobre">
                 <!-- Tapa del sobre (flap) -->
@@ -375,8 +375,8 @@
     </button>
     <div class="music-btn-tooltip" id="musicTooltip">♪ Reproducir canción</div>
 
-    <script src="data/data.js"></script>
-    <script src="js/data-loader.js"></script>
+    <script src="data/data.js?v=2"></script>
+    <script src="js/data-loader.js?v=2"></script>
 
     <script>
         // Bloquear scroll mientras el sobre está visible
@@ -484,10 +484,17 @@
             });
         })();
 
+        let overlayAbierto = false;
         function abrirInvitacion() {
+            if (overlayAbierto) return;
+            overlayAbierto = true;
+
             const overlay = document.getElementById('invitationOverlay');
             const sobre   = document.getElementById('sobre');
-            overlay.onclick = null; // evitar doble click
+
+            // Quitar listeners para evitar doble disparo
+            overlay.removeEventListener('click',      abrirInvitacion);
+            overlay.removeEventListener('touchend',   _overlayTouchEnd);
 
             // 1. Abrir la tapa del sobre
             sobre.classList.add('abierto');
@@ -510,6 +517,20 @@
             setTimeout(() => { overlay.style.display = 'none'; }, 1800);
         }
 
+        function _overlayTouchEnd(e) {
+            e.preventDefault(); // evita el click 300ms después
+            abrirInvitacion();
+        }
+
+        // Registrar eventos tan pronto como el script corre
+        (function() {
+            const overlay = document.getElementById('invitationOverlay');
+            if (overlay) {
+                overlay.addEventListener('touchend',  _overlayTouchEnd, { passive: false });
+                overlay.addEventListener('click',     abrirInvitacion);
+            }
+        })();
+
         function toggleMusic() {
             const audio = document.getElementById('bgMusic');
             const btn   = document.getElementById('musicBtn');
@@ -528,7 +549,7 @@
         }
     </script>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2"></script>
 
 </body>
 </html>
