@@ -14,11 +14,14 @@
     --cream: #faf8f3;
     --white: #ffffff;
     --accent: #8B6914;
+    --burgundy: #7a0020;
+    --burgundy-light: #9b0030;
+    --burgundy-dark: #4a0012;
 }
 
 body {
     font-family: 'Lato', sans-serif;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+    background: linear-gradient(135deg, var(--burgundy-dark) 0%, var(--burgundy) 50%, var(--burgundy-light) 100%);
     color: var(--cream);
     overflow-x: hidden;
     line-height: 1.6;
@@ -108,7 +111,7 @@ header {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background: var(--primary);
+    background: var(--burgundy);
     color: var(--gold);
     font-size: 1.5rem;
     padding: 0 10px;
@@ -282,7 +285,7 @@ section {
     padding: 15px 40px;
     margin: 10px;
     background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-    color: var(--primary-dark);
+    color: var(--burgundy-dark);
     text-decoration: none;
     border-radius: 50px;
     font-weight: 700;
@@ -309,7 +312,7 @@ section {
 
 .btn-secondary:hover {
     background: var(--gold);
-    color: var(--primary-dark);
+    color: var(--burgundy-dark);
 }
 
 /* RSVP Form */
@@ -354,7 +357,7 @@ section {
 }
 
 .form-group select option {
-    background: var(--primary-dark);
+    background: var(--burgundy-dark);
     color: var(--cream);
     padding: 10px;
 }

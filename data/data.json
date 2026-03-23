@@ -4,7 +4,7 @@
     "subtitulo": "Celebra con nosotros",
     "urlGitHub": "https://github.com/arturocruzarm/xv-anos-barbara-brittany",
     "urlSitio": "https://barbara-brittany.invitados.org",
-    "ultimaActualizacion": "2024-12-24"
+    "ultimaActualizacion": "2026-03-21"
   },
   "administrador": {
     "nombre": "Producciones Foro 7",
@@ -29,8 +29,9 @@
   },
   "quinceañera": {
     "nombre": "Barbara Brittany",
-    "edad": null,
-    "fechaNacimiento": null,
+    "nombreCompleto": "Barbara Brittany Herrera Reyna",
+    "edad": 15,
+    "fechaNacimiento": "2010-12-16",
     "vestido": {
       "color": "dorado",
       "proveedor": null,
@@ -38,16 +39,46 @@
       "notas": null
     },
     "estiloFavorito": "folclor",
-    "gustosMusicales": ["folclor", "baile folclórico"]
+    "gustosMusicales": ["folclor", "baile folclórico"],
+    "mensajeEspecial": "Agradezco a mis familiares por su ayuda se hizo realidad mi sueño de tener mi fiesta de xv"
   },
   "padres": {
-    "madre": "Patricia",
-    "padre": null
+    "madre": "Patricia Reyna Avelino",
+    "padre": "José Cruz Herrera Ponce"
   },
   "padrinos": {
-    "padrino": null,
-    "madrina": null
+    "padrino": "Abel Ponce",
+    "madrina": "Dora Palacios"
   },
+  "madrinas": {
+    "zapatillas": ["Eva Herrera", "Guadalupe Reyna"],
+    "corona": "Daniela Reyna",
+    "ramo": "Claudia Guadalupe Herrera",
+    "ultimaMuneca": "Ximena Herrera",
+    "bibliaMisal": "Danae Reyes",
+    "cojin": "Patricia Marquez Reyna",
+    "pastel": "Raul Herrera",
+    "brindis": "Nataly Barboza",
+    "recuerdos": "Belén Rodriguez",
+    "centrosMesa": "Maleny Herrera",
+    "decoracion": "Ma de los ángeles Reyes Davalos"
+  },
+  "chambelanes": [
+    {"numero": 1, "nombre": "Andres Herrera Reyna"},
+    {"numero": 2, "nombre": "Carlos Daniel Hernandez Herrera"},
+    {"numero": 3, "nombre": "César Ramirez"},
+    {"numero": 4, "nombre": "Aldo Gabriel Ramos Ortega"},
+    {"numero": 5, "nombre": "Gerardo Guzmán Hernandez"},
+    {"numero": 6, "nombre": "Daniel Gaona Ornelas"},
+    {"numero": 7, "nombre": "Ángel Becerra Garcia"},
+    {"numero": 8, "nombre": "Alan Padilla Medina"},
+    {"numero": 9, "nombre": "Alvin Padilla Medina"}
+  ],
+  "familiaresEspeciales": [
+    {"parentesco": "Abuelita", "nombre": "Barbara Avelino Perez"},
+    {"parentesco": "Abuelita", "nombre": "Rosa Herrera"},
+    {"parentesco": "Abuelito", "nombre": "Socorro Barrientos"}
+  ],
   "fechas": {
     "evento": "2026-04-11",
     "diaEvento": 11,

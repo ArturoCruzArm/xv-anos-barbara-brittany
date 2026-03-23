@@ -23,6 +23,13 @@ class DataLoader {
                 return this.cache[file];
             }
 
+            // Usar variable global si está disponible (evita CORS en file://)
+            if (window.EVENTO_DATA && file.includes('data.json')) {
+                this.cache[file] = window.EVENTO_DATA;
+                console.log(`✓ Datos de ${file} cargados desde window.EVENTO_DATA`);
+                return window.EVENTO_DATA;
+            }
+
             // Verificar cache en localStorage
             const cacheKey = this.cachePrefix + file;
             const cached = localStorage.getItem(cacheKey);
@@ -38,7 +45,7 @@ class DataLoader {
                 }
             }
 
-            // Cargar desde archivo
+            // Cargar desde archivo (requiere servidor HTTP)
             console.log(`⟳ Cargando ${file} desde servidor...`);
             const response = await fetch(file);
 

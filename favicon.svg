@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Fondo borgoña redondeado -->
+  <rect width="32" height="32" rx="6" fill="#7a0020"/>
+  <!-- Corona: base -->
+  <rect x="6" y="20" width="20" height="4" rx="1" fill="#d4af37"/>
+  <!-- Corona: puntas izquierda, centro, derecha -->
+  <polygon points="6,20 8,10 12,16 16,8 20,16 24,10 26,20" fill="#d4af37"/>
+  <!-- Joyitas en la corona -->
+  <circle cx="8" cy="19" r="1.2" fill="#f4d03f"/>
+  <circle cx="16" cy="19" r="1.2" fill="#f4d03f"/>
+  <circle cx="24" cy="19" r="1.2" fill="#f4d03f"/>
+</svg>

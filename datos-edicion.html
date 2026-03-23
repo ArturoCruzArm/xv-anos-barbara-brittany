@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#7a0020">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Datos para Edición de Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .datos-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 16px;
+            padding: 30px 35px;
+            max-width: 750px;
+            margin: 0 auto 30px;
+        }
+        .datos-card pre {
+            font-family: 'Lato', monospace;
+            font-size: 0.95rem;
+            color: var(--cream);
+            white-space: pre-wrap;
+            line-height: 1.9;
+            margin: 0;
+        }
+        .separator {
+            color: var(--gold);
+            font-weight: 700;
+        }
+        .section-label {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+        .btn-copy {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--burgundy-dark);
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+        }
+        .btn-copy:hover {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transform: translateY(-2px);
+        }
+        .btn-copy.copied {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            color: #fff;
+        }
+        .actions {
+            text-align: center;
+            margin: 20px 0 10px;
+        }
+        #loadingMsg {
+            text-align: center;
+            color: var(--gold);
+            font-size: 1.1rem;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header style="text-align:center; padding: 50px 20px 30px;">
+            <div class="crown"><i class="fas fa-crown"></i></div>
+            <h1 class="section-title" style="margin-top:20px;">
+                <i class="fas fa-film"></i> Datos para Edición de Video
+            </h1>
+            <div class="divider"></div>
+        </header>
+
+        <section>
+            <div id="loadingMsg"><i class="fas fa-spinner fa-spin"></i> Cargando datos...</div>
+            <div id="datosCard" class="datos-card" style="display:none;">
+                <pre id="datosTexto"></pre>
+            </div>
+            <div class="actions" id="actionsBlock" style="display:none;">
+                <button class="btn-copy" id="copyBtn" onclick="copiarDatos()">
+                    <i class="fas fa-copy"></i> Copiar al portapapeles
+                </button>
+            </div>
+        </section>
+
+        <div style="text-align:center; margin: 30px 0;">
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a la Invitación
+            </a>
+        </div>
+
+        <footer style="text-align:center; padding:30px 20px; border-top: 2px solid rgba(212,175,55,0.3); margin-top:40px;">
+            <p style="color:var(--gold);">Producciones Foro 7 &bull; <i class="fas fa-phone-alt"></i> 477-920-3776</p>
+        </footer>
+    </div>
+
+    <script>
+        // Datos incrustados desde data/data.json — actualizar aquí si cambia el JSON
+        const EVENTO_DATA = {"sitio":{"titulo":"XV Años Barbara Brittany","subtitulo":"Celebra con nosotros","urlGitHub":"https://github.com/arturocruzarm/xv-anos-barbara-brittany","urlSitio":"https://barbara-brittany.invitados.org","ultimaActualizacion":"2026-03-21"},"administrador":{"nombre":"Producciones Foro 7","telefono":"477-920-3776","email":"foro7.arturocruz@gmail.com","direccion":"Padilla 112, Cumbres de Arbide, León","whatsapp":"4779203776","whatsappInternacional":"524779203776","mensajeWhatsapp":"Hola, tengo una consulta sobre los XV años de Barbara Brittany"},"almacenamiento":{"usarLocalStorage":true,"prefijoKeys":"xv-barbara-","autoGuardado":true,"intervaloAutoGuardado":2000},"opciones":{"mostrarPreciosPublicos":false,"permitirRSVPPublico":true,"mostrarContadorDias":true,"mostrarGaleria":true},"quinceañera":{"nombre":"Barbara Brittany","nombreCompleto":"Barbara Brittany Herrera Reyna","edad":15,"fechaNacimiento":"2010-12-16","vestido":{"color":"dorado","proveedor":null,"costo":null,"notas":null},"estiloFavorito":"folclor","gustosMusicales":["folclor","baile folclórico"],"mensajeEspecial":"Agradezco a mis familiares por su ayuda se hizo realidad mi sueño de tener mi fiesta de xv"},"padres":{"madre":"Patricia Reyna Avelino","padre":"José Cruz Herrera Ponce"},"padrinos":{"padrino":"Abel Ponce","madrina":"Dora Palacios"},"madrinas":{"zapatillas":["Eva Herrera","Guadalupe Reyna"],"corona":"Daniela Reyna","ramo":"Claudia Guadalupe Herrera","ultimaMuneca":"Ximena Herrera","bibliaMisal":"Danae Reyes","cojin":"Patricia Marquez Reyna","pastel":"Raul Herrera","brindis":"Nataly Barboza","recuerdos":"Belén Rodriguez","centrosMesa":"Maleny Herrera","decoracion":"Ma de los ángeles Reyes Davalos"},"chambelanes":[{"numero":1,"nombre":"Andres Herrera Reyna"},{"numero":2,"nombre":"Carlos Daniel Hernandez Herrera"},{"numero":3,"nombre":"César Ramirez"},{"numero":4,"nombre":"Aldo Gabriel Ramos Ortega"},{"numero":5,"nombre":"Gerardo Guzmán Hernandez"},{"numero":6,"nombre":"Daniel Gaona Ornelas"},{"numero":7,"nombre":"Ángel Becerra Garcia"},{"numero":8,"nombre":"Alan Padilla Medina"},{"numero":9,"nombre":"Alvin Padilla Medina"}],"familiaresEspeciales":[{"parentesco":"Abuelita","nombre":"Barbara Avelino Perez"},{"parentesco":"Abuelita","nombre":"Rosa Herrera"},{"parentesco":"Abuelito","nombre":"Socorro Barrientos"}],"fechas":{"evento":"2026-04-11","diaEvento":11,"diaSemana":"sabado","horaMisa":"16:00","horaRecepcion":"18:30","confirmacionLimite":"2026-04-05"},"ubicaciones":{"iglesia":{"nombre":"Parroquia San Juan Bautista de la Salle","direccion":"Iztaccihuatl 2113, Piletas IV, 37316 León de los Aldama, Gto.","googleMaps":"https://maps.app.goo.gl/wa8mdZ6A8nBizeau7"},"salon":{"nombre":"Granja El General","direccion":"37353 León de los Aldama, Gto.","googleMaps":"https://maps.app.goo.gl/HEQCgsLrzkjW2JYm8"}}};
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const d = EVENTO_DATA;
+                if (!d) throw new Error('Sin datos');
+
+                const sep = '━━━━━━━━━━━━━━━━━━━━━━';
+
+                // Fecha evento
+                const fechaEvento = d.fechas?.evento
+                    ? (() => {
+                        const f = new Date(d.fechas.evento + 'T12:00:00');
+                        const meses = ['enero','febrero','marzo','abril','mayo','junio',
+                                       'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+                        return `${f.getDate()} de ${meses[f.getMonth()]} de ${f.getFullYear()}`;
+                    })()
+                    : '—';
+
+                // Chambelanes
+                const chambelanes = (d.chambelanes || [])
+                    .map(c => `   ${c.numero}. ${c.nombre}`)
+                    .join('\n');
+
+                // Madrinas
+                const m = d.madrinas || {};
+                const zapatillas = Array.isArray(m.zapatillas) ? m.zapatillas.join(' ') : (m.zapatillas || '—');
+                const madrinasLineas = [
+                    m.zapatillas  ? `   Zapatillas: ${zapatillas}` : null,
+                    m.corona      ? `   Corona: ${m.corona}` : null,
+                    m.ramo        ? `   Ramo: ${m.ramo}` : null,
+                    m.ultimaMuneca? `   Última muñeca: ${m.ultimaMuneca}` : null,
+                    m.bibliaMisal ? `   Biblia/Misal: ${m.bibliaMisal}` : null,
+                    m.cojin       ? `   Cojín: ${m.cojin}` : null,
+                    m.pastel      ? `   Pastel: ${m.pastel}` : null,
+                    m.brindis     ? `   Brindis: ${m.brindis}` : null,
+                    m.recuerdos   ? `   Recuerdos: ${m.recuerdos}` : null,
+                    m.centrosMesa ? `   Centros de mesa: ${m.centrosMesa}` : null,
+                    m.decoracion  ? `   Decoración: ${m.decoracion}` : null,
+                ].filter(Boolean).join('\n');
+
+                // Familiares especiales
+                const familiares = (d.familiaresEspeciales || [])
+                    .map(f => `   ${f.parentesco}: ${f.nombre}`)
+                    .join('\n');
+
+                const texto = [
+                    'DATOS PARA EDICIÓN DE VIDEO',
+                    sep,
+                    '',
+                    `🎀 EVENTO: XV Años - ${fechaEvento}`,
+                    '',
+                    '👑 QUINCEAÑERA',
+                    `   Nombre: ${d.quinceañera?.nombreCompleto || d.quinceañera?.nombre || '—'}`,
+                    `   Fecha nacimiento: ${d.quinceañera?.fechaNacimiento || '—'}`,
+                    '',
+                    '👨‍👩‍👧 PADRES',
+                    `   Papá: ${d.padres?.padre || '—'}`,
+                    `   Mamá: ${d.padres?.madre || '—'}`,
+                    '',
+                    '🤝 PADRINOS DE HONOR',
+                    `   Padrino: ${d.padrinos?.padrino || '—'}`,
+                    `   Madrina: ${d.padrinos?.madrina || '—'}`,
+                    '',
+                    '🎀 MADRINAS',
+                    madrinasLineas,
+                    '',
+                    `🤵 CHAMBELANES (${(d.chambelanes || []).length})`,
+                    chambelanes || '   —',
+                    '',
+                    '👨‍👩‍👧‍👦 FAMILIARES ESPECIALES',
+                    familiares || '   —',
+                    '',
+                    '💝 MENSAJE ESPECIAL',
+                    `   "${d.quinceañera?.mensajeEspecial || '—'}"`,
+                    '',
+                    sep,
+                    'Enviado desde: datos-edicion.html',
+                ].join('\n');
+
+                document.getElementById('datosTexto').textContent = texto;
+                document.getElementById('loadingMsg').style.display = 'none';
+                document.getElementById('datosCard').style.display = 'block';
+                document.getElementById('actionsBlock').style.display = 'block';
+
+            } catch (err) {
+                document.getElementById('loadingMsg').innerHTML = '⚠️ Error al procesar los datos. Revisa la consola.';
+                console.error(err);
+            }
+        });
+
+        function copiarDatos() {
+            const texto = document.getElementById('datosTexto').textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.classList.add('copied');
+                btn.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copiar al portapapeles';
+                }, 2500);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -61,6 +61,10 @@ let eventoDataForCountdown = null;
 
 async function loadEventDataForCountdown() {
     try {
+        if (window.EVENTO_DATA) {
+            eventoDataForCountdown = window.EVENTO_DATA;
+            return;
+        }
         const response = await fetch('data/data.json');
         eventoDataForCountdown = await response.json();
     } catch (error) {
