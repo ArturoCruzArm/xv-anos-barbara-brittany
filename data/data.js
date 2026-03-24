@@ -27,6 +27,11 @@ window.EVENTO_DATA = {
     "mostrarContadorDias": true,
     "mostrarGaleria": true
   },
+  "contacto": {
+    "nombre": "Patricia Reyna Avelino",
+    "whatsapp": "4773840890",
+    "whatsappFormat": "5214773840890"
+  },
   "quinceañera": {
     "nombre": "Barbara Brittany",
     "nombreCompleto": "Barbara Brittany Herrera Reyna",
