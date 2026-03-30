@@ -31,6 +31,7 @@
                     <div class="stat-info">
                         <h3>Total Invitados</h3>
                         <p class="stat-value" id="totalInvitados">0</p>
+                        <small style="color:#999" id="totalPases">0 pases</small>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -43,11 +44,21 @@
                     </div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-icon" style="background: #0984e3;">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Asistentes</h3>
+                        <p class="stat-value" id="totalAsistentes">0</p>
+                        <small style="color:#999">personas confirmadas</small>
+                    </div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-icon" style="background: #fdcb6e;">
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>Pendientes</h3>
+                        <h3>Sin Respuesta</h3>
                         <p class="stat-value" id="pendientes">0</p>
                     </div>
                 </div>
@@ -56,7 +67,7 @@
                         <i class="fas fa-times-circle"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>No Asistirán</h3>
+                        <h3>Declinados</h3>
                         <p class="stat-value" id="noAsistiran">0</p>
                     </div>
                 </div>
@@ -71,18 +82,12 @@
                     <input type="text" id="searchInput" placeholder="Buscar invitado...">
                 </div>
                 <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">
-                        <i class="fas fa-users"></i> Todos
-                    </button>
-                    <button class="filter-btn" data-filter="confirmado">
-                        <i class="fas fa-check"></i> Confirmados
-                    </button>
-                    <button class="filter-btn" data-filter="pendiente">
-                        <i class="fas fa-clock"></i> Pendientes
-                    </button>
-                    <button class="filter-btn" data-filter="no-asistira">
-                        <i class="fas fa-times"></i> No Asisten
-                    </button>
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="pendiente">🔴 Pendiente</button>
+                    <button class="filter-btn" data-filter="enviada">🟡 Enviada</button>
+                    <button class="filter-btn" data-filter="vista">🔵 Vista</button>
+                    <button class="filter-btn" data-filter="confirmada">🟢 Confirmada</button>
+                    <button class="filter-btn" data-filter="declinada">⚫ Declinada</button>
                 </div>
                 <button class="btn-add-guest" onclick="openAddGuestModal()">
                     <i class="fas fa-plus"></i> Agregar Invitado
@@ -99,12 +104,12 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Categoría</th>
-                            <th>Pases</th>
-                            <th>Menú</th>
+                            <th style="text-align:center">Pases</th>
+                            <th style="text-align:center">Conf.</th>
                             <th>Mesa</th>
-                            <th>Estado</th>
-                            <th>Teléfono</th>
-                            <th>Invitación</th>
+                            <th>Status</th>
+                            <th>Envío / Confirmación</th>
+                            <th>WhatsApp / Link</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -217,40 +222,12 @@
                             <input type="text" id="guestTable" placeholder="Ej: Mesa 5">
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Estado *</label>
-                            <select id="guestStatus" required>
-                                <option value="pendiente">Pendiente</option>
-                                <option value="confirmado">Confirmado</option>
-                                <option value="no-asistira">No Asistirá</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="guestEmail" placeholder="ejemplo@email.com">
-                        </div>
-                    </div>
+                    <!-- El status lo gestiona el sistema automáticamente -->
                     <div class="form-group">
                         <label>Notas</label>
                         <textarea id="guestNotes" rows="3" placeholder="Alergias, preferencias, información adicional..."></textarea>
                     </div>
 
-                    <!-- Miembros de la Familia -->
-                    <div class="form-group" style="border-top: 2px solid #ecf0f1; padding-top: 20px; margin-top: 20px;">
-                        <label style="display: flex; justify-content: space-between; align-items: center;">
-                            <span><i class="fas fa-users"></i> Miembros de la Familia/Grupo</span>
-                            <button type="button" class="btn-icon" onclick="addMemberField()" title="Agregar miembro" style="background: #00b894; color: white;">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </label>
-                        <small style="color: #636e72; display: block; margin-bottom: 10px;">
-                            Opcional: Agrega los nombres individuales de cada persona
-                        </small>
-                        <div id="membersList">
-                            <!-- Los miembros se agregarán aquí dinámicamente -->
-                        </div>
-                    </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn-secondary" onclick="closeGuestModal()">Cancelar</button>
@@ -263,8 +240,32 @@
         </div>
     </div>
 
-    <script src="js/data-manager.js"></script>
-    <script src="js/invitados.js"></script>
-    <script src="js/visitas.js?v=1"></script>
+    <style>
+        /* ── RSVP Status badges ── */
+        .status-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.78rem; font-weight:700; }
+        .status-pendiente  { background:#ffeaa7; color:#6b4c00; }
+        .status-enviada    { background:#ffd700; color:#5a4000; }
+        .status-vista      { background:#74b9ff; color:#1a3a6b; }
+        .status-confirmada { background:#55efc4; color:#006b4f; }
+        .status-declinada  { background:#636e72; color:#fff; }
+
+        /* ── Category badges ── */
+        .badge-cat { display:inline-block; padding:2px 8px; border-radius:12px; font-size:.75rem; text-transform:capitalize; }
+        .cat-familia   { background:#e056fd22; color:#8e44ad; }
+        .cat-padrinos  { background:#f39c1222; color:#b7770d; }
+        .cat-amigos    { background:#3498db22; color:#1a5276; }
+        .cat-conocidos { background:#1abc9c22; color:#0e6655; }
+        .cat-otro      { background:#dfe6e9; color:#636e72; }
+
+        /* ── Action buttons ── */
+        .action-group { display:flex; gap:5px; }
+        .btn-wa     { background:#25D366; color:#fff; border:none; border-radius:6px; padding:5px 9px; cursor:pointer; font-size:.8rem; }
+        .btn-copy   { background:#6c5ce7; color:#fff; border:none; border-radius:6px; padding:5px 9px; cursor:pointer; font-size:.8rem; }
+        .btn-edit   { background:#0984e3; color:#fff; border:none; border-radius:6px; padding:5px 9px; cursor:pointer; font-size:.8rem; }
+        .btn-delete { background:#d63031; color:#fff; border:none; border-radius:6px; padding:5px 9px; cursor:pointer; font-size:.8rem; }
+        .btn-wa:hover, .btn-copy:hover, .btn-edit:hover, .btn-delete:hover { opacity:.85; }
+    </style>
+    <script src="js/rsvp-admin.js"></script>
+    <script src="js/visitas.js?v=1" async></script>
 </body>
 </html>

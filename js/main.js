@@ -1,6 +1,7 @@
-// Sistema de Invitación Personalizada con QR
-// Leer parámetros de URL al cargar la página
+// Sistema de Invitación Personalizada
+// Si hay ?inv=TOKEN, rsvp-guest.js se encarga — este código solo maneja el modo legacy ?invitado=
 function initPersonalizedInvitation() {
+    if (window._rsvpGuestLoaded) return; // Delegar a rsvp-guest.js
     const urlParams = new URLSearchParams(window.location.search);
     const guestName = urlParams.get('invitado');
     const guestPases = urlParams.get('pases');
