@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selector de Fotos — XV Años Barbara Brittany</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -402,6 +404,9 @@
             .modal-body { flex-direction: column; }
             .modal-options { width: 100%; padding: 16px; }
         }
+        @media (max-width: 480px) {
+            .photos-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
     </style>
 </head>
 <body>
@@ -412,12 +417,6 @@
     <p class="instruccion">Haz clic en cada foto para clasificarla: impresión, invitación o descartar</p>
 </div>
 
-<div class="nav-links">
-    <a href="index.html"><i class="fas fa-envelope"></i> Invitación</a>
-    <a href="contrato-fotografia.html"><i class="fas fa-file-contract"></i> Contrato</a>
-    <a href="selector-fotos.html" class="active"><i class="fas fa-images"></i> Fotos</a>
-    <a href="navegacion.html"><i class="fas fa-map"></i> Navegación</a>
-</div>
 
 <!-- Panel de control (sticky) -->
 <div class="control-panel">
@@ -662,7 +661,7 @@ function renderGallery() {
 
     photos.forEach((photo, index) => {
         const sel = photoSelections[index] || {};
-        const hasAny = sel.impresion || sel.invitacion || sel.descartada;
+        const hasAny = sel.impresion || sel.ampliacion || sel.invitacion || sel.descartada;
 
         const card = document.createElement('div');
         card.className = 'photo-card';
@@ -777,18 +776,84 @@ function saveCurrentSelections() {
     updateFilterButtons();
 }
 
+// Actualiza solo la tarjeta afectada sin recrear el grid completo
+function updateCard(index) {
+    const card = document.querySelector(`.photo-card[data-index="${index}"]`);
+    if (!card) return;
+    const sel = photoSelections[index] || {};
+    const hasAny = sel.impresion || sel.ampliacion || sel.invitacion || sel.descartada;
+
+    card.className = 'photo-card';
+    if (sel.descartada) {
+        card.classList.add('has-descartada');
+    } else {
+        const cats = [];
+        if (sel.impresion)  cats.push('impresion');
+        if (sel.ampliacion) cats.push('ampliacion');
+        if (sel.invitacion) cats.push('invitacion');
+        if (cats.length > 1) card.classList.add('has-multiple');
+        else if (cats.length === 1) card.classList.add(`has-${cats[0]}`);
+    }
+
+    const existing = card.querySelector('.photo-badges');
+    if (existing) existing.remove();
+    if (hasAny) {
+        let badges = '<div class="photo-badges">';
+        if (sel.impresion)  badges += '<span class="badge badge-impresion">📸 Impresión</span>';
+        if (sel.ampliacion) badges += '<span class="badge badge-ampliacion">🖼️ Ampliación</span>';
+        if (sel.invitacion) badges += '<span class="badge badge-invitacion">💌 Invitación</span>';
+        if (sel.descartada) badges += '<span class="badge badge-descartada">❌ Descartada</span>';
+        badges += '</div>';
+        card.insertAdjacentHTML('beforeend', badges);
+    }
+
+    // Re-aplicar visibilidad según filtro activo
+    let show = false;
+    switch (currentFilter) {
+        case 'all':            show = true; break;
+        case 'impresion':      show = !!sel.impresion; break;
+        case 'ampliacion':     show = !!sel.ampliacion; break;
+        case 'invitacion':     show = !!sel.invitacion; break;
+        case 'descartada':     show = !!sel.descartada; break;
+        case 'sin-clasificar': show = !sel.impresion && !sel.ampliacion && !sel.invitacion && !sel.descartada; break;
+    }
+    card.classList.toggle('hidden', !show);
+}
+
 function saveModalSelection() {
     saveCurrentSelections();
-    renderGallery();
+    updateCard(currentPhotoIndex);
     closeModal();
     showToast('Selección guardada');
+}
+
+// Navega dentro del subconjunto visible según el filtro activo
+function getVisibleIndices() {
+    return photos.map((_,i) => i).filter(i => {
+        const sel = photoSelections[i] || {};
+        switch (currentFilter) {
+            case 'all':            return true;
+            case 'impresion':      return !!sel.impresion;
+            case 'ampliacion':     return !!sel.ampliacion;
+            case 'invitacion':     return !!sel.invitacion;
+            case 'descartada':     return !!sel.descartada;
+            case 'sin-clasificar': return !sel.impresion && !sel.ampliacion && !sel.invitacion && !sel.descartada;
+        }
+    });
 }
 
 function navigatePhoto(dir) {
     if (currentPhotoIndex === null) return;
     saveCurrentSelections();
-    const newIdx = (currentPhotoIndex + dir + photos.length) % photos.length;
-    openModal(newIdx);
+    const visible = getVisibleIndices();
+    const pos = visible.indexOf(currentPhotoIndex);
+    if (pos === -1 || visible.length === 0) {
+        // Fallback: navegar en el array completo
+        openModal((currentPhotoIndex + dir + photos.length) % photos.length);
+        return;
+    }
+    const newPos = (pos + dir + visible.length) % visible.length;
+    openModal(visible[newPos]);
 }
 
 // ── Exportar ──
@@ -904,6 +969,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'photoModal') closeModal();
     });
 
+    // Swipe táctil en modal
+    let _touchX = 0;
+    document.getElementById('photoModal').addEventListener('touchstart', e => {
+        _touchX = e.touches[0].clientX;
+    }, { passive: true });
+    document.getElementById('photoModal').addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - _touchX;
+        if (Math.abs(dx) > 50) navigatePhoto(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
     // Teclado
     document.addEventListener('keydown', e => {
         if (!document.getElementById('photoModal').classList.contains('active')) return;
@@ -917,6 +992,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('visibilitychange', () => { if (document.hidden) saveSelections(); });
 window.addEventListener('beforeunload', () => saveSelections());
 </script>
-    <script src="js/visitas.js?v=1"></script>
+    <script src="js/visitas.js?v=1" async></script>
+    <script src="js/selector-sb.js"></script>
 </body>
 </html>
