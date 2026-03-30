@@ -13,17 +13,43 @@
     let editingId  = null;
     let currentFilter = 'all';
 
-    // ── PIN de acceso ────────────────────────────────────────────────────────
+    // ── PIN de acceso (formulario inline) ───────────────────────────────────
     function checkPin() {
-        const stored = sessionStorage.getItem('rsvp_admin_pin');
-        if (stored === ADMIN_PIN) return true;
-        const input = prompt('🔐 PIN de acceso admin:');
-        if (input === ADMIN_PIN) {
-            sessionStorage.setItem('rsvp_admin_pin', ADMIN_PIN);
-            return true;
-        }
-        document.body.innerHTML = '<div style="text-align:center;padding:60px;font-family:sans-serif;"><h2>Acceso denegado</h2><a href="admin.html">← Volver</a></div>';
+        if (sessionStorage.getItem('rsvp_admin_pin') === ADMIN_PIN) return true;
+        showPinScreen();
         return false;
+    }
+
+    function showPinScreen() {
+        document.body.innerHTML = `
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f0f4f8;font-family:'Lato',sans-serif;">
+            <div style="background:#fff;border-radius:16px;padding:48px 40px;max-width:360px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.12);text-align:center;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
+                <h2 style="margin:0 0 8px;color:#1c1c1c;font-size:1.4rem;">Acceso Admin</h2>
+                <p style="color:#666;margin:0 0 28px;font-size:.9rem;">Gestión de invitados — XV Años Barbara Brittany</p>
+                <input id="pinInput" type="password" maxlength="10" placeholder="PIN de acceso"
+                    style="width:100%;padding:12px 16px;border:2px solid #ddd;border-radius:8px;font-size:1.1rem;text-align:center;letter-spacing:4px;box-sizing:border-box;outline:none;margin-bottom:16px;"
+                    onkeydown="if(event.key==='Enter')document.getElementById('pinBtn').click()">
+                <button id="pinBtn" onclick="window._checkPinInput()"
+                    style="width:100%;padding:12px;background:#6c5ce7;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
+                    Entrar
+                </button>
+                <div id="pinError" style="color:#d63031;margin-top:12px;font-size:.85rem;display:none;">PIN incorrecto. Intenta de nuevo.</div>
+                <br><a href="admin.html" style="color:#999;font-size:.8rem;">← Volver al panel</a>
+            </div>
+        </div>`;
+        setTimeout(() => document.getElementById('pinInput')?.focus(), 100);
+        window._checkPinInput = function () {
+            const val = document.getElementById('pinInput').value;
+            if (val === ADMIN_PIN) {
+                sessionStorage.setItem('rsvp_admin_pin', ADMIN_PIN);
+                location.reload();
+            } else {
+                document.getElementById('pinError').style.display = 'block';
+                document.getElementById('pinInput').value = '';
+                document.getElementById('pinInput').focus();
+            }
+        };
     }
 
     // ── Obtener evento_id ────────────────────────────────────────────────────
