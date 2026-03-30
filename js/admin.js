@@ -16,17 +16,16 @@ function updateDaysRemaining() {
     const defaultDate = new Date(2026, 3, 11).getTime(); // 11 de abril de 2026
     updateDisplay(defaultDate);
 
-    // Actualizar con fecha real desde JSON
-    fetch('data/data.json')
-        .then(response => response.json())
-        .then(data => {
-            if (data.fechas?.evento) {
+    // Actualizar con fecha real desde Supabase/dataLoader
+    if (typeof dataLoader !== 'undefined') {
+        dataLoader.loadData().then(data => {
+            if (data?.fechas?.evento) {
                 const [year, month, day] = data.fechas.evento.split('-').map(Number);
                 const eventDate = new Date(year, month - 1, day).getTime();
-                updateDisplay(eventDate); // Actualizar con fecha del JSON
+                updateDisplay(eventDate);
             }
-        })
-        .catch(error => console.error('Error cargando fecha:', error));
+        }).catch(error => console.error('Error cargando fecha:', error));
+    }
 }
 
 // Save tasks to localStorage
@@ -37,6 +36,7 @@ function saveTasks() {
         tasks[checkbox.id] = checkbox.checked;
     });
     localStorage.setItem('xv-barbara-brittany-tasks', JSON.stringify(tasks));
+    if (typeof DATA_MANAGER !== 'undefined') DATA_MANAGER._pushSection('xv-barbara-brittany-tasks', tasks);
     updateTasksCount();
 }
 

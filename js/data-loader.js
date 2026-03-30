@@ -1,316 +1,259 @@
 /**
- * DataLoader - Sistema de carga de datos desde JSON con cache en localStorage
- * XV Años Barbara Brittany
+ * DataLoader — Supabase backend para XV Años Barbara Brittany
+ * Carga y guarda datos en eventos_config (JSONB) en lugar de data.json local
  */
+
+const SUPABASE_URL  = 'https://nzpujmlienzfetqcgsxz.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
+const BARBARA_SLUG  = 'xv-anos-barbara-brittany';
+const SB_H = {
+    'apikey': SUPABASE_ANON,
+    'Authorization': 'Bearer ' + SUPABASE_ANON,
+    'Content-Type': 'application/json'
+};
 
 class DataLoader {
     constructor() {
-        this.cache = {};
-        this.cachePrefix = 'xv-barbara-json-';
-        this.cacheExpiry = 1000 * 60 * 60; // 1 hora
+        this._data    = null;      // datos en memoria
+        this._eventoId = null;
+        this._dirty   = false;
+        this._saveTimer = null;
+        this.CACHE_KEY = 'xv-barbara-sb-cache';
+        this.CACHE_TS  = 'xv-barbara-sb-ts';
+        this.CACHE_TTL = 1000 * 60 * 30; // 30 minutos
     }
 
-    /**
-     * Carga un archivo JSON con cache en localStorage
-     * @param {string} file - Ruta del archivo JSON (ej: 'data/evento.json')
-     * @returns {Promise<Object>} - Datos del JSON
-     */
-    async loadJSON(file) {
+    // ── Obtener evento_id ─────────────────────────────────────────────────────
+    async _getEventoId() {
+        if (this._eventoId) return this._eventoId;
+        const r = await fetch(
+            `${SUPABASE_URL}/rest/v1/eventos?slug=eq.${BARBARA_SLUG}&select=id&limit=1`,
+            { headers: SB_H }
+        );
+        const rows = await r.json();
+        this._eventoId = rows[0]?.id || null;
+        return this._eventoId;
+    }
+
+    // ── Cargar datos desde Supabase (con caché localStorage) ─────────────────
+    async loadData() {
+        // 1. Memoria
+        if (this._data) return this._data;
+
+        // 2. localStorage cache (válido < 30 min)
         try {
-            // Verificar cache en memoria
-            if (this.cache[file]) {
-                console.log(`✓ Datos de ${file} cargados desde cache en memoria`);
-                return this.cache[file];
-            }
-
-            // Usar variable global si está disponible (evita CORS en file://)
-            if (window.EVENTO_DATA && file.includes('data.json')) {
-                this.cache[file] = window.EVENTO_DATA;
-                console.log(`✓ Datos de ${file} cargados desde window.EVENTO_DATA`);
-                return window.EVENTO_DATA;
-            }
-
-            // Verificar cache en localStorage
-            const cacheKey = this.cachePrefix + file;
-            const cached = localStorage.getItem(cacheKey);
-            const cacheTime = localStorage.getItem(cacheKey + '-time');
-
-            if (cached && cacheTime) {
-                const age = Date.now() - parseInt(cacheTime);
-                if (age < this.cacheExpiry) {
-                    const data = JSON.parse(cached);
-                    this.cache[file] = data;
-                    console.log(`✓ Datos de ${file} cargados desde localStorage (${Math.round(age/1000)}s de antigüedad)`);
-                    return data;
+            const ts = parseInt(localStorage.getItem(this.CACHE_TS) || '0');
+            if (Date.now() - ts < this.CACHE_TTL) {
+                const cached = localStorage.getItem(this.CACHE_KEY);
+                if (cached) {
+                    this._data = JSON.parse(cached);
+                    console.log('✓ Barbara datos cargados desde caché localStorage');
+                    return this._data;
                 }
             }
+        } catch(e) {}
 
-            // Cargar desde archivo (requiere servidor HTTP)
-            console.log(`⟳ Cargando ${file} desde servidor...`);
-            const response = await fetch(file);
+        // 3. Supabase
+        try {
+            const eid = await this._getEventoId();
+            if (!eid) throw new Error('evento_id no encontrado');
 
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
+            const r = await fetch(
+                `${SUPABASE_URL}/rest/v1/eventos_config?evento_id=eq.${eid}&seccion=eq.main&select=datos`,
+                { headers: SB_H }
+            );
+            const rows = await r.json();
+            if (!rows[0]?.datos) throw new Error('Sin datos en Supabase');
+
+            this._data = rows[0].datos;
+            // Guardar en caché
+            localStorage.setItem(this.CACHE_KEY, JSON.stringify(this._data));
+            localStorage.setItem(this.CACHE_TS,  Date.now().toString());
+            console.log('✓ Barbara datos cargados desde Supabase');
+
+            // Exponer como window.EVENTO_DATA para compatibilidad
+            window.EVENTO_DATA = this._data;
+            return this._data;
+
+        } catch(err) {
+            console.error('✗ Error cargando desde Supabase:', err);
+
+            // Fallback: window.EVENTO_DATA (data.js incluido en HTML como backup)
+            if (window.EVENTO_DATA) {
+                this._data = window.EVENTO_DATA;
+                console.warn('⚠ Usando window.EVENTO_DATA como fallback');
+                return this._data;
             }
-
-            const data = await response.json();
-
-            // Guardar en cache
-            this.cache[file] = data;
-            localStorage.setItem(cacheKey, JSON.stringify(data));
-            localStorage.setItem(cacheKey + '-time', Date.now().toString());
-
-            console.log(`✓ Datos de ${file} cargados y guardados en cache`);
-            return data;
-
-        } catch (error) {
-            console.error(`✗ Error cargando ${file}:`, error);
             return null;
         }
     }
 
-    /**
-     * Limpia el cache de un archivo específico o todo el cache
-     * @param {string} file - Archivo a limpiar, o null para limpiar todo
-     */
-    clearCache(file = null) {
-        if (file) {
-            delete this.cache[file];
-            localStorage.removeItem(this.cachePrefix + file);
-            localStorage.removeItem(this.cachePrefix + file + '-time');
-            console.log(`✓ Cache de ${file} limpiado`);
-        } else {
-            this.cache = {};
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.startsWith(this.cachePrefix)) {
-                    localStorage.removeItem(key);
+    // ── Alias compatible con código anterior ─────────────────────────────────
+    async loadJSON(file) {
+        return this.loadData();
+    }
+
+    // ── Guardar cambios a Supabase (debounced 1s) ─────────────────────────────
+    scheduleSave() {
+        this._dirty = true;
+        clearTimeout(this._saveTimer);
+        this._saveTimer = setTimeout(() => this._flush(), 1000);
+    }
+
+    async _flush() {
+        if (!this._dirty || !this._data) return;
+        try {
+            const eid = await this._getEventoId();
+            if (!eid) return;
+
+            const r = await fetch(
+                `${SUPABASE_URL}/rest/v1/eventos_config?evento_id=eq.${eid}&seccion=eq.main`,
+                {
+                    method: 'PATCH',
+                    headers: Object.assign({}, SB_H, { 'Prefer': 'return=minimal' }),
+                    body: JSON.stringify({ datos: this._data })
                 }
-            });
-            console.log('✓ Todo el cache JSON limpiado');
+            );
+            if (r.ok) {
+                this._dirty = false;
+                // Actualizar caché
+                localStorage.setItem(this.CACHE_KEY, JSON.stringify(this._data));
+                localStorage.setItem(this.CACHE_TS,  Date.now().toString());
+                this.showSaveIndicator('✓ Guardado en Supabase');
+                console.log('💾 Barbara datos guardados en Supabase');
+            } else {
+                console.error('✗ Error guardando:', await r.text());
+            }
+        } catch(err) {
+            console.error('✗ Error en _flush:', err);
         }
     }
 
-    /**
-     * Puebla un formulario con datos del JSON
-     * @param {string} formId - ID del formulario
-     * @param {Object} data - Datos del JSON
-     * @param {string} prefix - Prefijo para los IDs de campos (opcional)
-     */
+    // ── Actualizar un campo por ruta de puntos ────────────────────────────────
+    async setField(path, value) {
+        if (!this._data) await this.loadData();
+        this._setByPath(this._data, path, value);
+        this.scheduleSave();
+    }
+
+    // ── Obtener un campo por ruta de puntos ───────────────────────────────────
+    getField(path) {
+        return this._getByPath(this._data, path);
+    }
+
+    // ── Poblar formulario con data-json-path ──────────────────────────────────
     populateForm(formId, data, prefix = '') {
         const form = document.getElementById(formId);
-        if (!form) {
-            console.warn(`⚠ Formulario ${formId} no encontrado`);
-            return;
-        }
+        if (!form) return;
+        const d = data || this._data;
+        if (!d) return;
 
-        let fieldsPopulated = 0;
-        let fieldsEmpty = 0;
+        let ok = 0, empty = 0;
+        form.querySelectorAll('[data-json-path]').forEach(field => {
+            const val = this._getByPath(d, field.getAttribute('data-json-path'));
+            if (val !== null && val !== undefined && val !== '') {
+                if (field.type === 'checkbox') field.checked = Boolean(val);
+                else field.value = val;
+                ok++;
+            } else { empty++; }
+        });
+        console.log(`✓ Formulario ${formId}: ${ok} campos, ${empty} vacíos`);
+    }
 
-        // Recorrer todos los campos con data-json-path
-        const fields = form.querySelectorAll('[data-json-path]');
+    // ── Activar auto-guardado en formulario ───────────────────────────────────
+    initAutoSave(formId, section, data) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+        const d = data || this._data;
 
-        fields.forEach(field => {
-            const path = field.getAttribute('data-json-path');
-            const value = this.getValueByPath(data, path);
-
-            if (value !== null && value !== undefined && value !== '') {
-                if (field.type === 'checkbox') {
-                    field.checked = Boolean(value);
-                } else if (field.tagName === 'SELECT') {
-                    field.value = value;
-                } else {
-                    field.value = value;
-                }
-                fieldsPopulated++;
-            } else {
-                fieldsEmpty++;
+        form.querySelectorAll('[data-json-path]').forEach(field => {
+            const save = () => {
+                const path = field.getAttribute('data-json-path');
+                const val  = field.type === 'checkbox' ? field.checked
+                           : field.type === 'number'   ? (field.value ? parseFloat(field.value) : null)
+                           : field.value || null;
+                this._setByPath(d, path, val);
+                this.scheduleSave();
+            };
+            field.addEventListener('change', save);
+            if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
+                let t;
+                field.addEventListener('input', () => { clearTimeout(t); t = setTimeout(save, 800); });
             }
         });
-
-        console.log(`✓ Formulario ${formId}: ${fieldsPopulated} campos poblados, ${fieldsEmpty} vacíos`);
+        console.log(`✓ Auto-guardado Supabase activado para ${section}`);
     }
 
-    /**
-     * Obtiene un valor de un objeto usando notación de punto
-     * @param {Object} obj - Objeto a consultar
-     * @param {string} path - Ruta en notación de punto (ej: 'foro7.banquete.menu.entradas')
-     * @returns {*} - Valor encontrado o null
-     */
-    getValueByPath(obj, path) {
-        return path.split('.').reduce((acc, part) => {
-            return acc && acc[part] !== undefined ? acc[part] : null;
-        }, obj);
+    // ── Guardar desde DATA_MANAGER (invitados, mesas, presupuesto, etc.) ──────
+    async saveDynamicSection(section, value) {
+        if (!this._data) await this.loadData();
+        if (!this._data._dynamic) this._data._dynamic = {};
+        this._data._dynamic[section] = value;
+        this.scheduleSave();
     }
 
-    /**
-     * Establece un valor en un objeto usando notación de punto
-     * @param {Object} obj - Objeto a modificar
-     * @param {string} path - Ruta en notación de punto
-     * @param {*} value - Valor a establecer
-     */
-    setValueByPath(obj, path, value) {
+    async loadDynamicSection(section) {
+        if (!this._data) await this.loadData();
+        return this._data?._dynamic?.[section] || null;
+    }
+
+    // ── Limpiar caché ─────────────────────────────────────────────────────────
+    clearCache() {
+        this._data = null;
+        localStorage.removeItem(this.CACHE_KEY);
+        localStorage.removeItem(this.CACHE_TS);
+        console.log('✓ Caché limpiado');
+    }
+
+    // ── Helpers internos ──────────────────────────────────────────────────────
+    _getByPath(obj, path) {
+        if (!obj || !path) return null;
+        return path.split('.').reduce((acc, k) => (acc != null ? acc[k] : null), obj);
+    }
+
+    _setByPath(obj, path, value) {
         const parts = path.split('.');
-        const last = parts.pop();
-        const target = parts.reduce((acc, part) => {
-            if (!acc[part]) acc[part] = {};
-            return acc[part];
+        const last  = parts.pop();
+        const target = parts.reduce((acc, k) => {
+            if (acc[k] == null || typeof acc[k] !== 'object') acc[k] = {};
+            return acc[k];
         }, obj);
         target[last] = value;
     }
 
-    /**
-     * Guarda automáticamente cambios en localStorage
-     * @param {string} section - Sección (ej: 'banquete', 'decoracion')
-     * @param {string} formId - ID del formulario
-     * @param {Object} data - Datos originales del JSON
-     */
-    autoSaveToLocalStorage(section, formId, data) {
-        const form = document.getElementById(formId);
-        if (!form) return;
-
-        const fields = form.querySelectorAll('[data-json-path]');
-        const updatedData = JSON.parse(JSON.stringify(data)); // Clonar
-
-        fields.forEach(field => {
-            const path = field.getAttribute('data-json-path');
-            let value;
-
-            if (field.type === 'checkbox') {
-                value = field.checked;
-            } else if (field.type === 'number') {
-                value = field.value ? parseFloat(field.value) : null;
-            } else {
-                value = field.value || null;
-            }
-
-            this.setValueByPath(updatedData, path, value);
-        });
-
-        // Guardar en localStorage con prefijo de sección
-        const key = `xv-barbara-backup-${section}`;
-        localStorage.setItem(key, JSON.stringify(updatedData));
-        localStorage.setItem(key + '-time', new Date().toLocaleString('es-MX'));
-
-        console.log(`💾 Auto-guardado: ${section} (${new Date().toLocaleTimeString()})`);
-
-        // Mostrar indicador visual (opcional)
-        this.showSaveIndicator();
-    }
-
-    /**
-     * Muestra un indicador visual de guardado
-     */
-    showSaveIndicator() {
-        let indicator = document.getElementById('save-indicator');
-
-        if (!indicator) {
-            indicator = document.createElement('div');
-            indicator.id = 'save-indicator';
-            indicator.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: #4CAF50;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 5px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                z-index: 10000;
-                opacity: 0;
-                transition: opacity 0.3s;
-            `;
-            indicator.innerHTML = '<i class="fas fa-check"></i> Guardado automáticamente';
-            document.body.appendChild(indicator);
+    // ── Indicador visual ──────────────────────────────────────────────────────
+    showSaveIndicator(msg = '✓ Guardado') {
+        let el = document.getElementById('save-indicator');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'save-indicator';
+            el.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#22c55e;color:#fff;padding:8px 16px;border-radius:6px;font-size:.85rem;z-index:10000;opacity:0;transition:opacity .3s;pointer-events:none;';
+            document.body.appendChild(el);
         }
-
-        indicator.style.opacity = '1';
-
-        setTimeout(() => {
-            indicator.style.opacity = '0';
-        }, 2000);
+        el.textContent = msg;
+        el.style.opacity = '1';
+        clearTimeout(el._t);
+        el._t = setTimeout(() => { el.style.opacity = '0'; }, 2500);
     }
 
-    /**
-     * Obtiene los campos que están vacíos/null
-     * @param {Object} data - Datos del JSON
-     * @param {string} parentPath - Ruta padre (uso interno)
-     * @returns {Array} - Lista de paths de campos vacíos
-     */
+    // ── Compatibilidad getMissingFields ───────────────────────────────────────
     getMissingFields(data, parentPath = '') {
         const missing = [];
-
         for (const key in data) {
-            const value = data[key];
-            const currentPath = parentPath ? `${parentPath}.${key}` : key;
-
-            if (value === null || value === undefined || value === '') {
-                missing.push(currentPath);
-            } else if (typeof value === 'object' && !Array.isArray(value)) {
-                // Recursivo para objetos anidados
-                missing.push(...this.getMissingFields(value, currentPath));
-            }
+            const val = data[key];
+            const path = parentPath ? `${parentPath}.${key}` : key;
+            if (val === null || val === undefined || val === '') missing.push(path);
+            else if (typeof val === 'object' && !Array.isArray(val))
+                missing.push(...this.getMissingFields(val, path));
         }
-
         return missing;
     }
-
-    /**
-     * Restaura datos desde el backup de localStorage
-     * @param {string} section - Sección a restaurar
-     * @returns {Object|null} - Datos restaurados o null
-     */
-    restoreFromBackup(section) {
-        const key = `xv-barbara-backup-${section}`;
-        const backup = localStorage.getItem(key);
-        const backupTime = localStorage.getItem(key + '-time');
-
-        if (backup) {
-            console.log(`✓ Backup encontrado de ${section} (${backupTime})`);
-            return JSON.parse(backup);
-        }
-
-        console.log(`⚠ No hay backup de ${section}`);
-        return null;
-    }
-
-    /**
-     * Inicializa el sistema de auto-guardado en un formulario
-     * @param {string} formId - ID del formulario
-     * @param {string} section - Sección (ej: 'banquete')
-     * @param {Object} data - Datos originales
-     */
-    initAutoSave(formId, section, data) {
-        const form = document.getElementById(formId);
-        if (!form) return;
-
-        const fields = form.querySelectorAll('[data-json-path]');
-
-        fields.forEach(field => {
-            field.addEventListener('change', () => {
-                this.autoSaveToLocalStorage(section, formId, data);
-            });
-
-            // También guardar al escribir en campos de texto (con debounce)
-            if (field.tagName === 'INPUT' || field.tagName === 'TEXTAREA') {
-                let timeout;
-                field.addEventListener('input', () => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                        this.autoSaveToLocalStorage(section, formId, data);
-                    }, 1000); // Esperar 1 segundo después de dejar de escribir
-                });
-            }
-        });
-
-        console.log(`✓ Auto-guardado activado para ${section}`);
-    }
 }
 
-// Crear instancia global
+// Instancia global
 const dataLoader = new DataLoader();
 
-// Exportar para uso en módulos
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = DataLoader;
-}
+// Cargar datos al arrancar y exponer en window
+dataLoader.loadData().then(d => {
+    if (d) window.EVENTO_DATA = d;
+});

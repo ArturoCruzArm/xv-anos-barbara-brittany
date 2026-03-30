@@ -1,5 +1,5 @@
 // Sistema Centralizado de Gestión de Datos
-// Funciona completamente del lado del cliente con localStorage
+// localStorage como caché local + Supabase (via dataLoader) como backend persistente
 
 const DATA_MANAGER = {
     // Claves de localStorage
@@ -13,7 +13,45 @@ const DATA_MANAGER = {
         NOTES: 'xv-barbara-brittany-notes'
     },
 
-    // Exportar todos los datos a JSON
+    // ── Supabase sync helpers ─────────────────────────────────────────────────
+    _dl: function() {
+        return (typeof dataLoader !== 'undefined') ? dataLoader : null;
+    },
+
+    // Guardar una sección a Supabase (fire-and-forget)
+    _pushSection: function(storageKey, value) {
+        const dl = this._dl();
+        if (!dl) return;
+        dl.saveDynamicSection(storageKey, value).catch(function(e) {
+            console.warn('⚠ DATA_MANAGER Supabase push error:', e);
+        });
+    },
+
+    // Cargar todas las secciones desde Supabase a localStorage (sin sobreescribir datos locales)
+    _pullFromSupabase: async function() {
+        const dl = this._dl();
+        if (!dl) return;
+        try {
+            const loaded = await dl.loadData();
+            if (!loaded || !loaded._dynamic) return;
+            let restored = 0;
+            for (const key in this.KEYS) {
+                const storageKey = this.KEYS[key];
+                const sbData = loaded._dynamic[storageKey];
+                if (sbData !== null && sbData !== undefined) {
+                    if (!localStorage.getItem(storageKey)) {
+                        localStorage.setItem(storageKey, JSON.stringify(sbData));
+                        restored++;
+                    }
+                }
+            }
+            if (restored > 0) console.log('✓ DATA_MANAGER: ' + restored + ' secciones restauradas desde Supabase');
+        } catch(e) {
+            console.warn('⚠ DATA_MANAGER: Error cargando desde Supabase:', e);
+        }
+    },
+
+    // ── Exportar todos los datos a JSON ───────────────────────────────────────
     exportAll: function() {
         const data = {
             timestamp: new Date().toISOString(),
@@ -21,7 +59,6 @@ const DATA_MANAGER = {
             data: {}
         };
 
-        // Exportar todos los datos de localStorage
         for (let key in this.KEYS) {
             const storageKey = this.KEYS[key];
             const value = localStorage.getItem(storageKey);
@@ -31,7 +68,7 @@ const DATA_MANAGER = {
         return JSON.stringify(data, null, 2);
     },
 
-    // Importar datos desde JSON
+    // ── Importar datos desde JSON ─────────────────────────────────────────────
     importAll: function(jsonString) {
         try {
             const data = JSON.parse(jsonString);
@@ -44,6 +81,7 @@ const DATA_MANAGER = {
             for (let key in data.data) {
                 if (data.data[key] !== null) {
                     localStorage.setItem(key, JSON.stringify(data.data[key]));
+                    this._pushSection(key, data.data[key]);
                     imported++;
                 }
             }
@@ -54,7 +92,7 @@ const DATA_MANAGER = {
         }
     },
 
-    // Exportar datos de una sección específica
+    // ── Exportar datos de una sección específica ──────────────────────────────
     exportSection: function(sectionKey) {
         const key = this.KEYS[sectionKey];
         if (!key) return null;
@@ -69,7 +107,7 @@ const DATA_MANAGER = {
         return JSON.stringify(data, null, 2);
     },
 
-    // Importar datos de una sección específica
+    // ── Importar datos de una sección específica ──────────────────────────────
     importSection: function(jsonString) {
         try {
             const data = JSON.parse(jsonString);
@@ -84,17 +122,19 @@ const DATA_MANAGER = {
             }
 
             localStorage.setItem(key, JSON.stringify(data.data));
+            this._pushSection(key, data.data);
             return { success: true, section: data.section };
         } catch (error) {
             return { success: false, error: error.message };
         }
     },
 
-    // Limpiar todos los datos
+    // ── Limpiar todos los datos ───────────────────────────────────────────────
     clearAll: function() {
         if (confirm('⚠️ ADVERTENCIA: Esto borrará TODOS los datos guardados.\n\n¿Estás seguro?')) {
             for (let key in this.KEYS) {
                 localStorage.removeItem(this.KEYS[key]);
+                this._pushSection(this.KEYS[key], null);
             }
             alert('✅ Todos los datos han sido borrados');
             location.reload();
@@ -343,4 +383,6 @@ function downloadBackup() {
 // Inicializar cuando la página carga
 document.addEventListener('DOMContentLoaded', () => {
     addBackupButtons();
+    // Restaurar secciones desde Supabase si localStorage está vacío
+    DATA_MANAGER._pullFromSupabase();
 });

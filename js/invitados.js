@@ -20,9 +20,10 @@ function loadGuests() {
     }
 }
 
-// Save guests to localStorage
+// Save guests to localStorage + Supabase
 function saveGuests() {
     localStorage.setItem('xv-barbara-brittany-guests', JSON.stringify(guests));
+    if (typeof DATA_MANAGER !== 'undefined') DATA_MANAGER._pushSection('xv-barbara-brittany-guests', guests);
     renderGuestsTable();
     updateStatistics();
 }

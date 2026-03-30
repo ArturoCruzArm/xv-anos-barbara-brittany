@@ -32,9 +32,10 @@ function loadTablesFromLocalStorage() {
     }
 }
 
-// Guardar mesas en localStorage
+// Guardar mesas en localStorage + Supabase
 function saveTablesToLocalStorage() {
     localStorage.setItem('xv-barbara-brittany-tables', JSON.stringify(tables));
+    if (typeof DATA_MANAGER !== 'undefined') DATA_MANAGER._pushSection('xv-barbara-brittany-tables', tables);
 }
 
 // Crear mesas automáticamente desde los invitados
