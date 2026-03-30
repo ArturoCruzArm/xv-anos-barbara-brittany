@@ -256,7 +256,8 @@ async function _rsvpSaveGeneric({ name, phone, guests, asiste, message }) {
     const SB_H    = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Content-Type': 'application/json' };
 
     // Obtener evento_id
-    const er = await fetch(`${SB_URL}/rest/v1/eventos?slug=eq.xv-anos-barbara-brittany&select=id&limit=1`, { headers: SB_H });
+    const evSlug = (window.RSVP_CONFIG && window.RSVP_CONFIG.slug) || 'xv-anos-barbara-brittany';
+    const er = await fetch(`${SB_URL}/rest/v1/eventos?slug=eq.${encodeURIComponent(evSlug)}&select=id&limit=1`, { headers: SB_H });
     const ev = await er.json();
     const eid = ev[0]?.id;
     if (!eid) throw new Error('sin evento_id');
