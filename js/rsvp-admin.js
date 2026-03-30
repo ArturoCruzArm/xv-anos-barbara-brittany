@@ -1,12 +1,13 @@
 // rsvp-admin.js — Dashboard RSVP Profesional (lado del admin)
-// Reemplaza invitados.js — usa Supabase en lugar de localStorage
+// Config desde window.RSVP_CONFIG = { slug, baseUrl, pin, eventName }
 (function () {
-    const SB_URL   = 'https://nzpujmlienzfetqcgsxz.supabase.co';
-    const SB_ANON  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
-    const SB_H     = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Content-Type': 'application/json' };
-    const EVENTO_SLUG = 'xv-anos-barbara-brittany';
-    const BASE_URL    = 'https://barbara-brittany.invitados.org';
-    const ADMIN_PIN   = '7070';
+    const cfg       = window.RSVP_CONFIG || {};
+    const SB_URL    = 'https://nzpujmlienzfetqcgsxz.supabase.co';
+    const SB_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
+    const SB_H      = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Content-Type': 'application/json' };
+    const EVENTO_SLUG = cfg.slug    || document.querySelector('meta[name="evento-slug"]')?.content || '';
+    const BASE_URL    = cfg.baseUrl || (window.location.origin + window.location.pathname.replace('invitados.html',''));
+    const ADMIN_PIN   = cfg.pin     || '7070';
 
     let eventoId   = null;
     let guests     = [];
@@ -26,7 +27,7 @@
             <div style="background:#fff;border-radius:16px;padding:48px 40px;max-width:360px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.12);text-align:center;">
                 <div style="font-size:2.5rem;margin-bottom:12px;">🔐</div>
                 <h2 style="margin:0 0 8px;color:#1c1c1c;font-size:1.4rem;">Acceso Admin</h2>
-                <p style="color:#666;margin:0 0 28px;font-size:.9rem;">Gestión de invitados — XV Años Barbara Brittany</p>
+                <p style="color:#666;margin:0 0 28px;font-size:.9rem;">Gestión de invitados — ${cfg.eventName || 'Evento'}</p>
                 <input id="pinInput" type="password" maxlength="10" placeholder="PIN de acceso"
                     style="width:100%;padding:12px 16px;border:2px solid #ddd;border-radius:8px;font-size:1.1rem;text-align:center;letter-spacing:4px;box-sizing:border-box;outline:none;margin-bottom:16px;"
                     onkeydown="if(event.key==='Enter')document.getElementById('pinBtn').click()">
@@ -112,7 +113,9 @@
         const g = guests.find(x => x.id === id);
         if (!g) return;
         const link = `${BASE_URL}/index.html?inv=${g.token}`;
-        const msg  = `Hola ${g.nombre} 👑✨\n\nTe invitamos cordialmente a los XV Años de *Barbara Brittany* el sábado 11 de abril de 2026.\n\nTu enlace de invitación personalizada:\n${link}\n\nPor favor confirma tu asistencia desde el enlace. Tienes *${g.pases_asignados} ${g.pases_asignados === 1 ? 'pase' : 'pases'}* asignados. 🎀`;
+        const evName = cfg.eventName || 'el evento';
+        const evDate = cfg.eventDate ? ` el ${cfg.eventDate}` : '';
+        const msg  = `Hola ${g.nombre} 👑✨\n\nTe invitamos cordialmente a *${evName}*${evDate}.\n\nTu enlace de invitación personalizada:\n${link}\n\nPor favor confirma tu asistencia desde el enlace. Tienes *${g.pases_asignados} ${g.pases_asignados === 1 ? 'pase' : 'pases'}* asignados. 🎀`;
 
         // Marcar como enviada
         await fetch(`${SB_URL}/rest/v1/invitados?id=eq.${id}`, {
@@ -382,7 +385,7 @@
         const csv = [headers.join(','), ...rows].join('\n');
         const a = document.createElement('a');
         a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
-        a.download = `invitados-barbara-brittany-${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `invitados-${EVENTO_SLUG || 'evento'}-${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
         showToast('✓ CSV descargado');
     }
