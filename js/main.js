@@ -213,49 +213,87 @@ function getNextDayDate(dateStr) {
            String(fecha.getDate()).padStart(2, '0');
 }
 
-// RSVP Form Submission - Carga desde JSON
+// RSVP Form Submission — guarda en Supabase + notifica por WhatsApp
 function submitRSVP(event) {
     event.preventDefault();
+    if (window._rsvpGuestLoaded) return; // rsvp-guest.js ya tomó control (modo token)
 
-    const formData = new FormData(event.target);
-    const name = formData.get('name');
-    const phone = formData.get('phone');
-    const guests = formData.get('guests');
+    const formData   = new FormData(event.target);
+    const name       = formData.get('name');
+    const phone      = formData.get('phone');
+    const guests     = parseInt(formData.get('guests')) || 1;
     const attendance = formData.get('attendance');
-    const message = formData.get('message') || 'Sin mensaje';
+    const message    = formData.get('message') || '';
+    const asiste     = attendance === 'si';
 
-    // Guardar confirmación en localStorage
-    saveQRConfirmation(name, guests, attendance === 'si' ? 'confirmed' : 'declined');
+    const btn = event.target.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'; }
 
-    const nombre = eventoDataForCountdown?.quinceañera?.nombre || 'Barbara Brittany';
-    const fechaEvento = eventoDataForCountdown?.fechas?.evento || '2026-04-11';
-    const fechaFormateada = formatShortDateFromJSON(fechaEvento);
-    const whatsappNumber = eventoDataForCountdown?.contacto?.whatsappFormat || '524779203776';
+    // Guardar en Supabase como invitado genérico
+    _rsvpSaveGeneric({ name, phone, guests, asiste, message }).then(() => {
+        const successMsg = document.getElementById('successMessage');
+        if (successMsg) {
+            successMsg.style.display = 'block';
+            successMsg.innerHTML = `<i class="fas fa-check-circle"></i> ¡Gracias ${name}! ${asiste ? 'Tu asistencia fue confirmada.' : 'Gracias por avisarnos.'}`;
+        }
+        event.target.style.display = 'none';
+    }).catch(() => {
+        // Fallback: WhatsApp si falla Supabase
+        const nombre        = eventoDataForCountdown?.quinceañera?.nombre || 'Barbara Brittany';
+        const fechaEvento   = eventoDataForCountdown?.fechas?.evento || '2026-04-11';
+        const fechaFormateada = formatShortDateFromJSON(fechaEvento);
+        const whatsappNumber  = eventoDataForCountdown?.contacto?.whatsappFormat || '524779203776';
+        const msg = `✨ CONFIRMACIÓN XV AÑOS - ${nombre.toUpperCase()} ✨\n\n👤 ${name}\n📱 ${phone}\n👥 ${guests}\n✅ ${asiste ? 'Sí asistiré' : 'No podré asistir'}\n💬 ${message}\n📅 ${fechaFormateada}`;
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Confirmación'; }
+    });
+}
 
-    const whatsappMessage = `
-✨ CONFIRMACIÓN XV AÑOS - ${nombre.toUpperCase()} ✨
+// Guarda respuesta de formulario genérico en Supabase
+async function _rsvpSaveGeneric({ name, phone, guests, asiste, message }) {
+    const SB_URL  = 'https://nzpujmlienzfetqcgsxz.supabase.co';
+    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56cHVqbWxpZW56ZmV0cWNnc3h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2ODYzMzYsImV4cCI6MjA5MDI2MjMzNn0.xl3lsb-KYj5tVLKTnzpbsdEGoV9ySnswH4eyRuyEH1s';
+    const SB_H    = { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + SB_ANON, 'Content-Type': 'application/json' };
 
-👤 Nombre: ${name}
-📱 Teléfono: ${phone}
-👥 Invitados: ${guests}
-✅ Asistencia: ${attendance === 'si' ? 'Sí asistiré' : 'No podré asistir'}
-💬 Mensaje: ${message}
+    // Obtener evento_id
+    const er = await fetch(`${SB_URL}/rest/v1/eventos?slug=eq.xv-anos-barbara-brittany&select=id&limit=1`, { headers: SB_H });
+    const ev = await er.json();
+    const eid = ev[0]?.id;
+    if (!eid) throw new Error('sin evento_id');
 
-📅 Fecha: ${fechaFormateada}
-    `.trim();
-
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-    window.open(whatsappUrl, '_blank');
-
-    const successMsg = document.getElementById('successMessage');
-    if (successMsg) {
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-            successMsg.style.display = 'none';
-        }, 5000);
+    // Buscar si ya existe un invitado con ese teléfono (para no duplicar)
+    if (phone) {
+        const pr = await fetch(`${SB_URL}/rest/v1/invitados?evento_id=eq.${eid}&telefono=eq.${encodeURIComponent(phone)}&limit=1`, { headers: SB_H });
+        const existing = await pr.json();
+        if (existing.length) {
+            // Actualizar el registro existente
+            await fetch(`${SB_URL}/rest/v1/invitados?id=eq.${existing[0].id}`, {
+                method: 'PATCH',
+                headers: Object.assign({}, SB_H, { 'Prefer': 'return=minimal' }),
+                body: JSON.stringify({
+                    status: asiste ? 'confirmada' : 'declinada',
+                    asiste, pases_confirmados: guests,
+                    confirmacion_nombre: name, mensaje: message || null,
+                    fecha_confirmacion: new Date().toISOString()
+                })
+            });
+            return;
+        }
     }
 
-    event.target.reset();
+    // Crear nuevo registro genérico
+    await fetch(`${SB_URL}/rest/v1/invitados`, {
+        method: 'POST',
+        headers: Object.assign({}, SB_H, { 'Prefer': 'return=minimal' }),
+        body: JSON.stringify({
+            evento_id: eid, nombre: name, telefono: phone || null,
+            categoria: 'otro', pases_asignados: guests,
+            status: asiste ? 'confirmada' : 'declinada',
+            asiste, pases_confirmados: guests,
+            confirmacion_nombre: name, mensaje: message || null,
+            fecha_confirmacion: new Date().toISOString()
+        })
+    });
 }
 
 // Social Sharing - Carga desde JSON

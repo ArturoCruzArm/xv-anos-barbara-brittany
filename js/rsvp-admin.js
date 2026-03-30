@@ -131,6 +131,73 @@
         window.open(wa, '_blank');
     }
 
+    // ── Confirmar manualmente (sin WhatsApp) ─────────────────────────────────
+    function confirmManual(id) {
+        const g = guests.find(x => x.id === id);
+        if (!g) return;
+
+        // Modal inline rápido
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML = `
+            <div style="background:#fff;border-radius:14px;padding:32px;max-width:360px;width:90%;font-family:'Lato',sans-serif;">
+                <h3 style="margin:0 0 6px;font-size:1.1rem;">Confirmación manual</h3>
+                <p style="color:#666;font-size:.9rem;margin:0 0 20px;"><strong>${g.nombre}</strong> — ${g.pases_asignados} pases</p>
+                <label style="font-size:.82rem;font-weight:700;display:block;margin-bottom:6px;">¿Asistirá?</label>
+                <div style="display:flex;gap:10px;margin-bottom:18px;">
+                    <button id="_mc_si" style="flex:1;padding:10px;border-radius:8px;border:2px solid #55efc4;background:#f0fff8;font-weight:700;cursor:pointer;">✅ Sí asistirá</button>
+                    <button id="_mc_no" style="flex:1;padding:10px;border-radius:8px;border:2px solid #ccc;background:#f9f9f9;font-weight:700;cursor:pointer;">❌ No asistirá</button>
+                </div>
+                <label style="font-size:.82rem;font-weight:700;display:block;margin-bottom:6px;">Personas que asistirán</label>
+                <input id="_mc_pases" type="number" min="0" max="${g.pases_asignados}" value="${g.pases_asignados}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:1rem;box-sizing:border-box;margin-bottom:18px;">
+                <div style="display:flex;gap:10px;">
+                    <button id="_mc_cancel" style="flex:1;padding:10px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;">Cancelar</button>
+                    <button id="_mc_save" style="flex:1;padding:10px;border-radius:8px;background:#6c5ce7;color:#fff;border:none;font-weight:700;cursor:pointer;">Guardar</button>
+                </div>
+            </div>`;
+
+        let selected = 'si';
+        overlay.querySelector('#_mc_si').addEventListener('click', () => {
+            selected = 'si';
+            overlay.querySelector('#_mc_si').style.borderColor = '#55efc4';
+            overlay.querySelector('#_mc_si').style.background  = '#f0fff8';
+            overlay.querySelector('#_mc_no').style.borderColor = '#ccc';
+            overlay.querySelector('#_mc_no').style.background  = '#f9f9f9';
+        });
+        overlay.querySelector('#_mc_no').addEventListener('click', () => {
+            selected = 'no';
+            overlay.querySelector('#_mc_no').style.borderColor = '#d63031';
+            overlay.querySelector('#_mc_no').style.background  = '#fff5f5';
+            overlay.querySelector('#_mc_si').style.borderColor = '#ccc';
+            overlay.querySelector('#_mc_si').style.background  = '#f9f9f9';
+        });
+        overlay.querySelector('#_mc_cancel').addEventListener('click', () => overlay.remove());
+        overlay.querySelector('#_mc_save').addEventListener('click', async () => {
+            const asiste = selected === 'si';
+            const pases  = parseInt(overlay.querySelector('#_mc_pases').value) || 0;
+            overlay.remove();
+            await fetch(`${SB_URL}/rest/v1/invitados?id=eq.${id}`, {
+                method: 'PATCH',
+                headers: Object.assign({}, SB_H, { 'Prefer': 'return=minimal' }),
+                body: JSON.stringify({
+                    status: asiste ? 'confirmada' : 'declinada',
+                    asiste, pases_confirmados: pases,
+                    fecha_confirmacion: new Date().toISOString()
+                })
+            });
+            const idx = guests.findIndex(x => x.id === id);
+            if (idx >= 0) {
+                guests[idx].status = asiste ? 'confirmada' : 'declinada';
+                guests[idx].asiste = asiste;
+                guests[idx].pases_confirmados = pases;
+            }
+            renderAll();
+            showToast(asiste ? '✓ Confirmado manualmente' : '✓ Marcado como declinado');
+        });
+
+        document.body.appendChild(overlay);
+    }
+
     // ── Copiar link al portapapeles ──────────────────────────────────────────
     async function copyLink(id) {
         const g = guests.find(x => x.id === id);
@@ -232,9 +299,10 @@
                 <td style="font-size:.78rem">${fmtDate(g.fecha_envio)}<br>${fmtDate(g.fecha_confirmacion)}</td>
                 <td>
                     <div class="action-group">
-                        <button class="btn-wa" onclick="RSVP_ADMIN.sendWhatsApp('${g.id}')" ${waDisabled} title="Enviar por WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </button>
+                        ${g.telefono
+                            ? `<button class="btn-wa" onclick="RSVP_ADMIN.sendWhatsApp('${g.id}')" title="Enviar por WhatsApp"><i class="fab fa-whatsapp"></i></button>`
+                            : `<button class="btn-copy" onclick="RSVP_ADMIN.confirmManual('${g.id}')" title="Confirmar manualmente" style="background:#f39c12"><i class="fas fa-user-check"></i></button>`
+                        }
                         <button class="btn-copy" onclick="RSVP_ADMIN.copyLink('${g.id}')" title="Copiar link">
                             <i class="fas fa-link"></i>
                         </button>
@@ -371,6 +439,6 @@
     });
 
     // Exponer al window para onclick inline
-    window.RSVP_ADMIN = { sendWhatsApp, copyLink, deleteGuest, openEdit };
+    window.RSVP_ADMIN = { sendWhatsApp, copyLink, deleteGuest, openEdit, confirmManual };
 })();
 
