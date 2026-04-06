@@ -85,17 +85,51 @@
         .control-panel {
             background: var(--panel);
             border-bottom: 1px solid var(--border);
-            padding: 16px 20px;
+            padding: 10px 20px;
             position: sticky;
             top: 0;
             z-index: 50;
         }
 
+        /* Sección colapsable (stats + acciones) */
+        .panel-collapsible {
+            overflow: hidden;
+            max-height: 300px;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        .control-panel.collapsed .panel-collapsible {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        /* Barra inferior del panel: filtros + toggle */
+        .panel-bottom {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 6px;
+        }
+        .btn-toggle-panel {
+            margin-left: auto;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #aaa;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .btn-toggle-panel:hover { color: #fff; border-color: #888; }
+
         .stats-row {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .stat-card {
@@ -420,7 +454,8 @@
 
 
 <!-- Panel de control (sticky) -->
-<div class="control-panel">
+<div class="control-panel" id="controlPanel">
+<div class="panel-collapsible">
     <div class="stats-row">
         <div class="stat-card impresion">
             <span class="stat-icon">📸</span>
@@ -463,20 +498,22 @@
         <span>⚠️ Fotos adicionales: <strong id="extraCostDetail"></strong> = <strong id="extraCostAmount"></strong> extra</span>
     </div>
 
-    <div class="action-buttons">
-        <button class="btn btn-filter active" id="btnFilterAll"            data-filter="all">Todas</button>
-        <button class="btn btn-filter filter-impresion"  id="btnFilterImpresion"  data-filter="impresion">Impresión</button>
-        <button class="btn btn-filter filter-ampliacion" id="btnFilterAmpliacion" data-filter="ampliacion">Ampliación</button>
-        <button class="btn btn-filter filter-invitacion" id="btnFilterInvitacion" data-filter="invitacion">Invitación</button>
-        <button class="btn btn-filter filter-descartada" id="btnFilterDescartada" data-filter="descartada">Descartadas</button>
-        <button class="btn btn-filter filter-sin-clasificar" id="btnFilterSinClasificar" data-filter="sin-clasificar">Sin Clasificar</button>
-    </div>
-
     <div class="action-buttons secondary">
         <button class="btn btn-export" id="btnExport"><i class="fas fa-download"></i> Descargar Reporte</button>
         <button class="btn btn-share"  id="btnShare"><i class="fab fa-whatsapp"></i> Copiar Resumen</button>
         <button class="btn btn-clear"  id="btnClear"><i class="fas fa-trash"></i> Limpiar Todo</button>
     </div>
+</div><!-- /panel-collapsible -->
+
+<div class="panel-bottom">
+    <button class="btn btn-filter active" id="btnFilterAll"            data-filter="all">Todas</button>
+    <button class="btn btn-filter filter-impresion"  id="btnFilterImpresion"  data-filter="impresion">Impresión</button>
+    <button class="btn btn-filter filter-ampliacion" id="btnFilterAmpliacion" data-filter="ampliacion">Ampliación</button>
+    <button class="btn btn-filter filter-invitacion" id="btnFilterInvitacion" data-filter="invitacion">Invitación</button>
+    <button class="btn btn-filter filter-descartada" id="btnFilterDescartada" data-filter="descartada">Descartadas</button>
+    <button class="btn btn-filter filter-sin-clasificar" id="btnFilterSinClasificar" data-filter="sin-clasificar">Sin Clasificar</button>
+    <button class="btn-toggle-panel" id="btnTogglePanel">▲ Ocultar</button>
+</div>
 </div>
 
 <!-- Grid de fotos -->
@@ -993,6 +1030,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const dx = e.changedTouches[0].clientX - _touchX;
         if (Math.abs(dx) > 50) navigatePhoto(dx < 0 ? 1 : -1);
     }, { passive: true });
+
+    // Toggle panel
+    const _panel = document.getElementById('controlPanel');
+    const _toggleBtn = document.getElementById('btnTogglePanel');
+    const _panelCollapsed = localStorage.getItem('foro7_panel_collapsed') === '1';
+    if (_panelCollapsed) { _panel.classList.add('collapsed'); _toggleBtn.textContent = '▼ Mostrar'; }
+    _toggleBtn.addEventListener('click', () => {
+        const col = _panel.classList.toggle('collapsed');
+        _toggleBtn.textContent = col ? '▼ Mostrar' : '▲ Ocultar';
+        localStorage.setItem('foro7_panel_collapsed', col ? '1' : '0');
+    });
 
     // Teclado
     document.addEventListener('keydown', e => {
