@@ -1006,6 +1006,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('visibilitychange', () => { if (document.hidden) saveSelections(); });
 window.addEventListener('beforeunload', () => saveSelections());
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
 </script>
     <script src="js/visitas.js?v=1" async></script>
     <script src="js/selector-sb.js"></script>
