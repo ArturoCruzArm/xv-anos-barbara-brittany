@@ -84,9 +84,26 @@
 
             _syncing = true;
             try {
+                var oldSels = {};
+                try { oldSels = JSON.parse(localStorage.getItem(SB_KEY) || '{}'); } catch(e) {}
+
                 localStorage.setItem(SB_KEY, JSON.stringify(merged));
                 if (typeof loadSelections === 'function') loadSelections();
-                if (typeof renderGallery === 'function') renderGallery();
+
+                // Solo actualizar tarjetas que realmente cambiaron
+                if (typeof updateCard === 'function') {
+                    var allIdx = new Set(
+                        Object.keys(merged).concat(Object.keys(oldSels)).map(Number)
+                    );
+                    allIdx.forEach(function(idx) {
+                        if (JSON.stringify(oldSels[idx] || {}) !== JSON.stringify(merged[idx] || {})) {
+                            updateCard(idx);
+                        }
+                    });
+                } else if (typeof renderGallery === 'function') {
+                    renderGallery(); // fallback si updateCard no existe
+                }
+
                 if (typeof updateStats === 'function') updateStats();
                 if (typeof updateFilterButtons === 'function') updateFilterButtons();
             } finally { _syncing = false; }
