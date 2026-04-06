@@ -737,11 +737,25 @@ function updateFilterButtons() {
     document.getElementById('btnFilterSinClasificar').textContent = `Sin Clasificar (${stats.sinClasificar})`;
 }
 
+// ── Preload pool ──
+const _preloadCache = new Map();
+function _preloadImg(url) {
+    if (_preloadCache.has(url)) return;
+    const img = new Image();
+    img.src = url;
+    _preloadCache.set(url, img);
+}
+
 // ── Modal ──
 function openModal(index) {
     currentPhotoIndex = index;
     const photo = photos[index];
     document.getElementById('modalImage').src = photo;
+
+    // Precargar anterior y siguiente en segundo plano
+    const next = photos[(index + 1) % photos.length];
+    const prev = photos[(index - 1 + photos.length) % photos.length];
+    setTimeout(() => { _preloadImg(next); _preloadImg(prev); }, 50);
     document.getElementById('modalPhotoNumber').textContent =
         `Foto ${index + 1} de ${photos.length} · ${photo.split('/')[1].replace('.webp','')}`;
 
