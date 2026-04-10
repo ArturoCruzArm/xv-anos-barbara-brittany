@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logística General - XV Años</title>
+    <title>Logística - XV Años Barbara Brittany</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/admin.css">
@@ -244,21 +244,19 @@
         // Timeline predeterminado (se puede editar en el JSON)
         const defaultTimeline = {
             morning: [
-                { time: "09:00", title: "Desayuno Familiar", desc: "Momento especial con la familia", responsible: "Familia" },
-                { time: "10:00", title: "Inicio de Maquillaje y Peinado", desc: "Estilista profesional en casa", responsible: "Estilista" },
-                { time: "12:00", title: "Sesión de Fotos Pre-Evento", desc: "Fotos en casa con la familia", responsible: "Foro 7" },
-                { time: "14:00", title: "Almuerzo Ligero", desc: "Descanso y preparación final", responsible: "Familia" },
-                { time: "15:00", title: "Vestido y Últimos Detalles", desc: "Preparación final antes de salir", responsible: "Familia" },
-                { time: "15:30", title: "Salida hacia la Ceremonia", desc: "Traslado a la iglesia", responsible: "Familia", highlight: true }
+                { time: "10:00", title: "Inicio de Maquillaje y Peinado", desc: "Estilista profesional en casa de la quinceañera", responsible: "Estilista" },
+                { time: "13:00", title: "Llegada Foro 7 a casa", desc: "Llegamos 1 hora antes a casa de Barbara para preparar equipo y cubrir los últimos preparativos", responsible: "Foro 7", highlight: true },
+                { time: "13:30", title: "Sesión de Fotos en Casa", desc: "Fotos con la familia, vestido, detalles y preparativos", responsible: "Foro 7" },
+                { time: "14:30", title: "Vestido y Últimos Detalles", desc: "Preparación final antes de salir", responsible: "Familia" },
+                { time: "15:15", title: "Salida hacia la Iglesia", desc: "Traslado a Parroquia San Juan Bautista de la Salle", responsible: "Familia", highlight: true }
             ],
             ceremony: [
-                { time: "15:55", title: "Llegada a la Iglesia", desc: "5 minutos antes del inicio", responsible: "Familia" },
-                { time: "16:00", title: "Inicio de la Ceremonia", desc: "Entrada de la quinceañera con sus padres", responsible: "Sacerdote", highlight: true },
+                { time: "15:45", title: "Llegada a la Iglesia", desc: "15 minutos antes — fotos de llegada y exteriores", responsible: "Foro 7" },
+                { time: "16:00", title: "Inicio de la Misa", desc: "Entrada de Barbara Brittany con sus padres Cruz y Patricia", responsible: "Sacerdote", highlight: true },
                 { time: "16:45", title: "Fin de la Misa", desc: "Ceremonia religiosa concluye", responsible: "Sacerdote" },
-                { time: "16:50", title: "Ofrenda Floral", desc: "Ramo a la Virgen", responsible: "Quinceañera" },
-                { time: "16:55", title: "Felicitaciones", desc: "Saludo de invitados", responsible: "Familia" },
-                { time: "17:10", title: "Sesión de Fotos", desc: "Fotos en exteriores de la iglesia", responsible: "Foro 7" },
-                { time: "17:30", title: "Traslado al Salón", desc: "Desplazamiento hacia el salón", responsible: "Familia" }
+                { time: "16:50", title: "Ofrenda Floral a la Virgen", desc: "Ramo a la Virgen", responsible: "Barbara" },
+                { time: "16:55", title: "Felicitaciones y Fotos", desc: "Saludo de invitados y sesión en exteriores de la iglesia", responsible: "Foro 7" },
+                { time: "17:15", title: "Traslado al Salón", desc: "Desplazamiento hacia el salón de recepción", responsible: "Familia" }
             ],
             reception: []
         };
@@ -299,7 +297,7 @@
                 const fechaFormateada = fecha.toLocaleDateString('es-MX', opciones);
                 const fechaCapitalizada = fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1);
                 document.getElementById('eventDateHeader').textContent = fechaFormateada;
-                document.getElementById('eventDate').textContent = `${data.fechas.diaEvento} de Abril 2026`;
+                document.getElementById('eventDate').textContent = fechaCapitalizada;
             }
 
             // Invitados
@@ -355,33 +353,33 @@
             // Timeline ceremonia
             let ceremonyHtml = '';
             defaultTimeline.ceremony.forEach(item => {
-                morningHtml += createTimelineItem(item);
+                ceremonyHtml += createTimelineItem(item);
             });
-            document.getElementById('timelineCeremony').innerHTML = morningHtml;
+            document.getElementById('timelineCeremony').innerHTML = ceremonyHtml;
 
             // Timeline recepción - con entrada especial de banda
             const hasEntradaCaballo = serviciosData?.servicios?.musica?.banda?.entradaEnCaballo;
             const salonName = eventoData?.ubicaciones?.salon?.nombre || 'Salón';
 
             const receptionTimeline = [
-                { time: "17:45", title: `Llegada al ${salonName}`, desc: "Fotos en exteriores del salón", responsible: "Foro 7" },
-                { time: "18:30", title: "Recepción de Invitados", desc: "Llegada de invitados - Cóctel de bienvenida", responsible: "Personal" },
-                { time: "19:00", title: hasEntradaCaballo ? "Entrada Triunfal con Banda y Caballo" : "Entrada Triunfal de la Quinceañera",
-                  desc: hasEntradaCaballo ? "La quinceañera entra acompañada de la banda en caballo" : "Gran entrada al salón con música especial",
+                { time: "17:30", title: `Llegada al ${salonName}`, desc: "Fotos de Barbara en exteriores del salón", responsible: "Foro 7" },
+                { time: "18:00", title: "Recepción de Invitados", desc: "Llegada de invitados", responsible: "Personal" },
+                { time: "18:30", title: hasEntradaCaballo ? "Entrada Triunfal con Banda y Caballo" : "Entrada Triunfal de Barbara Brittany",
+                  desc: hasEntradaCaballo ? "Barbara entra acompañada de la banda en caballo" : "Gran entrada al salón con música especial",
                   responsible: hasEntradaCaballo ? "Banda" : "DJ", highlight: true, special: hasEntradaCaballo },
-                { time: "19:15", title: "Vals con el Padre", desc: "Baile tradicional padre-hija", responsible: "DJ" },
-                { time: "19:25", title: "Cambio de Zapatilla", desc: "Ceremonia simbólica de la zapatilla", responsible: "Padrino" },
-                { time: "19:35", title: "Vals Sorpresa / Baile Folclórico", desc: "Coreografía especial preparada - Estilo folclórico", responsible: "Quinceañera", special: true },
-                { time: "19:50", title: "Baile con Chambelanes", desc: "Baile grupal con damas y chambelanes", responsible: "Chambelanes" },
-                { time: "20:00", title: "Inicio de la Cena (Carnitas)", desc: "Servicio de banquete - Menú de carnitas", responsible: "Banquete" },
-                { time: "20:30", title: "Brindis y Palabras", desc: "Discursos de padres, padrinos y quinceañera", responsible: "Familia" },
-                { time: "21:00", title: "Partida del Pastel", desc: "Momento del pastel y fotos", responsible: "Foro 7" },
-                { time: "21:30", title: "Apertura de Pista - DJ", desc: "Inicio del baile y la fiesta (5 horas)", responsible: "DJ" },
+                { time: "18:45", title: "Vals con el Padre (Cruz Herrera)", desc: "Baile tradicional padre-hija", responsible: "DJ" },
+                { time: "18:55", title: "Cambio de Zapatilla", desc: "Ceremonia simbólica — Madrinas: Eva Herrera y Guadalupe Reyna", responsible: "Madrinas" },
+                { time: "19:05", title: "Vals Sorpresa / Baile Folclórico", desc: "Coreografía especial con chambelanes — estilo folclórico", responsible: "Barbara", special: true },
+                { time: "19:20", title: "Baile con Chambelanes", desc: "Baile grupal con los 9 chambelanes", responsible: "Chambelanes" },
+                { time: "19:35", title: "Inicio de la Cena (Carnitas)", desc: "Servicio de banquete", responsible: "Banquete" },
+                { time: "20:00", title: "Brindis y Palabras", desc: "Discursos de padres, padrinos y Barbara", responsible: "Familia" },
+                { time: "20:30", title: "Partida del Pastel", desc: "Momento del pastel y fotos — Padrino: Raul Herrera", responsible: "Foro 7" },
+                { time: "21:00", title: "Apertura de Pista - DJ", desc: "Inicio del baile y la fiesta (5 horas)", responsible: "DJ" },
                 { time: "22:00", title: "Banda en Vivo", desc: "3 horas de banda", responsible: "Banda" },
-                { time: "23:30", title: "Torito (si se confirma)", desc: "Espectáculo del torito - $3,800", responsible: "Salón", special: true },
+                { time: "23:30", title: "Torito (si se confirma)", desc: "Espectáculo del torito", responsible: "Salón", special: true },
                 { time: "00:00", title: "Pirotecnia", desc: "Espectáculo pirotécnico", responsible: "Proveedor", special: true },
                 { time: "01:00", title: "Última Canción", desc: "Cierre de la celebración", responsible: "DJ" },
-                { time: "01:30", title: "Entrega de Recuerdos", desc: "Despedida y agradecimiento a invitados", responsible: "Familia" },
+                { time: "01:30", title: "Entrega de Recuerdos", desc: "Despedida — Madrina recuerdos: Belén Rodriguez", responsible: "Familia" },
                 { time: "02:00", title: "Fin del Evento", desc: "Cierre oficial de la fiesta", responsible: "Todos", highlight: true }
             ];
 
