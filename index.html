@@ -186,6 +186,31 @@
             </div>
         </section>
 
+        <!-- VIDEOS — De niña a mujer + Sesión fotográfica -->
+        <section id="videos-section">
+            <h2 class="section-title"><i class="fas fa-film"></i> Momentos Especiales</h2>
+            <div style="max-width:640px;margin:0 auto;">
+                <p style="text-align:center;color:var(--cream);margin-bottom:20px;font-size:1.05rem;">De niña a quinceañera — un recorrido por los momentos más especiales</p>
+                <div class="video-wrap" style="position:relative;width:100%;padding-bottom:56.25%;margin-bottom:24px;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.4);">
+                    <iframe id="ytPlayer1"
+                        src="https://www.youtube.com/embed/XeVejCbxNxY?enablejsapi=1&rel=0&loop=1&playlist=XeVejCbxNxY&vq=hd1080"
+                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+                        allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture"
+                        allowfullscreen
+                        title="De niña a grande — Barbara Brittany"></iframe>
+                </div>
+                <p style="text-align:center;color:var(--cream);margin-bottom:20px;font-size:1.05rem;">Sesion fotografica previa</p>
+                <div class="video-wrap" style="position:relative;width:100%;padding-bottom:56.25%;border-radius:12px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.4);">
+                    <iframe id="ytPlayer2"
+                        src="https://www.youtube.com/embed/3HYhbN5NVy8?enablejsapi=1&rel=0&loop=1&playlist=3HYhbN5NVy8&vq=hd1080"
+                        style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;"
+                        allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture"
+                        allowfullscreen
+                        title="Sesion fotografica — Barbara Brittany"></iframe>
+                </div>
+            </div>
+        </section>
+
         <!-- 4. DÓNDE -->
         <section>
             <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> ¿Dónde?</h2>
@@ -555,5 +580,59 @@
 <script src="js/foro7-footer.js"></script>
 <script>window.EVENTO_SLUG='xv-anos-barbara-brittany';</script>
 <script src="js/evento-loader.js"></script>
+
+<!-- YouTube IFrame API — sincronizar música de fondo con videos -->
+<script>
+(function(){
+    // Load YT IFrame API
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    var players = {};
+    var bgMusic = document.getElementById('bgMusic');
+    var musicBtn = document.getElementById('musicBtn');
+    var musicIcon = document.getElementById('musicIcon');
+    var wasMusicPlaying = false;
+
+    window.onYouTubeIframeAPIReady = function() {
+        players.p1 = new YT.Player('ytPlayer1', { events: { onStateChange: onPlayerStateChange } });
+        players.p2 = new YT.Player('ytPlayer2', { events: { onStateChange: onPlayerStateChange } });
+    };
+
+    function onPlayerStateChange(e) {
+        if (e.data === YT.PlayerState.PLAYING) {
+            // Un video empezó — pausar música de fondo
+            if (bgMusic && !bgMusic.paused) {
+                wasMusicPlaying = true;
+                bgMusic.pause();
+                if (musicIcon) musicIcon.className = 'fas fa-play';
+                if (musicBtn) musicBtn.classList.remove('playing');
+            }
+            // Pausar el otro video si estaba reproduciéndose
+            for (var k in players) {
+                if (players[k] !== e.target && players[k].getPlayerState && players[k].getPlayerState() === YT.PlayerState.PLAYING) {
+                    players[k].pauseVideo();
+                }
+            }
+        } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+            // Video se pausó/terminó — revisar si ningún video está reproduciéndose
+            var anyPlaying = false;
+            for (var k in players) {
+                if (players[k].getPlayerState && players[k].getPlayerState() === YT.PlayerState.PLAYING) {
+                    anyPlaying = true;
+                    break;
+                }
+            }
+            if (!anyPlaying && wasMusicPlaying && bgMusic) {
+                bgMusic.play().catch(function(){});
+                if (musicIcon) musicIcon.className = 'fas fa-pause';
+                if (musicBtn) musicBtn.classList.add('playing');
+                wasMusicPlaying = false;
+            }
+        }
+    }
+})();
+</script>
 </body>
 </html>
